@@ -1,0 +1,1614 @@
+<!--This file created 11:47 PM  6/17/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 9: Using Lists to Store Data -
+   Copyright &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=25 BOTTOM=616 LEFT=4 RIGHT=711>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#008000">
+
+<P><B><I><FONT SIZE="+3"><A NAME="Chapter_9"></A>Chapter 9: Using
+Lists to store data</FONT></I></B></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD>
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Introduction">Introduction</A></FONT>
+         </P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Getting_data_from_a_list">Getting
+         Data from a List</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Using_simple_lists">Using
+         Simple Lists for Data Storage</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Evaluating_Data">Evaluating
+         Data from an entire list at once</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Using_Complex_lists">Using
+         Complex Lists for Data Storage</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Using_lists_for_comparisons">Using
+         Lists for Comparisons</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Locating_Elements_in_a_list">Location
+         Elements in a List</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Searching_through_a_list">Searching
+         Through a List</A></FONT></BLOCKQUOTE>
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Using_an_element_of_a_list">Using
+         an Element of a List as a Marker</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Finding_the_properties">Finding
+         the Properties of AutoCAD Objects</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Using_Selection_sets">Using
+         Selection Sets and Object Names</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Understanding_the_structure">Understanding
+         the Structure of Property Lists</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Changing_the_Properties">Changing
+         the Properties of AutoCAD Objects</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Getting_entity_names">Getting
+         Object Names and Coordinates Together</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_9_Conclusion">Conclusion</A></FONT>
+         </BLOCKQUOTE>
+      </TD></TR>
+</TABLE></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_9_Introduction"></A>Introduction</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">We mentioned that there are actually two classes
+of lists, those meant to be evaluated, which are called expressions
+or forms, and lists that are repositories for data such as a
+coordinate list. No matter what the type of list you are dealing
+with, you can manipulate lists to suite the needs of your program. In
+this section we will look at the general subject of lists and review
+some of the functions that allow you to manipulate them.</FONT></P>
+
+<P><FONT SIZE="-1">There are a several functions provided to access
+and manipulate lists in a variety of ways. You have already seen car
+and cdr. Table 9.1 shows a list of other functions with a brief
+description of their uses.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">Function</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Use</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(mapcar </FONT><U><FONT
+         SIZE="-1">function</FONT></U><FONT SIZE="-1">
+         </FONT><U><FONT SIZE="-1">list list...</FONT></U><FONT
+         SIZE="-1"> )</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Apply elements of lists as arguments, to
+         a function. Each element in the list is processed until the
+         end of the list is reached</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(apply </FONT><U><FONT SIZE="-1">function
+         list</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Apply the entire contents of a list to a
+         function.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(foreach </FONT><U><FONT SIZE="-1">symbol
+         list expression</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Sets individual elements of a list to
+         symbol then evaluates an expression containing that symbol.
+         Each element in the list is processed until the end of the
+         list is reached.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(reverse </FONT><U><FONT
+         SIZE="-1">list</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">reverses the order of elements in a
+         list.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(Cons </FONT><U><FONT
+         SIZE="-1">element</FONT></U><FONT SIZE="-1"> </FONT><U><FONT
+         SIZE="-1">list</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Adds a new first element to a list. The
+         element can be any legal data type.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(append </FONT><U><FONT SIZE="-1">list
+         list ...</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Takes any number of lists and combines
+         their elements into one list.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(last </FONT><U><FONT
+         SIZE="-1">list</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Finds the last element of a list.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(length </FONT><U><FONT
+         SIZE="-1">list</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Finds the number of elements in a
+         list.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(member </FONT><U><FONT SIZE="-1">element
+         list</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Finds the remainder of a list starting
+         with </FONT><U><FONT SIZE="-1">element</FONT></U><FONT
+         SIZE="-1">.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=167>
+         <P><FONT SIZE="-1">(nth </FONT><U><FONT SIZE="-1">integer
+         list</FONT></U><FONT SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Finds the element of a list where
+         </FONT><U><FONT SIZE="-1">integer</FONT></U><FONT SIZE="-1">
+         is the number of the desired element within the list. The
+         first item in a list is number 0.</FONT>
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">So far, we have concentrated on the use of lists
+as a means of structuring and building your programs. But lists can
+also be use as repositories for data. You have already seen how
+coordinate list are used to store the x and y coordinate values of a
+point. Lists used for storing data can be much larger than the
+coordinate example. Consider the mdist program you saw in chapter 5.
+This program uses the append function to constantly add values to a
+list. This list is then evaluated to obtain the sum of its contents
+(see figure 9.1).</FONT></P>
+
+<P>&nbsp;
+<HR>
+</P>
+
+<PRE>(Defun C:MDIST (/ dstlst dst)
+(setq dstlst '(+ 0))
+  (while (setq dst (getdist "\nPick point or Return to exit: "))
+         (Setq dstlst (append dstlst (list dst)))
+         (princ (Eval dstlst))
+  )
+)
+<HR></PRE>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 9.1: The Mdist
+program</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">We have an example here of a list being both a
+repository of data and a form or a list that can be evaluated. This
+is accomplished by starting the list with a functions, in this case,
+the plus function. Each time a value is appended to the list, it is
+evaluated to get the sum of the numeric elements of that list.</FONT>
+</P>
+
+<P><FONT SIZE="-1">Suppose your have a list that does not contain a
+function, but you want to apply some function to it. The following
+sections discusses ways you can use the functions listed in table 9.1
+perform computations on lists.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><B><I><FONT
+SIZE="+2"><A NAME="Chapter_9_Getting_data_from_a_list"></A>Getting
+Data from a List</FONT></I></B></P>
+
+<P><FONT SIZE="-1">In the mdist program, a function was applied to a
+list to get the total of all the numbers in that list. Functions like
+plus, minus, multiply and divide accept multiple numeric values for
+arguments. But what if you want to apply a list to a function that
+will only take single atoms for arguments.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_9_Using_simple_lists"></A>Using Simple
+Lists for Data Storage</I></B></P>
+
+<P><FONT SIZE="-1">Mapcar is used where you want to use a list as a
+queue for arguments to a function. It allows you to perform a
+recursive function on a list of items. For example, suppose you want
+the sequential numbering program from chapter 5 to place the numbers
+at points you manually select rather than in a straight line. Figure
+9.2 shows a program that does this:</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<PRE>;Program to write sequential numbers -- Seqrand.lsp
+(defun C:SEQRAND (/ rand currnt ptlst)           
+(setvar "cmdecho" 0)                             ;no echo to prompt
+(setq rand T)                                    ;set up rand
+(setq currnt (getint "\nEnter first number in sequence: "))
+(while rand                                      ;while point is picked
+    (setq rand (getpoint "\nSelect points in sequence: " ));get point
+    (setq ptlst (append ptlst (list rand) ))     ;add point to list
+)
+ (mapcar
+   '(lambda (rand)                               ;define lambda expression
+      (if rand                                   ;if point (rand) exists
+       (progn
+       (command "text" rand "" "" currnt)        ;place number at point rand
+       (setq currnt (1+ currnt))                 ;get next number
+       )
+      )
+    )
+  ptlst                                          ;list supplied to lambda
+ )
+(setvar "cmdecho" 1)                             ;echo to prompt on
+(princ)
+)</PRE>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 9.2: Program to place sequential number
+   in random locations</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">In the C:SEQRAND program, the following while
+expression is used to allow the user to pick random point locations
+for the numbered sequence:</FONT></P>
+
+<BLOCKQUOTE><P><B>(while (not (not rand))</B></P>
+
+<P><B>(setq rand (getpoint "\nSelect points in sequence: " ))</B>
+</P>
+
+<P><B>(setq ptlst (append ptlst (list rand) ))</B></P>
+
+<P><B>)</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This while expression creates the list ptlst
+comprised of points entered by the user. The user see the
+prompt:</FONT></P>
+
+<P><FONT SIZE="-1">Select points in sequence:</FONT></P>
+
+<P><FONT SIZE="-1">each time he or she selects a point. Once the user
+is done, the mapcar expression reads the list of points and applies
+them to a function that enters the sequence of numbers at those
+points:</FONT></P>
+
+<BLOCKQUOTE><P><B>(mapcar</B></P>
+
+<P><B>'(lambda (rand)</B></P>
+
+<P><B>(if (not (not rand))</B></P>
+
+<P><B>(progn</B></P>
+
+<P><B>(command "text" rand "" "" currnt)</B></P>
+
+<P><B>(setq currnt (1+ currnt))</B></P>
+
+<P><B>)</B></P>
+
+<P><B>)</B></P>
+
+<P><B>)</B></P>
+
+<P><B>ptlst</B></P>
+
+<P><B>)</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this set of expressions, mapcar applies the
+elements of the list ptlst to a lambda expression. You may recall
+that a lambda expression is like a function created using defun. The
+difference being that lambda expressions have no name. The lambda
+expression above uses the single argument rand and, using the AutoCAD
+text command, writes the variable currnt to the drawing using rand as
+a coordinate to place the text. The lambda expression also adds 1 to
+the currnt variable increasing the number being added to the drawing
+by 1.</FONT></P>
+
+<P><FONT SIZE="-1">Mapcar takes the list of points ptlst and, one at
+a time, applies each element of the list to the variable rand in the
+lambda expression until all the elements of the list have been
+applied. The if conditional expression is added to the lambda
+expression to check for the end of ptlst.</FONT></P>
+
+<P><FONT SIZE="-1">Mapcar can apply more than one lists to a function
+as shown in the following expression:</FONT></P>
+
+<BLOCKQUOTE><P><B>(mapcar 'setvar</B></P>
+
+<P><B>'("cmdecho" "blipmode" "osnap" "expert")</B></P>
+
+<P><B>'(0 0 512 1)</B></P>
+
+<P><B>)</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here mapcar applies several AutoCAD system
+variables to the setvar function. One element is taken from each list
+and applied to setvar. "Cmdecho" is set to 0, "blipmode is set to 1,
+"osmode" is set to 512, the nearest mode, and "expert" is set to
+1.</FONT></P>
+
+<P><FONT
+SIZE="-1">&nbsp;</FONT><B><I><A NAME="Chapter_9_Evaluating_Data"></A>Evaluating
+Data from an Entire List at Once</I></B></P>
+
+<P><FONT SIZE="-1">Apply is similar to mapcar in that it allows you
+to supply a list as an argument to a function. But rather than
+metering out each item in the list one by one, apply gives the entire
+contents of a list as an argument all at once. As an example, you
+could use apply in the Mdist function to add distances.</FONT></P>
+
+<P>&nbsp;
+<HR>
+</P>
+
+<PRE>;Program to measure non-sequential distances
+(defun MDIST (/ dstlst dst)
+  ;while loop to obtain list of points--------------------------------------
+  (while (setq dst (getdist "\nPick distance or Return to exit: "))
+         (Setq dstlst (append dstlst (list dst)))   ;append new point to list
+         (princ (apply '+ dstlst))                  ;print current total
+  );end while;--------------------------------------------------------------
+);end MDIST<I>
+&nbsp;</I><FONT SIZE="-1">
+&nbsp;<HR></FONT></PRE>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 9.3: The Mdist function
+using the apply function.</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this example, apply is given the list of
+distances dstlst which it applies to the plus function. If you load
+and run this program, it works no differently from the earlier
+version of MDIST.</FONT></P>
+
+<P><FONT
+SIZE="-1">&nbsp;</FONT><B><I><A NAME="Chapter_9_Using_Complex_lists"></A>Using
+Complex Lists to Store Data</I></B></P>
+
+<P><FONT SIZE="-1">In chapter 8, you created an error function that
+reset the osmode system variable when an error occurred. The problem
+with that error function was that it was too specific. It only worked
+for certain conditions namely, to restore the osmode system variable
+to its previous setting. But you can create a function that will help
+you handle system variable settings in a more general way using the
+length function.</FONT></P>
+
+<P><FONT SIZE="-1">The length function allows you to find the length
+of a list. This function is often used in conjunction with the repeat
+function to process a list. The following function converts a list of
+system variables to a list containing both the variable and its
+current setting:</FONT></P>
+
+<BLOCKQUOTE><P><B>(defun GETMODE (mod1)</B></P>
+
+<P><B>(setq *mod2 '())</B></P>
+
+<P><B>(repeat (length mod1)</B></P>
+
+<P><B>(setq *mod2</B></P>
+
+<P><B>(append *mod2</B></P>
+
+<P><B>(list (list (car mod1) (getvar (car mod1))))</B></P>
+
+<P><B>)</B></P>
+
+<P><B>)</B></P>
+
+<P><B>(setq mod1 (cdr mod1)))</B></P>
+
+<P><B>)</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Using this function, you can store the current
+system variable settings in a list. Figure 9.4 shows the C:BREAK2
+program from chapter 8 with modifications to add the getmode
+function.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<PRE><B>;function to save system variable settings---------------------------------- 
+(defun GETMODE (mod1) 
+   (setq *mod2 '())                 ;create global variable to store settings 
+   (repeat (length mod1)            ;find length of variable list and repeat 
+      (setq *mod2                   ;build *mod2 list
+            (append *mod2 
+                (list (list (car mod1) (getvar (car mod1)))) 
+            ) 
+      ) 
+      (setq mod1 (cdr mod1))        ;go to next element in list 
+   );end repeat 
+) 
+ 
+;function to restore system variable settings------------------------------- 
+(defun SETMODE (mod1) 
+   (repeat (length mod1)                    ;find length of list and repeat 
+      (setvar (caar mod1) (cadar mod1))     ;extract setting info and reset 
+      (setq mod1 (cdr mod1))                ;go to next element in list 
+   );end repeat 
+) 
+ 
+;function for error trap ---------------------------------------------------
+(defun *error* (msg) 
+  (setmode *mod2)                           ;reset system variables 
+  (princ msg)                               ;print error message 
+  (princ) 
+) </B>
+ 
+;program to break circle into two arcs-------------------------------------- 
+(defun C:BREAK2 (/ pt1 pt2 pt3 pt4 pt0 ang1 dst1) 
+   <B>(getmode '("osmode" "orthomode" "cmdecho"))         ;saves system vars. 
+   (mapcar 'setvar '("osmode" "orthomode" "cmdecho")   ;set vars. for funct. 
+           '(512 0 0) </B>
+   ) 
+   (setq pt1 (getpoint "\nSelect object: "))           ;get first break point 
+   (setq pt2 (getpoint pt1 "\nEnter second point: "))  ;get second break point 
+   (setvar "osmode" 128)                               ;perpend osnap mode 
+   (Setq pt3 (getpoint pt1 "\nSelect parallel line: "));get 2nd line 
+   (setq ang1 (angle pt1 pt3))                         ;find angle btwn lines 
+   (setq dst1 (distance pt1 pt3))                      ;find dist. btwn lines 
+   (setq pt4 (polar pt2 ang1 dst1))                    ;derive pt4 on 2nd line 
+      (command 
+            "break" pt1 pt2                            ;break 1st line 
+            "break" pt3 pt4                            ;break 2nd line
+            "line" pt1 pt3 ""                          ;close ends of lines
+            "line" pt2 pt4 ""
+      )
+   (setmode *mod2)                                     ;reset system vars.
+) 
+<HR></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 9.4: Revised BREAK2 program</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The following expression has been added to the
+BREAK2 program:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(getmode '("osmode" "orthomode"
+"cmdecho"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, a list of system variables is supplied as an
+argument to the getmode function. The following explains what getmode
+does with this list.</FONT></P>
+
+<P><FONT SIZE="-1">The first expression in getmod creates a list to
+be appended to. The second expression is a recursive one using the
+repeat function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq *mod2 '())</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(repeat (length mod1)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Repeat uses an integer argument to determine the
+number of time it is to repeat the evaluation of its other arguments.
+Here, length is used to find the length of mod1 which is a local
+variable that has the list of system variables passed to it. Length
+finds the number of elements in the list mod1, which in our example
+is 3, and passes that value to the repeat function (see Figure
+9.5).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0905.GIF" WIDTH=624 HEIGHT=224
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 9.5: Using length and repeat in the
+   getmode function</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Repeat then processes the following set of
+expressions 3 times:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq
+*mod2</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(append *mod2 (list (list (car mod1) (getvar
+(car mod1)))))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq mod1 (cdr mod1)))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This set of expressions takes an element of the
+list mod1 and finds the current setting for that element.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(getvar (car mod1))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Then the setting value is combined with the
+setting name to form a two element list:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(list (car mod1) (getvar (car
+mod1)))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This new list is then appended to the list *mod2
+and *mod2 is assigned the value of the new appended list:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq *mod2</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(append *mod2 (list (list (car mod1)(getvar car
+mod1)))))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Finally the first element of mod1 is removed in
+preparation for the next iteration:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq mod1 (cdr mod1)))</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Remember that cdr returns a copy of a list with
+its first element removed. The whole process is then repeated
+again.</FONT></P>
+
+<P><FONT SIZE="-1">When the getmode is done, a global variable called
+*mod2 is created. Mod2 might look like this:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(("osmode" 0)("orthomode"
+1)("cmdecho" 1))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this list, each element is another list that
+contains the mode as its first element and its current setting as its
+second element.</FONT></P>
+
+<P><FONT SIZE="-1">Once the desired settings are saved, you can go on
+to change the settings to suite your program. In the case of the
+C:BREAK2 program, "osmode" is changed to 512, the nearest setting,
+"orthomode" is set to 0, which turns off the orthomode, and "cmdecho"
+is set to 0 which controls command echoing to the prompt line.</FONT>
+</P>
+
+<P><FONT SIZE="-1">When BREAK2 has done its work, you need a way to
+restore your saved settings. The setmode function in figure 9.4 will
+restore the settings saved by the Getmodes function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(Defun setmode (mod1)</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(repeat (length mod1)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setvar (caar mod1)(cadar mod1))</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(setq mod1 (cdr mod1))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This function also uses length and repeat to
+perform a recursion. In this case, the recursive function consist of
+two expressions:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setvar (caar mod1) (cadar
+mod1))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq mod1 (cdr mod1))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first of these expressions takes the first
+element of the list of saved settings then applies its two elements
+to setvar. In our example, the result of this combination looks like
+this:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setvar (caar mod1)(cadar mod1)) =
+(setvar "osmode" 0)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The result is an expression that sets "osmode" to
+0. The next expression removes the first element from the list of
+settings then the processes is repeated.</FONT></P>
+
+<P><FONT SIZE="-1">The setmode function is placed at the end of the
+C:BREAK2 program to reset the variables. It is also placed in the
+*error* function. As long as getmode is used in a function to save
+system variables, The *error* function shown in figure 9.4 will work
+to restore system variables in the event of a canceled AutoLISP
+program. With the addition of the getmode and setmode functions, you
+have a general system for maintaining system variables.</FONT></P>
+
+<P><B><I><A NAME="Chapter_9_Using_lists_for_comparisons"></A>Using
+Lists for Comparisons</I></B></P>
+
+<P><FONT SIZE="-1">Like mapcar, foreach applies individual elements
+of a list to a function. But foreach only accepts one list. Foreach
+is often used to test elements of a list for a particular condition.
+For example, you could test a list of coordinates to sort out those
+above another datum point:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(foreach n</FONT></B></P>
+
+<P><B><FONT SIZE="-1">'((4.00 1.00) (10.09 1.01) (11.96
+6.80)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(7.03 10.38) (2.11 6.79) (4.00
+1.00))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(if (&gt; (cadr n) 2)(Setq newlist (append
+newlist (list n))))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This function simply checks the y value of each
+coordinate against the value 2. If y is greater than 2, the
+coordinate is added to a new list that contains only coordinates
+whose y value is greater than 2.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><B><I><FONT
+SIZE="+2"><A NAME="Chapter_9_Locating_Elements_in_a_list"></A>Locating
+Elements in a List</FONT></I></B></P>
+
+<P><FONT SIZE="-1">You won't always want to use all the elements of a
+list in your programs. In many instances, you will want to obtain a
+specific element from a list. There are two functions, member and
+nth, that can help you find specific elements in a list. </FONT></P>
+
+<P><FONT SIZE="-1">
+<HR>
+</FONT><B><I><FONT SIZE="-1">Note:</FONT></I></B></P>
+
+<P><I><FONT SIZE="-1">In the following discussion, an obsolete
+component of AutoLISP called Atomlist will be discussed. You can
+think of Atomlist as a very big list. Just think of Atomlist as any
+list in which you want to place a marker that you can later refer
+to..
+<HR>
+</FONT></I></P>
+
+<P><B><I><A NAME="Chapter_9_Searching_through_a_list"></A>Searching
+Through Lists</I></B></P>
+
+<P><FONT SIZE="-1">To see how these two functions work, look at a
+program called Clean. Clean is an older program intended for earlier
+versions of AutoCAD that had limited memory resources. The purpose of
+Clean was to remove unused user-defined functions in order to free-up
+memory.</FONT></P>
+
+<P><FONT SIZE="-1">
+<HR>
+</FONT></P>
+
+<PRE>;program to clean symbols and functions from atomlist and close open files
+;-----------------------------------------------------------------------------
+(defun C:CLEAN (/ i item)
+ (setq i 0)                                               ;set up counter
+   ;while not at the end of atomlist do...
+   (while (not (equal (setq item (nth i atomlist)) nil))
+     (if (= (type (eval item)) 'FILE)                     ;if item is a file
+       (close (eval item))                                ;close the file
+     );end IF
+   (setq i (1+ i) )                                       ;add 1 t counter
+   );end WHILE
+ (setq atomlist (member 'C:CLEAN atomlist))               ;redefine atomlist
+'DONE                                                     ;without symbols
+)<FONT
+SIZE="-1">                                                         </FONT>;previous to C:CLEAN
+                                                          ;and print DONE
+<HR></PRE>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 9.6: The CLEAN
+program.</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Before we analyze this program, we must first
+discuss the atomlist. Atomlist was a special list used to store data
+in earlier versions of AutoCAD. It contains the names all of the
+built-in AutoLISP functions. It was also used to store any user
+defined functions and symbols. If you are using Release 11 or
+earlier, you can view its contents by first flipping the screen to
+text mode, then entering:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">!atomlist</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You will get a listing of all the user defined and
+built in AutoLISP functions currently loaded into AutoCAD.</FONT>
+</P>
+
+<P><FONT SIZE="-1">The list contains all of the AutoLISP functions we
+have discussed so far plus a few we have not. If you are using
+Acad.lsp to load some of your own functions, they will also appear at
+the top of the list. Whenever you create a new function or symbol, it
+is added to the beginning of atomlist. If you have an older version
+of AutoCAD, try entering the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq myfunc "mufunc")</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">If you enter </FONT><B><FONT
+SIZE="-1">!atomlist</FONT></B><FONT SIZE="-1">. you will see that
+myfunc is added to the list. The more functions you add, the larger
+atomlist gets and more memory is used to store symbols and
+functions.</FONT></P>
+
+<P><FONT SIZE="-1">If the C:CLEAN function is included in your
+Acad.lsp file, it is also added to the atomlist at startup time.
+C:CLEAN's purpose is twofold. First, it closes any files that may
+have been opened and inadvertently left open. This might occur if the
+open function was used to open an ASCII file and due to a function
+being canceled, the file was never closed. As we mentioned, this can
+cause loss of data to the open file. Second, C:CLEAN clears the
+atomlist of any function that is added after it thereby recapturing
+memory space.</FONT></P>
+
+<P><FONT SIZE="-1">In order to find and close any open files, C:CLEAN
+uses the </FONT><B><FONT SIZE="-1">while</FONT></B><FONT SIZE="-1">
+function in conjunction with the </FONT><B><FONT
+SIZE="-1">if</FONT></B><FONT SIZE="-1"> and </FONT><B><FONT
+SIZE="-1">type</FONT></B><FONT SIZE="-1"> functions. First, a counter
+is set to 0. the symbol i is used as a counting device:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq i 0)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Next, a </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> expression checks to see
+if an item of the atomlist is equal to nil. The nth function is used
+to read each element of atomlist.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(nth i atomlist)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Nths syntax is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(nth [</FONT><U><FONT
+SIZE="-1">integer</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">list</FONT></U><FONT SIZE="-1">])</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">where </FONT><U><FONT
+SIZE="-1">integer</FONT></U><FONT SIZE="-1"> is the numeric position
+of an element in </FONT><U><FONT SIZE="-1">list</FONT></U><FONT
+SIZE="-1">. In C:CLEAN, nth returns the element whose position within
+atomlist is represented by i. The variable i is a counter to which 1
+is added each time the while function loops through the expressions
+it contains. The net result is that each element of the list atomlist
+is compared to nil. While continues to loop through its expressions
+until such a condition is met (see Figure 9.7).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0908.GIF" WIDTH=520 HEIGHT=282
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 9.7: The while loop in
+   C:CLEAN</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Notice that the element returned by nth is
+assigned to the variable item. This allows the next if conditional
+function to test the element to see if it is a file
+descriptor:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(if (= (type (eval item))
+'FILE)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The eval function is used to force an
+evaluation of the variable item to extract its value. Eval can be
+used to find the value of a nested symbol, that is, a symbol whose
+value is also a symbol. Eval is the basic mechanism by which AutoLISP
+evaluates expressions. It is always being applied to expressions by
+AutoLISP. You could think of eval as the opposite of quote.</FONT>
+</P>
+
+<P><FONT SIZE="-1">The type function above returns the data type of
+the value of item. If eval is not used, type would return the data
+type of the symbol item rather than the data type of items value (see
+figure 9.8).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0909.GIF" WIDTH=512 HEIGHT=492
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 9.8: Using eval to force one level of
+   evaluation</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The following table gives a list of the values
+returned by type and their meaning:</FONT></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=118>
+         <P><B>Value</B>
+      </TD><TD>
+         <P><B>Meaning</B>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">REAL</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">real number</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">FILE</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">file descriptor</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">STR</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">string</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">INT</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">integer</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">SYM</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">symbol</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">LIST</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">list and user defined functions</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">SUBR</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">AutoLISP function</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">PICKSET</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">selection set</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">ENAME</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">object name</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=118>
+         <P><FONT SIZE="-1">PAGETB</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">function paging table</FONT>
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">If item turns out to be equal to a file descriptor
+or FILE, then the next line closes that file:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(close (eval item))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><B><I><A NAME="Chapter_9_Using_an_element_of_a_list"></A>Using an
+Element of a List as a Marker</I></B></P>
+
+<P><FONT SIZE="-1">Once C:CLEAN has finished closing any open files,
+then it proceeds to redefine atomlist:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq atomlist (member 'C:CLEAN
+atomlist)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, the function </FONT><U><FONT
+SIZE="-1">member</FONT></U><FONT SIZE="-1"> is used to find a list
+whose elements are all the elements of atomlist beginning with
+C:CLEAN. The expression then assigns that list to atomlist. The
+symbol C:CLEAN acts like a marker within the list telling the member
+function where to begin the list. The net affect is that of clearing
+atomlist of all the symbols and functions that were added to atomlist
+after C:CLEAN.</FONT></P>
+
+<P><FONT SIZE="-1">Members syntax is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(member [</FONT><U><FONT
+SIZE="-1">element</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">list</FONT></U><FONT SIZE="-1">])</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Member returns a list whose elements are the same
+as those of </FONT><U><FONT SIZE="-1">list</FONT></U><FONT SIZE="-1">
+starting with </FONT><U><FONT SIZE="-1">element</FONT></U><FONT
+SIZE="-1">.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><B><I><FONT
+SIZE="+2"><A NAME="Chapter_9_Finding_the_properties"></A>Finding the
+Properties of AutoCAD Objects</FONT></I></B></P>
+
+<P><FONT SIZE="-1">One of the most powerful features of AutoLISP is
+its ability to access the properties of drawing objects. You can find
+properties such as the endpoint coordinates of lines, their layer,
+color and linetypes, and the string value of text. You can also
+directly modify these properties.</FONT></P>
+
+<P><FONT SIZE="-1">Object properties are accessed using two AutoLISP
+data types, object names and selection sets. Object names are similar
+to symbols in that they are a symbolic representation of an object.
+An object name is actually a device used to point to a record in a
+drawing database. This database record holds all the information
+regarding the particular object. Once you knows an object name, you
+can access the information stored in the object's record.</FONT></P>
+
+<P><FONT
+SIZE="-1">&nbsp;</FONT><B><I><A NAME="Chapter_9_Using_Selection_sets"></A>Using
+Selection Sets and Object Names</I></B></P>
+
+<P><FONT SIZE="-1">A selection set is a collection of object names.
+Selection sets can contain just one object name or several. Each name
+in the selection set has a unique number assigned to it from zero to
+1 minus the number of names in the set.</FONT></P>
+
+<P><FONT SIZE="-1">To find out how you access this object
+information, lets look at the C:EDTXT PROGRAM used in chapter
+7.</FONT></P>
+
+<P>&nbsp;
+<HR>
+</P>
+
+<PRE>;function to find text string from text entity-------------------------------
+(defun gettxt ()
+(setvar "osmode" 64)                                ;set osnap to insert
+(setq pt1 (getpoint "\nPick text to edit: "))       ;get point on text
+(Setvar "osmode" 0)                                 ;set osnap back to zero
+(setq oldobj (entget (ssname (ssget pt1) 0) ))      ;get entity zero from prop.
+(setq txtstr (assoc 1 oldobj))                      ;get list containing string
+(cdr txtstr)                                        ;extract string from prop.
+)
+&nbsp;
+;function to update text string of text entity-------------------------------
+(defun revtxt ()
+(setq newtxt (cons 1 newtxt))                       ;create replacement propty.
+(entmod (subst newtxt txtstr oldobj))               ;update database
+)
+&nbsp;
+;program to edit single line of text-----------------------------------------
+(defun C:CHTXT (/ count oldstr newstr osleng otleng oldt old1
+                  old2 newtxt pt1 oldobj txtstr oldtxt)
+(setq count 0)                                      ;setup counter to zero
+(setq oldtxt (gettxt))                              ;get old string from text
+(setq otleng (strlen oldtxt))                       ;find length of old string
+(setq oldstr (getstring T "\nEnter old string "))   ;get string to change
+(Setq newstr (getstring T "\nEnter new string "))   ;get replacement string
+(setq osleng (strlen oldstr))                       ;find length of substring-
+  ;while string to replace is not found, do...       to be replaced
+  (while (and (/= oldstr oldt)(&lt;= count otleng))
+    (setq count (1+ count))                         ;add 1 to counter
+    (setq oldt (substr oldtxt count osleng))        ;get substring to compare
+  );end WHILE
+  ;if counting stops before end of old string is reached...
+  (if (&lt;= count otleng)
+        (progn
+           (setq old1 (substr oldtxt 1 (1- count))) ;get 1st half of old string
+           (setq old2 (substr oldtxt (+ count osleng) otleng));get 2nd half
+           (setq newtxt (strcat old1 newstr old2))  ;combine to make new string
+           (revtxt)                                 ;update drawing
+        )
+        (princ "\nNo matching string found.")       ;else print message
+  );end IF
+(PRINC)
+);END C:EDTXT
+<HR></PRE>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 9.9: The C:EDTXT
+program</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">As you may recall, this program allows you to edit
+a line of text without having to enter the entire line. The fourth
+line in C:EDTXT does the work of actually extracting the text string
+from the database:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq oldtxt (gettxt))</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, the program makes a call to a user defined
+function called gettxt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun gettxt ()</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setvar "osmode" 64)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq pt1 (getpoint "\nPick text to edit:
+"))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(Setvar "osmode" 0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq oldobj (entget (ssname (ssget pt1) 0)
+))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq txtstr (assoc 1 oldobj))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(cdr txtstr)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Gettxt first finds a single point pt1 that locates
+the text to be edited:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setvar "osmode" 64)</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(setq pt1 (getpoint "\nPick text to edit:
+"))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(Setvar "osmode" 0)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Next, the real work of finding the object is done.
+The next line uses several functions to extract the object name from
+the drawing database:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq oldobj (entget (ssname (ssget
+pt1) 0) ))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This innocent looking set of expressions does a
+lot of work. It first creates a selection set of one object:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(ssget pt1)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You may recall from chapter 4 that ssget accepts a
+point location, to find objects for a selection set. If you entered
+the expression above at the command prompt, and pt1 has been
+previously defined as a point nearest an object, you would get the
+name of a selection set. Try the following exercise:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Open an AutoCAD file and place the
+following text in the drawing:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">For want of a battle, the kingdom
+was lost.</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">2. Enter the following expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq pt1 (getpoint "\nPick the
+text: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">3. Use the insert osnap override option from
+either the side or pull down menu and pick the text.</FONT></P>
+
+<P><FONT SIZE="-1">4. Enter the following expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(ssget pt1)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You will get a message that looks similar to the
+following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">&lt;Selection set: 1&gt;</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This is a selection set. The number following the
+colon in the above example would be different depending on whether
+previous selections sets have been created.</FONT></P>
+
+<P><FONT SIZE="-1">5. Once a selection set has been created, ssname
+is used to find the object name. Enter the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(ssname (ssget pt1) 0)</FONT></B>
+</P></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Ssname will return the object name of a single
+object in the selection set. If you enter the expression above, you
+get an object name that looks similar to the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">&lt;Object name:
+600000c8&gt;</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Just as with selection sets, the number that
+follows the colon will different depending on the editing
+session.</FONT></P>
+
+<P><FONT SIZE="-1">The syntax for ssname is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(ssname [</FONT><U><FONT
+SIZE="-1">selection set</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">integer</FONT></U><FONT SIZE="-1">])</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The selection set can be gotten from a symbol
+representing the selection set or directly from the ssget function as
+in our example above. The integer argument tells ssname which object
+to select within the selection set. In our example, there is only one
+object, so we use the integer 0 which represents the first object in
+a selection set. If there were several objects in the selection set,
+say 4, we could use an integer from 0 to 3.</FONT></P>
+
+<P><FONT SIZE="-1">At the next level, the function entget does the
+actual database extraction. Enter the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq oldobj (entget (ssname (ssget
+pt1) 0)))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You will get a list revealing the properties of
+the text.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">((-1 . &lt;Entity name:
+20a0598&gt;) (0 . "TEXT") (5 . "33") (100 . </FONT></B></P>
+
+<P><B><FONT SIZE="-1">"AcDbEntity") (67 . 0) (8 . "0") (100 .
+"AcDbText") (10 -0.147023 2.84992 0.0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(40 . 0.2) (1 . "For want of a battle, the
+kingdom was lost") (50 . 0.0) (41 . </FONT></B></P>
+
+<P><B><FONT SIZE="-1">1.0) (51 . 0.0) (7 . "STANDARD") (71 . 0) (72 .
+0) (11 0.0 0.0 0.0) (210 0.0 </FONT></B></P>
+
+<P><B><FONT SIZE="-1">0.0 1.0) (100 . "AcDbText") (73 .
+0))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This list obtained using entget is called a
+property list. Entgets' syntax is:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;</FONT><B><FONT
+SIZE="-1">(entget [</FONT><U><FONT SIZE="-1">object
+name</FONT></U><FONT SIZE="-1">])</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Entget returns a list containing the
+object's properties. Property lists consists of other lists whose
+first element is an integer code. The code represents a particular
+property like an objects layer, color, linetype or object type.
+Property lists are a class of list called association lists.</FONT>
+</P>
+
+<P><FONT SIZE="-1">You may recall that earlier in this chapter, you
+constructed a list of system variables. that list looked like the
+following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">&nbsp;(("osmode" 0)("orthomode"
+1)("cmdecho" 1))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;This is also an association list. each
+element of the list is a list of two elements, the first of which can
+be considered a keyword.</FONT></P>
+
+<P><FONT SIZE="-1">Each list within an object's property list starts
+with an integer code. That integer code is the key-value to that list
+otherwise known as the group code. The group code is associated with
+a particular property. For example, the group code 1 in associated
+with the string value of a text object. The 10 group code is
+associated with the insertion point of the text. Table 9.2 shows the
+group codes for text and their meaning.</FONT></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=33>
+         <P><FONT SIZE="-1">Code</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Meaning</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>-1
+      </TD><TD>
+         <P>Entity name
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>0
+      </TD><TD>
+         <P>Entity type ("TEXT", "LINE", "ARC", etc.
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>7
+      </TD><TD>
+         <P>Text style
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>8
+      </TD><TD>
+         <P>Layer
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>10
+      </TD><TD>
+         <P>Insertion point
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>11
+      </TD><TD>
+         <P>Center alignment point (for centered text)
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>21
+      </TD><TD>
+         <P>Right alignmenet point (for right-justified text)
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>31
+      </TD><TD>
+         <P>Second alignment point (for fit or aligned text)
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>40
+      </TD><TD>
+         <P>Text height
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>41
+      </TD><TD>
+         <P>X scale factor
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>50
+      </TD><TD>
+         <P>Rotation angle
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>51
+      </TD><TD>
+         <P>Oblique angle
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>71
+      </TD><TD>
+         <P>Text mirror code (2, mirrored in x axis; 4, mirrored in y
+         axis)
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>72
+      </TD><TD>
+         <P>Text alignment code (0, left justified; 1, center at
+         baseline;2, right justified; 3, text uses align option; 4,
+         centered at middle; 5, text uses fit option)
+      </TD></TR>
+   <TR>
+      <TD WIDTH=33>
+         <P>210
+      </TD><TD>
+         <P>3-D extrusion amount in x, y, or z direction
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">If you are familiar with the AutoCAD DXF file
+format and coding system, then these group codes should be familiar.
+Appendix C gives a detailed listing of these codes if you want to
+know more.</FONT></P>
+
+<P><FONT SIZE="-1">Now that our expression has retrieved the property
+list, we need a way to pull the information out of the list. A
+function for this purpose is found in the next line. Enter the
+following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq txtstr (assoc 1
+oldobj))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In the previous expression, the property list is
+assigned to the variable oldobj. In the above expression, we see a
+new function called assoc:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(assoc 1 oldobj)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This expression returns the list:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(1 . "For want of a battle, the
+kingdom was lost")</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Remember that oldobj is the variable for the
+property list of the text you selected earlier.</FONT></P>
+
+<P><FONT SIZE="-1">The Syntax for Assoc is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(assoc [</FONT><U><FONT
+SIZE="-1">key-value</FONT></U><FONT SIZE="-1">] [</FONT><U><FONT
+SIZE="-1">association list</FONT></U><FONT SIZE="-1">])</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Assoc looks through an association list and finds
+the list whose first value is the key-value. It then returns the list
+containing the key-value.</FONT></P>
+
+<P><FONT SIZE="-1">In the case of our property list example, assoc
+looks through the property list oldobj and finds the list whose first
+element is the group code 1 then it returns that list. The list
+returned by assoc is assigned to the symbol txtstr. Finally, cdr is
+applied to txtsrt to obtain the string value of the selected text.
+Enter the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(cdr txtstr)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The string value associated with the group code 1
+is retrieved. Figure 9.10 diagrams the entire operation.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0913.GIF" WIDTH=500 HEIGHT=416
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 9.10: Diagram of property list
+   extraction</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">In summary, to find a particular property of an
+object, you must first create a selection set containing that object
+using ssget, then extract the object name from the selection set
+using ssname, then extract the property list using the object name
+through the function entget. Once you have gotten the property list,
+you can apply assoc to it to get the specific property you want using
+group codes. Finally, cdr can be applied to the singled out propert
+to get the value of the property.</FONT></P>
+
+<P><B><I><A NAME="Chapter_9_Understanding_the_structure"></A>Understanding
+the structure of Property Lists</I></B></P>
+
+<P><FONT SIZE="-1">The first thing you might have notice about the
+property list in the example above is that most of the sublists were
+two element lists with a period separating the elements. This type of
+list is called a dotted pair. It is not a list in the true sense of
+the term because many of the functions used to manipulate lists will
+not work on dotted pairs. For this reason, dotted pairs are usually
+considered a data type in themselves.</FONT></P>
+
+<P><FONT SIZE="-1">You can use car and cdr on dotted pairs just as
+you would on lists. for example, you could enter the
+following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(car '(A . B))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">the symbol A is returned. You can also
+enter:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(cdr '(A . B))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">and the symbol B is returned. Dotted pairs act
+slightly differently from regular lists. If cdr is applied to a
+normal list, as the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(cdr '(A B))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">a list, (B), is returned. But in the case of a
+dotted pair, the second element of the dotted pair is returned by
+itself, not as part of a list.</FONT></P>
+
+<P><FONT SIZE="-1">You can create a dotted pair using the cons
+function. Normally, cons must have two arguments. The first is the
+element to be added to the beginning of a list and the second is the
+list to be added to. Enter the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(cons 'A '(B))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The list (A B) is returned. You could think of
+cons as the opposite of cdr. But if the second argument to cons is
+not a list, then a dotted pair is created. Enter the
+following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(cons 'A 'B)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The dotted pair (A . B) is returned.</FONT></P>
+
+<P><FONT SIZE="-1">Cons and dotted pairs reflect the inner workings
+of AutoLISP and to explain these AutoLISP items thoroughly is beyond
+the scope of this book. At the end of chapter 10, we mention a few
+sources for more information on the general subject of LISP which can
+shed light on Cons and dotted pairs. For now, lets continue by
+looking at a function that allows us to directly modify the AutoCAD
+drawing database.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><B><I><FONT
+SIZE="+2"><A NAME="Chapter_9_Changing_the_Properties"></A>Changing
+the properties of AutoCAD objects</FONT></I></B></P>
+
+<P><FONT SIZE="-1">Now that you have seen how object properties are
+found, it is a short step to actually modifying properties. To update
+an object record in the drawing database, you redefine the objects
+property list then use the function entmod to update the drawing
+database. Looking at the edtxt.lsp file again, we find the revtxt
+function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun revtxt ()</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq newtxt (cons 1 newtxt))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(entmod (subst newtxt txtstr
+oldobj))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first thing revtxt does is use the cons
+function to create a dotted pair using the integer 1 for the first
+element and the string value held by newtxt for the second. Newtxt is
+a string value representing the new text that is to replace the old
+text oldobj. As we mentioned earlier, cons creates a dotted pair when
+both its arguments are atoms. The new dotted pair looks like
+this:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(1 . "For want of a nail, the
+kingdom was lost.")</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Notice that the structure of this list is
+identical to the list oldobj which was retrieved from the text
+property list earlier.</FONT></P>
+
+<P><FONT SIZE="-1">The last line of the revtxt function does two
+things. first it uses the function subst to substitute the value of
+newtxt for the value of txtstr in the property list oldobj:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(subst newtxt txtstr
+oldobj)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Substr requires three arguments. the first is the
+replacement item, the second is the item to be replaced, and the
+third is the list in which the item to be replaced is found. Substr's
+syntax is as follows:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(subst [</FONT><U><FONT
+SIZE="-1">replacing item</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">item to be replaced</FONT></U><FONT
+SIZE="-1">][</FONT><U><FONT SIZE="-1">list containing
+item</FONT></U><FONT SIZE="-1">])</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Subst returns a list with the substitution
+made.</FONT></P>
+
+<P><FONT SIZE="-1">Next, the function entmod updates the drawing
+database. It looks at the object name of the list that is passed to
+it as an argument. This list must be in the form of a property list.
+It then looks in the drawing database for the object name that
+corresponds to the one in the list. When it finds the corresponding
+object in the drawing database, it replaces that database record with
+the information in entmod's property list argument. The user sees the
+result as a new line of text.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><B><I><FONT
+SIZE="+2"><A NAME="Chapter_9_Getting_entity_names"></A>Getting an
+Object Name and Coordinate Together</FONT></I></B></P>
+
+<P><FONT SIZE="-1">In the gettxt function, a function could have been
+used that doesn't require the you obtain a selection set. Entsel will
+find a single object name directly without having to use ssget to
+create a selection set. Since Entsel only allows the user to pick a
+single object, it is best suited where a program or function doesn't
+require multiple selections of objects.</FONT></P>
+
+<P><FONT SIZE="-1">Here is gettxt using entsel:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun gettxt ()</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq oldobj (entget (car (entsel "\nSelect
+object: "))))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq txtstr (assoc 1 oldobj))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(cdr txtstr)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Entsel acts like the get functions by allowing you
+to provide a prompt string. Instead of returning a number, string, or
+point, entsel returns a list of two elements. The first element is an
+object name, and the second is a list of coordinates specifying the
+point picked to select the object:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(&lt;Object name: 60000012&gt; (4.0
+3.0 0.0))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Above is a sample of what is returned by entsel.
+Since our Gettxt function is only concerned with the object name, car
+is used on the value returned from entsel:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(car (entsel "\nSelect object:
+"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This expression replaces the ssget and ssname
+function used previously:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(ssname (ssget pt1) 0)</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Also, since entsel pauses to allow the user to
+select an object, the getpoint expression can be eliminated along
+with the setvar function.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><B><I><FONT
+SIZE="+2"><A NAME="Chapter_9_Conclusion"></A>Conclusion</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">You have seen how lists can be used to manipulate
+data both as forms and as simple lists of information. AutoLISP makes
+no distinction between a list that is an expression to be evaluated
+and a list that is used to store data. Once you understand the
+methods for manipulating list, you can begin to develop some powerful
+programs.</FONT></P>
+
+<P><FONT SIZE="-1">In the next chapter, you will look in more detail
+at how you can access information directly from AutoCAD. You will
+also look at how to access the property of complex objects such as
+blocks an polylines.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+</BODY>
+</HTML>

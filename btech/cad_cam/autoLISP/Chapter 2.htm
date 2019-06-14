@@ -1,0 +1,1161 @@
+<!--This file created 11:35 PM  6/17/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 2: Storing and Running Programs -
+   Copyright &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=57 BOTTOM=624 LEFT=12 RIGHT=703>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252"><META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#008000" VLINK="#800080">
+
+<P><FONT SIZE="-1">&nbsp;</FONT><B><I><FONT
+SIZE="+3"><A NAME="Chapter_2"></A>Chapter 2: Storing and Running
+Programs</FONT></I></B></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD HEIGHT=216>
+         <BLOCKQUOTE><P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Introduction">Introduction</A></FONT>
+         </P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Creating">Creating an
+         AutoLISP Program</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_What">What You
+         need</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Creating_Autolisp_file">Creating
+         an AutoLISP File</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Loading_Autolisp_file">Loading
+         an AutoLISP File</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Running">Running a
+         loaded Program</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Understanding">Understanding
+         How a program Works</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Using_Commands">Using
+         AutoCAD Commands in a Program</A></FONT></BLOCKQUOTE>
+      </TD><TD HEIGHT=216>
+         <BLOCKQUOTE><P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_How_to">How to Create a
+         Program</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Local">Local and Global
+         Variables</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Automatic">Automatic
+         Loading of Programs</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Managing">Managing large
+         Acad.LSP Files</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Using">Using AutoLISP in
+         a Menu</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Using">&nbsp;</A></FONT><FONT
+         SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Using_Script">Using
+         Script files</A></FONT></P>
+         
+         <P><FONT SIZE="-1"
+         COLOR="#FF0000"><A HREF="#Chapter_2_Conclusion">Conclusion</A></FONT>
+         </P>
+         
+         <P>&nbsp;</BLOCKQUOTE>
+      </TD></TR>
+</TABLE></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_2_Introduction"></A>Introduction</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">In the last chapter, you learned how to use the
+interpreter and in the process, you were introduced to some of the
+basic concepts of AutoLISP. You can now enter simple expressions into
+the interpreter to perform specific tasks. But once you exit the
+drawing editor, all of your work in AutoLISP is lost. AutoLISP would
+be difficult to use if there weren't some way of storing your
+functions for later retrieval. It would be especially difficult to
+create complex programs if you could only load them into the
+interpreter from the keyboard one line at a time. In this chapter,
+you will explore the development of programs through the use of
+AutoLISP files and in the process, review the AutoLISP concepts you
+learned in </FONT><FONT
+SIZE="-1"><A HREF="#Chapter_2_Conclusion">chapter 1</A></FONT><FONT
+SIZE="-1">.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT SIZE="+2"><A NAME="Chapter_2_Creating"></A>Creating an
+AutoLISP Program</FONT></I></B></P>
+
+<P><FONT SIZE="-1">Instead of entering all of your functions directly
+into the interpreter, you have the option of writing them in a text
+file outside of AutoCAD. Later, when you want to use your function,
+you can quickly load and run them using the AutoLISP Load function.
+Functions you store and load in this way will act just as if you
+entered them into the interpreter manually. Since you can easily edit
+and review your functions in a word processor, you can begin to
+develop larger, more complex functions and programs.</FONT></P>
+
+<P><B><I><A NAME="Chapter_2_What"></A>What you Need</I></B></P>
+
+<P><FONT SIZE="-1">Before you can create an AutoLISP file, you need a
+word processor that will read and write ASCII files. ASCII stands for
+American Standard Code for Information Interchange. As the name
+implies, ASCII format was created to allow different computing
+systems to exchange data with each other. Most word processors allow
+you to generate files in this format. In this and the preceding
+chapters, whenever we say to open or create an AutoLISP file, we are
+asking you to open an ASCII file using your word processor. You can
+use the Windows Notepad to do most of your AutoLISP work. Most other
+word processors will also save and read ASCII files, usually called
+TXT files in Windows.</FONT></P>
+
+<P><B><I><A NAME="Chapter_2_Creating_Autolisp_file"></A>Creating an
+AutoLISP File</I></B></P>
+
+<P><FONT SIZE="-1">The most common way to store AutoLISP programs is
+to save it as a text file with the extension .lsp. This file should
+contain the same information you would enter through the keyboard
+while using the interpreter interactively. We suggest that you create
+a directory called /LSP in which you can store all of your AutoLISP
+programs. By keeping your programs together in one directory, you are
+able to manage them as their numbers grow.</FONT></P>
+
+<P><FONT SIZE="-1">The program listed in figure 2.1 combines many of
+the concepts you have learned in chapter one into a single AutoLISP
+program. You will create a file containing this program then load and
+run the program into AutoCAD to see how it works. We use the term
+program to describe a function that performs a task when entered at
+the AutoCAD command prompt, even though programs such as the one in
+Figure 2.1 can still be considered functions</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">(defun c:BOX ( / pt1 pt2 pt3 pt4 )
+(setq pt1 (getpoint "Pick first corner: "))
+(setq pt3 (getcorner pt1 "Pick opposite corner: "))
+(setq pt2 (list (car pt3) (cadr pt1)))
+(setq pt4 (list (car pt1) (cadr pt3)))
+(command "line" pt1 pt2 pt3 pt4 "c" )</FONT>
+)</PRE></BLOCKQUOTE>
+
+<P>&nbsp;
+<HR>
+</P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 2.1: A program to draw
+boxes</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">1. Use the Windows notepad to create a new text
+file called Box1.lsp</FONT></P>
+
+<P><FONT SIZE="-1">2. Carefully enter the first line from figure 2.1.
+Or you can simply cut and paste the data from this document into the
+Box1.lsp file.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun C:BOX (/
+   pt1 pt2 pt3 pt4)</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;Be sure you have entered everything exactly
+as shown before you go to the next line. Pay special attention to the
+spaces between elements of the line. Also note the capitalization of
+letters. Capitalization is not particularly important at this point
+however.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;3. Press return to move to the next
+line.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;4. Carefully, enter the second line again
+checking your typing and the spacing between elements before go to
+the next line. Also be sure to use the Shift-Apostrophe key for the
+double quotes, do not use two apostrophes.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;5. Continue entering each line as described
+in the previous steps. When you are done, double check your file for
+spelling errors and make sure the parentheses are balanced. Save and
+exit the </FONT><B><FONT SIZE="-1">Box1.lsp</FONT></B><FONT
+SIZE="-1"> file. You now have a program that you can load and run
+during any AutoCAD editing session.</FONT></P></BLOCKQUOTE>
+
+<P><B><I><A NAME="Chapter_2_Loading_Autolisp_file"></A>Loading an
+AutoLISP file</I></B></P>
+
+<P><FONT SIZE="-1">To load an AutoLISP file you use an AutoLISP
+</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1.Start AutoCAD and create a new file
+called Box1.</FONT></P>
+
+<P><FONT SIZE="-1">2. When you are in the drawing editor, enter the
+following at the command prompt:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(load
+   "box")</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;If the Box.lsp file is in a directory other
+than the current directory, the \lsp directory for example,
+enter</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(load "/lsp/box")</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The box program is now available for you to
+run.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;As you can see, the Load function is used
+like any other AutoLISP function. It is the first element of an
+expression followed by an argument. The single argument to the load
+function is always a string value. Notice that within the string in
+the above example, the forward slash sign is used to designate a
+directory instead of the usual backslash. This is important to keep
+in mind as it is a source of confusion to both novice and experienced
+AutoLISP users. AutoLISP uses the backslash to denote special codes
+within strings. Whenever AutoLISP encounters a backslash within a
+string, it expects a code value to follow. These codes allow you to
+control the display of strings in different ways such as adding a
+carriage return or tab. If you use the backslash to designate
+directories, you must enter it twice as in the following
+example:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(load
+   "\\lsp\\box")</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Once the file is loaded, you will get the
+message:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">C:BOX</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;You may have noticed that Load uses a string
+data type for its argument. Just as with numbers, strings evaluate to
+themselves, so when AutoLISP tries to evaluate "/lsp/box" the result
+is "/lsp/box".</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_2_Running"></A>Running a Loaded
+Program</I></B></P>
+
+<P><FONT SIZE="-1">Once you have loaded the box program, you can run
+it at any time during the current editing session. However, once you
+exit AutoCAD the program is not saved with the file. You must re-load
+the program file in subsequent editing sessions before it can be used
+again. Now try running the program.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;1. First, set the snap mode and
+the dynamic coordinate readout on. </FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;2. Enter the word Box at the command prompt.
+You should get the following prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Pick first corner:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">3. If your screen is in text mode, use the F2 key
+to shift to the graphic screen. Move the cursor so that the
+coordinate readout reads 2.0000,3.0000 and pick that point. The next
+prompt appears:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Pick opposite corner:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">4. Now move your cursor. A window follows the
+motion of your cursor (see figure 2.2). Move the corner of the window
+to the so that the coordinate 8.0000,6.000 is displayed on the
+coordinate readout then pick that point. The box is drawn and the
+Command prompt returns. Figure 2.3 gives you a general description of
+how this box program works.</FONT></P></BLOCKQUOTE>
+
+<P><CENTER><IMG SRC="F0202.GIF" WIDTH=640 HEIGHT=480
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 2.2: The Getcorner window
+   </FONT></I><FONT SIZE="-1">&nbsp;</FONT>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR>
+</DIR>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_2_Understanding"></A>Understanding How a
+Program Works</FONT></I></B></P>
+
+<P><FONT SIZE="-1">Up until now, you have been dealing with very
+simple AutoLISP expressions that perform simple tasks such as adding
+or multiplying numbers or setting system variables. Now that you know
+how to save AutoLISP code in a file, you can begin to create larger
+programs. The box program is really nothing more than a collection of
+expressions that are designed to work together to obtain specific
+results. In this section, we will examine the Box program to see how
+it works.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;The Box program draws the box by first
+obtaining a corner point using Getpoint:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq pt1
+   (getpoint pt1 "Pick first corner: ''))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The user will see only the prompt portion of
+this expression:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Pick first
+   corner:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Next, the opposite corner point is obtained
+using Getcorner (see Figure 2.3).</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq pt3
+   (getcorner pt1 "Pick opposite corner: ''))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Again, the user only sees the prompt
+string:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">Pick opposite corner:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<DIR>
+   <CENTER><IMG SRC="F0203.GIF" WIDTH=688 HEIGHT=318
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER>
+   
+   <P><I><FONT SIZE="-1">Figure 2.3: The workings of the box
+   program</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;You may recall that Getcorner will display a
+window as the user move the cursor. In this box program, this window
+allows the user to visually see the shape of the box before the
+opposite corner is selected (see figure 2.2). Once the second point
+is selected, the Box program uses the point coordinates of the first
+and opposite corners to derive the other two corners of the box. This
+is done by manipulating the known coordinates using Car, Cadr, and
+List (see Figure 2.4).</FONT></P>
+
+<BLOCKQUOTE><BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;</FONT><B><FONT
+SIZE="-1">pt2 (list (car pt3) (cadr pt1)))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">pt4 (list (car pt1) (cadr pt3)))</FONT></B>
+</P></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><CENTER><IMG SRC="F0204A.GIF" WIDTH=688 HEIGHT=290
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<P><CENTER><IMG SRC="F0204B.GIF" WIDTH=688 HEIGHT=290
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 2.4: Using Car, Cadr, and
+List to derive the remaining box corners</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Pt2 is derived by combining the X component
+of Pt3 with the Y component of Pt1. Pt 4 is derived from combining
+the X component of Pt1 with the Y component of Pt3 (see figure
+2.5).</FONT></P>
+
+<P><CENTER><IMG SRC="F0205A.GIF" WIDTH=688 HEIGHT=382
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<P><CENTER><IMG SRC="F0205B.GIF" WIDTH=688 HEIGHT=420
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 2.5: Using Car and Cadr to
+derive Pt2 and Pt4</FONT></I></P></BLOCKQUOTE>
+
+<P><B><I>&nbsp;</I></B></P>
+
+<P><B><I><A NAME="Chapter_2_Using_Commands"></A>Using AutoCAD
+Commands in AutoLISP</I></B></P>
+
+<P><FONT SIZE="-1">The last line in the box program:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(command "line''
+   pt1 pt2 pt3 pt4 "c'')</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;shows you how AutoCAD commands are used in
+an AutoLISP expression (see figure 2.6). Command is an AutoLISP
+function that calls standard AutoCAD commands. The command to be
+called following the Command function is enclosed in quotation marks.
+Anything in quotation marks after the Command function is treated as
+keyboard input. Variables follow, but unlike accessing variables from
+the command prompt, they do not have to be preceded by an exclamation
+point. The C enclosed in quotation marks at the end of the expression
+indicates a Close option for the Line command (see Figure 2.7.</FONT>
+</P>
+
+<P><CENTER><IMG SRC="F0206.GIF" WIDTH=688 HEIGHT=206
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 2.6: Using AutoCAD commands
+in a function.</FONT></I></P>
+
+<BLOCKQUOTE><BLOCKQUOTE><BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT>
+</DIR></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><CENTER><IMG SRC="F0207.GIF" WIDTH=688 HEIGHT=274
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 2.7: Variables help move
+information from one expression to another.</FONT></I></P>
+</BLOCKQUOTE>
+
+<P><B><I>&nbsp;</I></B></P>
+
+<P><B><I><A NAME="Chapter_2_How_to"></A><FONT SIZE="+1">How to Create
+a Program</FONT></I></B></P>
+
+<P><FONT SIZE="-1">The box program is like a collection of
+expressions working together to perform a single task. Each
+individual expression performs some operation who's resulting value
+is passed to the next expression through the use of variables (see
+figure 2.8).&nbsp;</FONT></P>
+
+<P><CENTER><IMG SRC="F0208.GIF" WIDTH=688 HEIGHT=500
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 2.8: Arguments are assigned
+to variables in the function</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The first line in the box program:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun c:BOX (/
+   pt1 pt2 pt3 pt4)</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;ties the collection of expressions that
+follow into a command called Box. Defun is a special function that
+allows you to define other functions. The arguments to defun are
+first the function name, in this case, C:BOX, followed by the
+argument list. The Quote function is automatically applied to the
+first argument. The c: in the name tells AutoLISP that this function
+is to act like an AutoCAD command. This means that if the function
+name is entered at the AutoCAD command prompt, the function will be
+executed as an AutoCAD command. The name following the C: should
+entered in upper case letters. Care should be take not to give your
+functions names reserved for AutoLISP's built in functions and atoms.
+If, for example, you were to give the box function the name setq,
+then the setq function would be replaced by the box function and
+would not work properly.</FONT></P>
+
+<P><FONT SIZE="-1">Table 1.1 shows a list of AutoLISP function names
+that can easily be mistaken for user defined variable names.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P><TABLE BORDER=0 CELLSPACING=1 CELLPADDING=7 WIDTH=638
+HEIGHT=242 bordercolor="#000000">
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">abs</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">if</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">or</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">and</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">length</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">pi</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">angle</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">list</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">read</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">apply</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">load</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">repeat</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">atom</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">member</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">reverse</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">distance</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">nil</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">set</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">eq</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">not</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">t</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">equal</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">nth</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">type</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">fix</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">null</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P><FONT SIZE="-1">while</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="8%">
+         <P><FONT SIZE="-1">float</FONT>
+      </TD><TD VALIGN=top WIDTH="10%">
+         <P><FONT SIZE="-1">open</FONT>
+      </TD><TD VALIGN=top WIDTH="33%">
+         <P>&nbsp;
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT><I><FONT SIZE="-1">Table 1.1 AutoLISP
+function names</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The list that follows the name Box is an argument
+list. An argument list is used for two purposes. First, it is used
+where the function is called from another function to evaluate a set
+of values. For example, you could define a function that adds the
+square of two variables. Try entering the following function directly
+into the AutoLISP interpreter.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun ADSQUARE (x
+   y)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(+ (* x x) (* y y))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;1. Carefully enter the first line. Pay
+special attention to the parentheses and spaces.</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(defun ADSQUARE (x y)</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">2. Once you are sure everything is correct, press
+Return. You will see the following prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">1&gt;</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">This tells you that your expressing is missing one
+closing parenthesis.</FONT></P>
+
+<P><FONT SIZE="-1">3. Enter the rest of the function at the 1&gt;
+prompt again checking your typing before pressing Return.</FONT></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;In this example, the c: is left out of the
+Defun line. By doing this, you create a function that can be used in
+other functions like a subprogram or during an AutoCAD command. We'll
+discuss this item in more detail later. Note that the variables X and
+Y are included in the parentheses after the name of the function,
+ADSQUARE. This is the argument list. To use this function, enter the
+following at the command prompt:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(adsquare 2
+   4)</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">AutoLISP returns 20. The variables X and Y in the
+ADDSQUARE function take on the arguments 2 and 4 in the order they
+are listed. X takes on the value of 2, and Y takes on the value of 4
+(see figure 2.9).</FONT></P>
+
+<P><CENTER><IMG SRC="f0209.gif" WIDTH=342 HEIGHT=453
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 2.9: Arguments are evaluated
+before they are assigned to variables in the function</FONT></I></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Variables can also be used to pass values to the
+function. For example, if you have a variable called A whose value is
+2 and a variable B whose value is 4, you could use A and B in place
+of the 2 and 4. Enter the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq a
+   2)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq b 4)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(adsquare a b)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;AutoLISP returns 20. Remember that AutoLISP
+evaluates the arguments before applying them to the function. This
+rule applies even to functions that you create yourself. In this
+case, the A is evaluated to 2 before it is passed to the X variable B
+is evaluated to 4 before it is passed to the Y variable.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;<A NAME="Chapter_2_Local"></A></FONT></P>
+
+<P><B><I>Local and Global Variables</I></B></P>
+
+<P><FONT SIZE="-1">The second use for the argument list is to
+determine global and local variables. Global variables maintain their
+value even after a function has finished executing. In chapter 1,
+when you assign the value 1.618 to the variable Golden, Golden holds
+that value no matter where it is used. Any function can evaluate
+Golden to get its value, 1.618. Enter the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq golden
+   1.618)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(adsquare 2 golden)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The value of 6.61792 is returned. A local
+variable, on the other hand, holds its value only within the function
+it is found in. For example, the variable X in the Adsquare function
+above holds the value 2 only while the Square function is evaluated.
+Once the function is finished running, X's value of 2 is discarded.
+Enter the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!x</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Nil is returned. The variables A, B, and
+Golden, however, are global and will return a value. Enter the
+following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!golden</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The value 1.618 is returned. This temporary
+assigning of a value to a variable with a function is called
+</FONT><U><FONT SIZE="-1">binding</FONT></U><FONT SIZE="-1">. This
+term should not be confused with the term bound which often refers to
+the general assignment of a value to a variable. In the example of X
+above, we say that a binding is created for the value X within the
+function Adsquare. In order for binding to take place, a variable
+must be used within a function that includes that variable in its
+argument list. Global variables cannot have bindings since they are
+not by their very definition confined to individual functions (see
+figure 2.10).</FONT></P>
+
+<P><CENTER><IMG SRC="F0210.GIF" WIDTH=698 HEIGHT=456
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 2.10: Local and Global
+   variables</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Since an argument list is used for two purposes,
+the forward slash symbol is used to separate variables used locally
+from function arguments to which values are passed when the function
+is called. The variables used to hold the value of arguments are
+listed first. Then a slash is entered, then the list of local
+variables as in the following example:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun square2 (x
+   y / dx dy)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq dx (* x x))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(setq dy (* y y))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(+ dx dy)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;X and Y are variables that will be assigned
+values when the function is called initially, as in the Square
+function given earlier. Dx and Dy, on the other hand, are variables
+assigned values within the function, so they follow the slash sign.
+In either case, the variables are local. Arguments left out of the
+list become global. If, for example, Dy is left out of the argument
+list, it's value will remain in the AutoLISP system memory for as
+long as the current editing session lasts, and can be retrieved
+through evaluation by any other function. However, all of the
+functions and variables you have created in this session will be lost
+as soon as you exit the drawing editor.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;We should mention that you must include a
+space before and after the slash sign in the argument list. If these
+spaces are not present, you will get an error message.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;In both the adsquare and Square2 functions
+above we left out the c:. As we mentioned, this allows the function
+to be used by other functions like a subprogram. You can also use
+functions defined in this way in the middle of other commands by
+entering the name of the function enclosed by parentheses at the
+command prompt. For example, you could define a function that
+converts centimeters to inches. Carefully enter the following
+function:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun CMTOI
+   (cm)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(* cm 0.3937)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Now suppose you started the Insert command
+to insert a symbol file into a drawing. When the prompt</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">X scale factor (1)
+   / Corner / XYZ:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;appears, you could enter</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(cmtoi
+   90)</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;to signify that your symbol is to be given
+the scale of 90 centimeters.</FONT></P>
+
+<P><FONT SIZE="-1">The AutoLISP function Cmtoi will convert the 90 to
+35.433 and enter this value for the X scale factor prompt. This can
+be quite useful where a value conversion or any other type of data
+conversion is wanted.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT SIZE="+2"><A NAME="Chapter_2_Automatic"></A>Automatic
+Loading of Programs</FONT></I></B></P>
+
+<P><FONT SIZE="-1">Eventually, you will find that some of your
+AutoLISP programs are indispensable to your daily work. You can have
+your favorite set of AutoLISP programs automatically load at the
+beginning of every editing session by collecting all of your programs
+into a single file called Acad.lsp. Be sure that Acad.lsp is in your
+AutoCAD directory. By doing this, you don't have to load your
+programs every time you open a new file. AutoCAD will look for
+Acad.LSP when it enters the drawing editor, and if it exists, AutoCAD
+will load it automatically.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Exit AutoCAD and check to see if
+you already have a file called Acad.lsp in your Acad directory. If
+so, rename it to Acadtemp.lsp.</FONT></P>
+
+<P><FONT SIZE="-1">2. Next, rename the Box.lsp file to Acad.lsp.
+Place Acad.lsp in your AutoCAD directory if it isn't there
+already.</FONT></P>
+
+<P><FONT SIZE="-1">3. Start AutoCAD and open any file. When the
+drawing editor loads, notice the following message in the prompt
+area:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Loading acad.lsp...</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Now, the box program is available to you without
+having to manually load it.</FONT></P>
+
+<P><FONT SIZE="-1">Though the Acad.lsp file only contained the box
+program, you could have included several programs and functions in
+that single file. Then, you would have access to several AutoLISP
+programs by loading just one file.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_2_Managing"></A>Managing Large Acad.lsp
+files</I></B></P>
+
+<P><FONT SIZE="-1">As you begin to accumulate more AutoLISP functions
+in your ACAD.lsp file, you will notice that AutoCAD takes longer to
+load them. This delay in loading time can become annoying especially
+when you just want to quickly open a small file to make a few simple
+revisions. Fortunately, there is an alternative method for
+automatically loading programs that can reduce AutoCAD's start-up
+time.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Instead of placing the programs code in
+Acad.lsp, you can use a program that loads and runs the program in
+question. For example, you could have the following line in place of
+the box program in the Acad.lsp file:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun c:BOX ()
+   (load "/lsp/box") (c:box))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;We will call this a box loader function.
+Once the above function is loaded, entering Box at the command prompt
+will start it. This box loader function then loads the real Box
+program which in turn replaces this box loader function. The (c:box)
+in the box loader function is evaluated once the actual box program
+has been loaded thus causing the box program to run. C:BOX is the
+symbol representing the program BOX so when it evaluated, like any
+function, it will run.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;As you can see, this program takes up
+considerably less space that the actual box program and will
+therefore load faster at start-up time. You can have several of these
+loading programs, one for each AutoLISP function or program you wish
+to use on a regular basis. Imagine that you have several programs
+equivalent in size to the box program. the Acad.lsp file might be
+several pages long. A file this size can take 30 seconds to load. If
+you reduce each of those programs to one similar to the box loader
+function above, you substantially reduce loading time. Several pages
+of programs could be reduced to the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun C:PROGM1 ()
+   (load "/lsp/progm1") (C:PROGM1))</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(defun C:PROGM2 () (load "/lsp/progm2")
+   (C:PROGM2))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(defun C:PROGM3 () (load "/lsp/progm3")
+   (C:PROGM3))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(defun C:PROGM4 () (load "/lsp/progm4")
+   (C:PROGM4))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(defun C:PROGM5 () (load "/lsp/progm5")
+   (C:PROGM5))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(defun C:PROGM6 () (load "/lsp/progm6")
+   (C:PROGM6))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(defun C:PROGM7 () (load "/lsp/progm7")
+   (C:PROGM7))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;If you imagine that each of the functions
+being called from the above example is several lines long then you
+can see that as the list of programs in Acad.lsp grows, the more
+space you will save. By setting up your Acad.lsp file in this way,
+you also save memory since functions are loaded only as they are
+called.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;<A NAME="Chapter_2_Using"></A></FONT></P>
+
+<P><B><I><FONT SIZE="+2">Using AutoLISP in a Menu</FONT></I></B></P>
+
+<P><FONT SIZE="-1">There are two reasons why you might write AutoLISP
+code directly into the menu file. The first is to selectively load
+external AutoLISP programs as they are needed. You may have several
+useful but infrequently used programs that take up valuable memory.
+You might prefer not load these programs at startup time. By placing
+them in the menu file, they will only load when they are selected
+from the menu. In fact, this is what the AutoShade and 3dobjects menu
+options do. When you pick Ashade from either the screen or pull down
+menu, and AutoShade is present on your computer, an AutoLISP program
+called Ashade.lsp is loaded.</FONT></P>
+
+<P><FONT SIZE="-1">The code of the program can be present in the menu
+file or you can use a method similar to the one described earlier to
+load external AutoLISP files. However, if you use the menu system to
+load external AutoLISP files, you must a slightly different
+method.</FONT></P>
+
+<P><FONT SIZE="-1">In the example we gave for loading programs from
+external AutoLISP file, the loader program is replaced by the fully
+operational program of the same name. But if you were to place the
+following expression in a menu, the program would load every time the
+menu option was selected.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">[box]^C^C(load
+   "box");box</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;There is nothing wrong with loading the
+program each time it is run but if the AutoLISP file is lengthy, you
+may get tired of waiting for the loading to complete every time you
+select the item from the menu. A better way to load a program from
+the menu is to use the If function as in the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">[box]^C^C(if (not C:box)(load "box")(princ "Box
+   is already loaded. ");box</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this example, we show three new functions, If,
+Not and Princ. The If functions checks to see if certain conditions
+can be met then evaluates an expression depending on the result. The
+If functions expects the first argument to test the condition that is
+to be met while the second argument is the expression to be evaluated
+if the condition is true. A third expression can optionally be added
+for cases where you want an expression to be evaluated when the test
+condition returns nil. The Not function returns a T for true if its
+argument evaluates to nil, otherwise it returns nil (see figure
+2.11).</FONT></P>
+
+<P><CENTER><IMG SRC="F0211.GIF" WIDTH=698 HEIGHT=226
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 2.11: Using the If function</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><FONT SIZE="-1">So, in the menu sample above, if C:BOX does not
+exists, Not will return T for true and the If function evaluates the
+(load "box") expression thereby loading the Box program. If C:BOX has
+already been loaded, then Not function returns nil and box.lsp will
+not be loaded again. Instead, the second argument will be evaluated.
+This expression:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(princ "Box is
+   already loaded. ")</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;simply displays the string:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Box is already
+   loaded.</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;on the command prompt.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;You may have noticed that the If function
+does not conform to the standard rules of evaluation. Where If is
+used, the second or third argument is evaluated depending on the
+value of the first argument.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;The second reason for placing code in the
+menu is speed. Instead of creating a function using Defun, you can
+set up a program to be read and executed line by line. This saves
+time since the interpreter reads and executes each expression of your
+program as they occur in the menu listing instead of reading the
+entire set of expressions then executing the program. Memory is also
+saved since Defun is not used to define a new function. Figure 2.11
+shows a listing of how the box program from chapter 1 would look as a
+menu option.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">[BOX] ^C^C(setvar "menuecho" 1);+
+(setq pt1 (getpoint "Pick first corner: "));\+
+(setq pt3 (getcorner pt1 "Pick opposite corner: "));\+
+(setq pt2 (list (car pt3) (cadr pt1)));+
+(setq pt4 (list (car pt1) (cadr pt3)));+
+line; pt1; pt2; pt3; pt4;C;)</FONT></PRE></BLOCKQUOTE>
+
+<PRE><FONT SIZE="-1"><HR>&nbsp;</FONT></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 2.12: The box program as a menu
+   option</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <U><FONT SIZE="-1">&nbsp;</FONT></U>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><U><FONT SIZE="-1">NOTE that</FONT></U><FONT SIZE="-1"> the Defun
+function is absent from the listing. When the box option is picked
+from the menu, AutoCAD reads the associated text just as it would any
+menu option. Since the text in this case is AutoLISP code, the
+AutoLISP interpreter evaluates each expression as if it were entered
+through the keyboard.</FONT></P>
+
+<P><U><FONT SIZE="-1">NOTE that</FONT></U><FONT SIZE="-1"> the
+semicolon is used to indicate the enter key at the end of each
+expression. A backslash is used to pause for input, just as you would
+have a backslash in other commands that require mouse or keyboard
+input. Also note the use of the plus sign indicating the continuation
+of the menu item. Finally, note that the last line of the menu item
+uses the exclamation point to enter the values of the variables as
+responses to the Line command. The last C is the Close option of the
+Line command. You may have noticed a new expression:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setvar "menuecho"
+   1)</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The Setvar function in the above expression
+does the same thing as the Setvar command in AutoCAD. In this case,
+it sets the menuecho system variable to 1. This setting prevents the
+actual AutoLISP code from being displayed on the command
+prompt.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;1. Using your word processor,
+copy the above listing into a file called Box.mnu, again being
+careful to input the listing exactly as shown above.</FONT></P>
+
+<P><FONT SIZE="-1">2. Get back into the AutoCAD drawing editor then
+use the Menu command to load the Box menu you just created. The
+AutoCAD menu will disappear and will be replaced by the single word
+Box.</FONT></P>
+
+<P><FONT SIZE="-1">3. Pick the Box option from the menu, and you will
+see the prompts you entered when you created the Box menu above. This
+program will work in the same way as the Box.lsp program.</FONT></P>
+
+<P><FONT SIZE="-1">4. To get the AutoCAD menu back, enter the command
+Menu and enter acad at the menu name prompt.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Since Defun is not used in this example, no
+argument list is used. Any variables used in the listing becomes
+global. For this reason, when using menus for AutoLISP programs, it
+especially important to keep track of variable names so they do not
+conflict with other variables from other programs.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT SIZE="+2"><A NAME="Chapter_2_Using_Script"></A>Using
+Script Files</FONT></I></B></P>
+
+<P><FONT SIZE="-1">AutoCAD has a useful feature that allows you to
+write a set of pre-defines sequence of command and responses stored
+as an external text file. This scripting ability is similar to
+writing a macro in the menu file. The main difference between menu
+macros and scripts is that scripts do not allow you to pause for
+input. Once a script is issued, it runs until it is completed. Also,
+unlike menu macros, scripts can exist as independent files that are
+called as they are needed from the command prompt.</FONT></P>
+
+<P><FONT SIZE="-1">Although it is not commonly done, you can put your
+AutoLISP programs in a script file. In fact, you can directly convert
+your AutoLISP program files directly to a script file simply by
+changing the file extension from .LSP to .SCR. To load your programs,
+you would use the AutoCAD Script command instead of the AutoLISP load
+function. There may be times when you want to embed AutoLISP code
+into a script you have written. You can either write the code
+directly into the script file or use the load function to load an
+AutoLISP file from the script.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_2_Conclusion"></A>Conclusion</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">You have been introduced to some new ways of
+getting more usefulness from AutoLISP.</FONT></P>
+
+<BLOCKQUOTE><UL>
+   <LI><FONT SIZE="-1">The function Defun allows you to create
+   programs that can be invoked from the AutoCAD command line.</FONT>
+   
+   <LI><FONT SIZE="-1">Variables can be used to pass information
+   between expressions and functions.</FONT>
+   
+   <LI><FONT SIZE="-1">Functions can be created that can be used to
+   respond to AutoCAD commands.</FONT>
+   
+   <LI><FONT SIZE="-1">Functions and programs can be stored as files
+   on disk to be easily retrieved at a later date.</FONT>
+   
+   <LI><FONT SIZE="-1">Frequently used functions can be stored in a
+   file called Acad.lsp to be loaded automatically.</FONT>
+</UL></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">We encourage you to try creating some simple
+functions and save them to disk. You can start out with the functions
+presented in this chapter or you can try your hand at writing some
+functions on your own. You may also want to try using the menu file
+to store programs or you may want to keep each of your programs as
+separate files and load them as they are needed.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">In the next chapter, you will be introduced to
+some of the ways you can plan, organize and execute a programming
+project.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+</BODY>
+</HTML>

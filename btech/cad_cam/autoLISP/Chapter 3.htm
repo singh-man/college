@@ -1,0 +1,1171 @@
+<!--This file created 11:36 PM  6/17/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 3: Organizing a Program -
+   Copyright &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=79 BOTTOM=624 LEFT=12 RIGHT=736>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252"><META NAME="Template" CONTENT="C:\PROGRAM FILES\MICROSOFT OFFICE\OFFICE\html.dot">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#008000" VLINK="#800080">
+
+<P><B><I><FONT SIZE="+3">Chapter 3: Organizing a
+Program</FONT></I></B></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD>
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_3_Introduction">Introduction</A></FONT>
+         </P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_3_Looking_at">Looking
+         at a Programs Design</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_3_Outlining">Outlining
+         your Programming Project</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_3_Using_Functions">Using
+         Functions</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_3_Adding_Function">Adding a
+         Function</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_3_Reusing_Function">Reusing a
+         Function</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_3_Creating_3dbox">Creating a 3D
+         Box program</A></FONT></P></BLOCKQUOTE>
+         
+         <P>&nbsp;
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_3_Creating_wedge">Creating a 3D
+         Wedge Program</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_3_Making_your">Making
+         Your Code More Readable</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_3_Using_Pretty">Using
+         Prettyprint</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_3_Using_Comments">Using
+         Comments</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_3_Using_Captials">Using
+         Capital and Lower Case Letters</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_3_Dynamic">Dynamic
+         Scoping</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_3_Conclusion">Conclusion</A></FONT>
+         </P></BLOCKQUOTE>
+         
+         <P>&nbsp;
+      </TD></TR>
+</TABLE></P>
+
+<P><B><I><A NAME="Chapter_3_Introduction"></A><FONT
+SIZE="+2">Introduction</FONT></I></B></P>
+
+<P><FONT SIZE="-1">When you write a program, you are actually setting
+out to solve a problem. It is often helpful to develop a plan of how
+you want to solve your problem. The plan may need revisions along the
+way, but at least it gives you a framework out of which you can get
+both an overall and detailed understanding of the problem you are
+trying to solve. Often the most monumental problem can be broken into
+parts that can be easily dealt with.</FONT></P>
+
+<P><FONT SIZE="-1">By taking some time to analyze your goals and
+writing down some preliminary plans, you can shorten your program
+development time considerably. In this chapter we will discuss some
+methods for planning your programming efforts and along the way, you
+will get a more detailed look at how AutoLISP works.</FONT></P>
+
+<P><B><I><FONT SIZE="+2"><A NAME="Chapter_3_Looking_at"></A>Looking
+at a Programs Design</FONT></I></B></P>
+
+<P><FONT SIZE="-1">As simple as the box.lsp program is, it follows
+some basic steps in its design. These steps are as follows:</FONT>
+</P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Establish the name of the program
+or function</FONT></P>
+
+<P><FONT SIZE="-1">2. Obtain information by prompting the user</FONT>
+</P>
+
+<P><FONT SIZE="-1">3. process the information</FONT></P>
+
+<P><FONT SIZE="-1">4. Produce the output</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Lets look at a breakdown of the program to
+see these steps more clearly. The first line defines the program by
+giving it a name and listing the variables it is to use.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">&nbsp;(defun c:box (/dx dy pt1 pt2 pt3
+   pt4)</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The second and third line of the program
+obtain the minimum information needed to define the box.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq pt1
+   (getpoint "Pick first corner: "))</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq pt3 (getcorner "Pick opposite corner:
+   "))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The fourth, fifth, and sixth lines process
+the information to find the other two points needed to draw the
+box.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq pt2 (list
+   (car pt3) (cadr pt1)))</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq pt4 (list (car pt1) (cadr
+   pt3)))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The last line draws the box in the drawing
+editor.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(command "line''
+   pt1 pt2 pt3 pt4 "c'' )</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;This four step process can be applied to
+nearly every program you produce.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;You should also consider how standard
+AutoCAD commands work. A program that has an unusual way of prompting
+for information will seem jarring and unfamiliar to the user. By
+designing your prompts and prompt sequence to match closely those of
+AutoCAD's, your programs will seem more familiar and therefore easier
+to use. For example, when a command requires editing of objects, you
+are first prompted to select the objects to be edited. So when you
+design a program that performs some editing function, you may want to
+follow AutoCAD's lead and have your program select objects first (we
+will cover functions that allow you to select objects later in this
+book).</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_3_Outlining"></A>Outlining Your Programming
+Project</I></B></P>
+
+<P><FONT SIZE="-1">But before you get to actual writing of code, you
+will want to chart a path describing what your program is to do. The
+box program might be planned as the following sequence of
+statements:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Get the location of one corner of
+the box. Save that location as a variable called pt1.</FONT></P>
+
+<P><FONT SIZE="-1">2. Get the location of the other corner of the
+box. Save that location as a variable called pt3.</FONT></P>
+
+<P><FONT SIZE="-1">3. calculate the other two corners by using
+information about the known corner locations pt1 and pt3.</FONT></P>
+
+<P><FONT SIZE="-1">4. Draw the box</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The above list outlines the procedures
+needed to accomplish your task. This type of list is often called
+</FONT><U><FONT SIZE="-1">Pseudocode</FONT></U><FONT SIZE="-1">. It
+is a plain language description of the code your program is to
+follow. It acts like an outline of your programs code. You could even
+incorporate your pseudocode as comments to the actual code of the
+program. Just as with an outline, you may have to go through several
+iterations of lists like this before actually hitting on one that
+seem workable.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Along with the pseudocode of a program, you
+may also want to sketch out what your program is supposed to do,
+especially if your program is performing some graphic manipulation.
+Figure 3.1 shows a sketch done as an aid to developing the box
+program.</FONT></P>
+
+<P><I><FONT SIZE="-1">&nbsp;</FONT></I></P>
+
+<P><I><FONT SIZE="-1">&nbsp;<IMG SRC="F0301.GIF" WIDTH=706 HEIGHT=640
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></I>
+</P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.1: Sample sketch used to develop
+   box.lsp</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_3_Using_Functions"></A>Using
+Functions</FONT></I></B></P>
+
+<P><FONT SIZE="-1">We have broken the box program down conceptually
+into three processes. We can also break it down physically by turning
+each process into a function as in the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun getinfo
+   ()</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq pt1 (getpoint "Pick first corner:
+   "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(setq pt3 (getcorner pt1 "Pick opposite
+   corner: "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(defun procinfo ()</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(setq pt2 (list (car pt3) (cadr
+   pt1)))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(setq pt4 (list (car pt1) (cadr
+   pt3)))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(defun output ()</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(command "line'' pt1 pt2 pt3 pt4 "c''
+   )</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You now have three functions that can be called
+independently. We now need a way to tie these functions together. We
+can write a main program that does just that:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(defun C:BOX1 (/
+   pt1 pt2 pt3 pt4)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(getinfo)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(procinfo)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(output)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Let's see how this new version of the Box drawing
+program works.</FONT></P>
+
+<P><FONT SIZE="-1">1. Open a new AutoLISP file called
+box1.lsp.</FONT></P>
+
+<P><FONT SIZE="-1">2. Enter the above three functions, Getinfo,
+Procinfo, and output, along with the new box program. Your file
+should look like Figure 3.2.</FONT></P>
+
+<P><FONT SIZE="-1">3. Open a new AutoCAD file called chapt3= and load
+the Box1.lsp file.</FONT></P>
+
+<P><FONT SIZE="-1">4. Run the C:BOX1 program. You will see that it
+acts no differently from the first box program in chapter 1.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT FACE="Courier New">(defun getinfo ()
+(setq pt1 (getpoint "Pick first corner: "))
+(setq pt3 (getcorner pt1 "Pick opposite corner: "))
+)
+&nbsp;
+(defun procinfo ()
+(setq pt2 (list (car pt3) (cadr pt1)))
+(setq pt4 (list (car pt1) (cadr pt3)))
+)
+&nbsp;
+(defun output ()
+(command "pline" pt1 pt2 pt3 pt4 "c" )
+)
+&nbsp;</FONT><B><FONT FACE="Courier New">
+(defun C:BOX1 (/ pt1 pt2 pt3 pt4)
+(getinfo)
+(procinfo)
+(output)
+)</FONT></B></PRE></BLOCKQUOTE>
+
+<P><I><FONT SIZE="-1">
+<HR>
+&nbsp;</FONT></I></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.2: The contents of box1.lsp</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The C:Box1 program listed above acts as a sort of
+master organizer that evaluates each of the three functions, getinfo,
+procinfo, and output, as they are needed. This modular approach to
+programming has several advantages.</FONT></P>
+
+<P><FONT SIZE="-1">First, since each function exists independently,
+they can be used by other programs thereby reducing the amount of
+overall code needed to run your system. Though in the above example,
+we actually increased the size of the Box program, as you increase
+the number of program you use, you will find that you can use
+functions from this program in other programs. Functions you write in
+this way can serve as tools in building other programs.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Second, while writing programs, you can more
+easily locate bugs since they can be localized within one function or
+another. Whenever AutoCAD encounters an error, it displays an error
+message along with the offending expression.</FONT></P>
+
+<P><FONT SIZE="-1">Third, smaller groups of code are more manageable
+making your problem solving task seem less intimidating. The actual
+Box program represents the problem in general terms while the
+functions take care of the details. You can get a clearer idea of how
+your programs work because clarity is built into the program by
+virtue of this modular structure.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Finally, features can be added and modified
+more easily by "plugging" other functions either into the main
+program or into the individual functions that make up the
+program.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_3_Adding_Function"></A>Adding a
+Function</FONT></I></B></P>
+
+<P><FONT SIZE="-1">As great a program AutoCAD is, it does have some
+glaring shortcomings. One is the fact that it does not dynamically
+display relative X and Y coordinates. It does display relative polar
+coordinates dynamically, but often, it is helpful to see distances in
+relative X and Y coordinates. One example where this would be useful
+is in the creation of floor plans where a dynamic reading of relative
+X and Y coordinates could help you size rooms in a building. It would
+be also helpful if this dynamic readout would display the rooms area
+as the cursor moved. Figure 3.3 Shows a function that displays
+relative X and Y coordinates in the status line.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">(defun RXY (/ pt lt x last pick lpt1)
+(if (not pt1)(setq lpt1 (getvar "lastpoint"))(setq lpt1 pt1))
+   (while (/= pick t)
+    (setq pt (cadr (setq lt (grread t))))
+     (if (= (car lt) 5)(progn
+      (setq x (strcat
+         (rtos (- (car pt) (car lpt1))) " x "
+         (rtos (- (cadr pt) (cadr lpt1))) " SI= "
+         (rtos (*(- (car pt) (car lpt1))
+                 (- (cadr pt) (cadr lpt1))
+                )
+          2 2)
+             )
+      )
+        (grtext -2 x)
+      )
+     )
+     (setq pick (= 3 (car lt)))
+   )
+(cadr lt)
+)</FONT></PRE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1" FACE="Courier New">
+<HR>
+&nbsp;</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.3: The RXY function</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Exit AutoCAD temporarily either by
+using the AutoCAD Shell command or by using the End command to exit
+AutoCAD entirely.</FONT></P>
+
+<P><FONT SIZE="-1">2. Open an AutoLISP file called Rxy.lsp and copy
+the program listed in figure 3.4. Check your file carefully against
+the listing to be sure it is correct.</FONT></P>
+
+<P><FONT SIZE="-1">3. Return to the Chapt3 AutoCAD file.</FONT></P>
+
+<P><FONT SIZE="-1">4. Turn on the snap and dynamic coordinate
+readout.</FONT></P>
+
+<P><FONT SIZE="-1">5. Load Rxy.LSP then start the line
+command.</FONT></P>
+
+<P><FONT SIZE="-1">6. At the First point prompt, pick the coordinate
+2,2 then, at the next point prompt, enter the following:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(rxy)</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">Notice how the coordinate readout now dynamically
+displays the relative XY coordinates from the first point you
+picked.</FONT></P>
+
+<P><FONT SIZE="-1">7. Move the cursor until the coordinate readout
+lists 6.0000,7.0000 then pick that point. A line is draw with a
+displacement from the first point of 6,7.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;We won't go into a detailed explanation of
+this function quite yet. Imagine, however, that you have just
+finished writing and debugging this function independent of the box
+program and you want to add it permanently to the box program.</FONT>
+</P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Exit AutoCAD temporarily either by
+using the AutoCAD Shell command or by using the End command to exit
+AutoCAD entirely.</FONT></P>
+
+<P><FONT SIZE="-1">2. Open the box1.lsp file and change the Getinfo
+function to the following:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(defun getinfo ()</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq pt1 (getpoint "Pick first corner:
+   "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(princ "Pick opposite corner: ")</FONT></B>
+   </P>
+   
+   <P><B><FONT SIZE="-1">(setq pt3 (rxy))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;Your new Box1.lsp file should look like
+figure 3.4. We have replaced the expression that obtains PT3 with two
+lines, one that displays a prompt:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(princ "Pick
+   opposite corner: ")</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;and another that uses the RXY function to
+obtain the location of PT3:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">&nbsp;</FONT>(setq pt3 (rxy))</B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Now when you use the box program, the width
+and height of the box along with its area are displayed on the status
+prompt.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;3. Return to the </FONT><B><FONT
+SIZE="-1">Chapt3</FONT></B><FONT SIZE="-1"> file.</FONT></P>
+
+<P><FONT SIZE="-1">4. Load the Rxy.lsp and Box1.lsp files.</FONT>
+</P>
+
+<P><FONT SIZE="-1">5. Run the C:BOX1 program by entering box1 at the
+command prompt.</FONT></P>
+
+<P><FONT SIZE="-1">6. Make sure the Snap mode and Dynamic coordinate
+readout are both on.</FONT></P>
+
+<P><FONT SIZE="-1">7. At the Pick first corner prompt, pick the
+coordinate 2,3.</FONT></P>
+
+<P><FONT SIZE="-1">8. At the Opposite corner prompt, move the cursor
+and note how the coordinate readout responds. If you move the cursor
+to the first point you picked, the coordinate readout will list 0,0
+telling you that you are a relative distance of 0,0 from the first
+corner.</FONT></P>
+
+<P><FONT SIZE="-1">9. Now move the cursor until the coordinate
+readout lists 5.0000,5.0000 then pick that point. You have drawn a
+box exactly 5 units in the x axis by 5 units in the y axis.</FONT>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT FACE="Courier New">(defun getinfo ()
+(setq pt1 (getpoint "Pick first corner: "))</FONT><B><FONT
+FACE="Courier New">
+(princ "Pick opposite corner: ")
+(setq pt3 (rxy))</FONT></B><FONT FACE="Courier New">
+)
+&nbsp;
+(defun procinfo ()
+(setq pt2 (list (car pt3) (cadr pt1)))
+(setq pt4 (list (car pt1) (cadr pt3)))
+)
+&nbsp;
+(defun output ()
+(command "pline" pt1 pt2 pt3 pt4 "c" )
+)
+&nbsp;
+(defun C:BOX1 (/ pt1 pt2 pt3 pt4)
+(getinfo)
+(procinfo)
+(output)
+)
+&nbsp;</FONT></PRE></BLOCKQUOTE>
+
+<PRE><FONT FACE="Courier New"><HR>&nbsp;</FONT><FONT
+SIZE="-1">&nbsp;</FONT></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.4: The revised Box1.lsp
+   file</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><FONT SIZE="-1">In the above exercise, after you pick the first
+corner of the box, the window no longer appears. Instead, the status
+line changes to display the height and width of you box dynamically
+as you move the cursor. It also displays the square inch area of that
+height and width. By altering a function of the main C:BOX1 program,
+you have added a new features to it. Of course, you had to do the
+work of creating Rxy.lsp but Rxy.lsp can also be used to dynamically
+display relative X Y coordinates in any command that reads point
+values.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_3_Reusing_Function"></A>Reusing
+Functions</FONT></I></B></P>
+
+<P><FONT SIZE="-1">You have seen that by breaking the box program
+into independent functions, you can add other functions to your
+program to alter the way the program works. In the following section,
+you will create two more programs, one to draw a 3D rectangle, and
+one to draw a wedge, using those same functions from the box
+program.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_3_Creating_3dbox"></A>Creating an 3D Box
+program</I></B></P>
+
+<P><FONT SIZE="-1">To create a 3D box from a rectangle, all you
+really need to do is extrude your rectangle in the Z axis then add a
+3dface to the top and bottom of the box. Extruding the box can be
+accomplished using the Change command. Figure 3.5 shows how this
+would be done with standard AutoCAD commands.</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0306.GIF" WIDTH=698 HEIGHT=469
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 3.5: Drawing a
+three-dimensional box manually</FONT></I></P>
+
+<P><I><FONT SIZE="-1">&nbsp;</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Your box program also needs a way to prompt the
+user for a height. We can accomplish these things by creating a
+modified version of the C:BOX1 main program. Figure 3.6 shows such a
+program.</FONT></P>
+
+<PRE><FONT FACE="Courier New">&nbsp;<HR></FONT></PRE>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">(defun C:3DBOX (/ pt1 pt2 pt3 pt4 h)
+(getinfo)
+(setq h (getreal "Enter height of box: "))
+(procinfo)
+(output)
+(command "change" "L" "" "P" "th" h ""
+         "3dface" pt1 pt2 pt3 pt4 ""
+         "3dface" ".xy" pt1 h ".xy" pt2 h
+         ".xy" pt3 h ".xy" pt4 h ""
+)
+)</FONT><FONT SIZE="-1">&nbsp;</FONT></PRE></BLOCKQUOTE>
+
+<PRE><FONT SIZE="-1"><HR></FONT></PRE>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 3.6: A program to draw a 3D
+box.</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">In the following exercise, you will add the 3D box
+program to the Box1.lsp file then run C:3DBOX.</FONT></P>
+
+<P><FONT SIZE="-1">1. Exit AutoCAD temporarily either by using the
+AutoCAD Shell command or by using the End command to exit AutoCAD
+entirely.</FONT></P>
+
+<P><FONT SIZE="-1">2. Open the box1.lsp file again and add the
+program listed in figure 3.6 to the file. Your Box1.lsp file should
+look like figure 3.7.</FONT></P>
+
+<P><FONT SIZE="-1">3. Return to the Chapt3 AutoCAD file.</FONT></P>
+
+<P><FONT SIZE="-1">4. Load Box1.lsp again. If you had to Exit AutoCAD
+to edit Box1.lsp, Load Rxy.lsp also.</FONT></P>
+
+<P><FONT SIZE="-1">5. Start the C:3DBOX program by entering 3dbox at
+the command prompt.</FONT></P>
+
+<P><FONT SIZE="-1">6. At the Pick first corner prompt, pick a point
+near the coordinate 2,3.</FONT></P>
+
+<P><FONT SIZE="-1">7. At the Pick opposite corner prompt, move the
+cursor until the coordinate readout lists 7.0000,5.0000 then pick
+that point.</FONT></P>
+
+<P><FONT SIZE="-1">8. At the Enter height prompt, enter 6. A box
+appears.</FONT></P>
+
+<P><FONT SIZE="-1">9. Issue the Vpoint command and at the
+prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Rotate/&lt;View point&gt;
+   &lt;0.0000,0.0000,1.0000&gt;:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">10. Enter </FONT><B><FONT
+SIZE="-1">-1,-1,1.</FONT></B><FONT SIZE="-1"> Now you can see that
+the box is actually a 3d box.</FONT></P>
+
+<P><FONT SIZE="-1">11. Issue the Hide command. The box appears as a
+solid object.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT FACE="Courier New">(defun getinfo ()
+(setq pt1 (getpoint "Pick first corner: "))
+(princ "Pick opposite corner: ")
+(setq pt3 (rxy))
+)
+&nbsp;
+(defun procinfo ()
+(setq pt2 (list (car pt3) (cadr pt1)))
+(setq pt4 (list (car pt1) (cadr pt3)))
+)
+&nbsp;
+(defun output ()
+(command "pline" pt1 pt2 pt3 pt4 "c" )
+)
+&nbsp;
+(defun C:BOX1 (/ pt1 pt2 pt3 pt4)
+(getinfo)
+(procinfo)
+(output)
+)
+&nbsp;</FONT><B><FONT FACE="Courier New">
+(defun C:3DBOX (/ pt1 pt2 pt3 pt4 h)
+(getinfo)
+(setq h (getreal "Enter height of box: "))
+(procinfo)
+(output)
+(command "change" "L" "" "P" "th" h ""
+         "3dface" pt1 pt2 pt3 pt4 ""
+         "3dface" ".xy" pt1 h ".xy" pt2 h
+         ".xy" pt3 h ".xy" pt4 h ""
+)
+)</FONT><FONT SIZE="-1">&nbsp;</FONT></B></PRE></BLOCKQUOTE>
+
+<P><B><FONT SIZE="-1">
+<HR>
+</FONT></B></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.7: The Box1.lsp file with the C:3DBOX
+   program added.</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><FONT SIZE="-1">In the C:3DBOX program, a line is added to obtain
+height information.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="+1">&nbsp;(setq h (getreal "Enter
+height of box: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;In most cases, it is impractical to try to
+enter a 3D point value using a cursor, though it can be done. We use
+the Getreal function here to allow the input of a real value for the
+height since this is the simplest route to obtain the height
+information.</FONT></P>
+
+<P><FONT SIZE="-1">To actually draw the box, other AutoCAD commands
+have been added to give the box a third dimension:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="+1">&nbsp;</FONT><B><FONT
+SIZE="+1">(command "change" "L" "" "P" "th" h ""</FONT></B></P>
+
+<P><B><FONT SIZE="+1">"3dface" pt1 pt2 pt3 pt4 ""</FONT></B></P>
+
+<P><B><FONT SIZE="+1">"3dface" ".xy" pt1 h ".xy" pt2 h</FONT></B>
+</P>
+
+<P><B><FONT SIZE="+1">".xy" pt3 h ".xy" pt4 h ""</FONT></B></P>
+
+<P><B><FONT SIZE="+1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This expression issues several AutoCAD commands to
+turn the simple rectangle drawn by the Output function into a 3
+dimensional box. the first line changes the thickness of the box
+previously drawn by the Output function. The second line draws a
+3dface at the base of the box to close the bottom of the box. The
+third and fourth lines draw a 3dface at the top of the box by using
+the .xy point filter to designate the x and y coordinate of each
+corner, then entering the Z coordinate using the H variable.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;<IMG SRC="F0307.GIF" WIDTH=706 HEIGHT=640
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.8: A 3D box using the C:3DBOX
+   program</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">You may have noticed that although you added the
+program C:3DBOX to the Box1.lsp file, you still called up the program
+by entering its name, 3DBOX. We should emphasize here that AutoLISP
+files are only use as the vessel to hold your program code. AutoLISP
+makes no connection between the program name and the name of the file
+that holds the program. You could have called Box1.lsp by another
+name like Myprogm.lsp or Mybox.lsp, and the programs would still run
+the same. Of course, you would have to give the appropriate name when
+loading the file.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_3_Creating_wedge"></A>Creating a 3D Wedge
+Program</I></B></P>
+
+<P><FONT SIZE="-1">Let's create a new program that draws a wedge
+shape based on similar information given for the 3d box. Figure 3.9
+shows how you might draw a wedge based on the rectangle drawn from
+the box program.</FONT></P>
+
+<PRE><FONT SIZE="+1"><IMG SRC="F0309.GIF" WIDTH=706 HEIGHT=640
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.9: A program to draw a 3D
+   wedge</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The procedure outlined in Figure 3.9 was converted
+into the following AutoLISP program. &nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE>(defun C:3DWEDGE (/  pt1 pt2 pt3 pt4 h)
+  (getinfo)
+  (setq h (getreal "Enter height of wedge: "))
+  (procinfo)
+  (output)
+    (command "3dface" pt1 pt4 ".xy" pt4 h ".xy" pt1 h pt2 pt3 ""
+             "3dface" pt1 pt2 ".xy" pt1 h pt1 ""
+             "copy" "L" "" pt1 pt4
+    )
+)</PRE></BLOCKQUOTE>
+
+<PRE><HR></PRE>
+
+<P>Try the following exercise to see how it works.</P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Exit AutoCAD temporarily either by
+using the AutoCAD Shell command or by using the End command to exit
+AutoCAD entirely.</FONT></P>
+
+<P><FONT SIZE="-1">2. Open the box1.lsp file again and add the
+program listed above to the file.</FONT></P>
+
+<P><FONT SIZE="-1">3. Return to the Chapt3 AutoCAD file.</FONT></P>
+
+<P><FONT SIZE="-1">4. Load Box1.lsp again. If you had to Exit AutoCAD
+to edit Box1.lsp, Load Rxy.lsp also.</FONT></P>
+
+<P><FONT SIZE="-1">5. Erase the box currently on the screen.</FONT>
+</P>
+
+<P><FONT SIZE="-1">6. Start the C:3DWEDGE program by entering 3dwedge
+at the command prompt.</FONT></P>
+
+<P><FONT SIZE="-1">7. At the Pick first corner prompt, pick a point
+at the coordinate 2,3.</FONT></P>
+
+<P><FONT SIZE="-1">8. At the Pick opposite corner prompt, pick a
+point so the wedge's base is 7 units wide by 5 units wide.</FONT>
+</P>
+
+<P><FONT SIZE="-1">9. At the Enter height prompt, enter 6. A wedge
+appears.</FONT></P>
+
+<P><FONT SIZE="-1">10. Issue the hide command. The wedge appears as a
+solid object.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This Wedge program is nearly identical to the
+C:3DBOX program with some changes to the last expression.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P>&nbsp;<B>(command "3dface" pt1 pt4 ".xy" pt4 h ".xy"
+pt1 h pt2 pt3 ""</B></P>
+
+<P><B>"3dface" pt1 pt2 ".xy" pt1 h pt1 ""</B></P>
+
+<P><B>"copy" "L" "" pt1 pt3</B></P>
+
+<P><B>)</B></P></BLOCKQUOTE>
+
+<PRE>&nbsp;</PRE>
+
+<P><FONT SIZE="-1">The first line of this expression draws a 3d face
+on the top and vertical face of the wedge. It does this by using
+AutoCAD's .xy point filter to locate points in the Z coordinate. The
+second line draws a 3dface on the triangular side of the wedge again
+using the .xy point filter. The last line copies the triangular face
+to the opposite side of the wedge. Figure 3.10 shows the entire
+process.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;<IMG SRC="F0310.GIF" WIDTH=706 HEIGHT=640
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.10: Box1.lsp with the C:3DWEDGE
+   program added</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Now you have three programs which use as their
+basic building blocks the three functions derived from your original
+Box program. You also have a function, rxy, which can be used
+independently to dynamically display relative x y coordinates.</FONT>
+</P>
+
+<P><B><I><FONT SIZE="+2"><A NAME="Chapter_3_Making_your"></A>Making
+Your Code More Readable</FONT></I></B></P>
+
+<P><FONT SIZE="-1">The box program is quite short and simple. As your
+programs grow in size and complexity, however, you will find that it
+becomes more and more difficult to read. Breaking the program down
+into modules help to clarify your code. There are other steps you can
+take to help keep your code readable.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_3_Using_Pretty"></A>Using
+Prettyprint</I></B></P>
+
+<P><FONT SIZE="-1">The term Prettyprint is used to describe a way to
+format your code to make it readable. Indents are used to offset
+portions of code to help the code's readability. Figure 3.12 shows
+three examples of the C:3DBOX program. The first example is arranged
+randomly. The second lists each expression as a line while the third
+makes use of prettyprint to organize the code visually.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">(defun C:3DBOX (/ pt1 pt2 pt3 pt4 h) (getinfo)
+(setq h (getreal "Enter height of box: "))(procinfo)(output)
+(command "change" "Last" "" "Properties" "thickness" h
+"" "3dface" pt1 pt2 pt3 pt4 "" "3dface" ".xy" pt1 h ".xy" pt2
+h ".xy" pt3 h ".xy" pt4 h ""))</FONT></PRE>
+
+<BLOCKQUOTE><PRE><FONT FACE="Courier New">&nbsp;</FONT></PRE>
+</BLOCKQUOTE>
+
+<PRE><FONT FACE="Courier New">&nbsp;
+(defun C:3DBOX (/ pt1 pt2 pt3 pt4 h)
+(getinfo)
+(setq h (getreal "Enter height of box: "))
+(procinfo)
+(output)
+(command "change" "Last" "" "Properties" "thickness" h ""
+"3dface" pt1 pt2 pt3 pt4 ""
+"3dface" ".xy" pt1 h ".xy" pt2 h ".xy" pt3 h ".xy" pt4 h ""))
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+(defun C:3DBOX (/ pt1 pt2 pt3 pt4 h)
+(getinfo)
+(setq h (getreal "Enter height of box: "))
+(procinfo)
+(output)
+     (command "change" "Last" "" "Properties" "thickness" h ""
+              "3dface" pt1 pt2 pt3 pt4 ""
+              "3dface" ".xy" pt1 h ".xy" pt2 h
+              ".xy" pt3 h ".xy" pt4 h ""
+      )
+)</FONT></PRE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.12: Three ways to format the 3dbox
+   program code</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1" FACE="Courier New">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">In the third example, notice how the listing is
+written under the command function. Each new command to be issued
+using the command functions is aligned with the next in a column.
+This lets you see at a glance the sequence of commands being used.
+Look at the RXY.lsp function in figure 3.3. As you progress through
+the book, make note of how the listings are written.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_3_Using_Comments"></A>Using
+Comments</I></B></P>
+
+<P><FONT SIZE="-1">It often helps to insert comments into a program
+as a means of giving a verbal description of the code. Figure 3.13
+shows the box program from chapter 1 including comments. The comments
+start with a semicolon and continue to the end of the line. When
+AutoLISP encounters a semicolon, it will ignore everything that
+follows it up to the end of the line. Using the semicolon, you can
+include portions of your Pseudocode as comments to the program
+code.</FONT></P>
+
+<P>&nbsp;
+<HR>
+</P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">;Function to draw a simple 2 dimensional box
+;---------------------------------------------------------------------------
+&nbsp;
+&nbsp;
+(defun c:BOX (/ pt1 pt2 pt3 pt4)                   ;define box function
+(setq pt1 (getpoint "Pick first corner: "))        ;pick start corner
+(setq pt3 (getpoint pt1 "Pick opposite corner: ")) ;pick other corner
+(setq pt2 (list (car pt3) (cadr pt1)))             ;derive second corner
+(setq pt4 (list (car pt1) (cadr pt3)))             ;derive fourth corner
+(command "line" pt1 pt2 pt3 pt4 "c")               ;draw box
+) ;close defun
+&nbsp;
+;Function to display relative XY coordinates in status line
+;---------------------------------------------------------------------------
+&nbsp;
+&nbsp;
+&nbsp;
+(defun RXY (/ pt lt x last pick lpt1)
+(if (not pt1)(setq lpt1 (getvar "lastpoint"))(setq lpt1 pt1)) ;get last point
+    (while (/= pick t)
+        (setq pt (cadr (setq lt (grread t))))                 ;read cursor
+        (if (= (car lt) 5)
+            (progn                                            ;location
+               (setq x (strcat
+                    (rtos (- (car pt) (car lpt1))) " x "      ;get X coord
+                    (rtos (- (cadr pt) (cadr lpt1))) " SI= "  ;get Y coord
+                    (rtos (*(- (car pt) (car lpt1))           ;get area
+                            (- (cadr pt) (cadr lpt1))
+                          )      ;close mult
+                       2 2)      ;close rtos
+                    )            ;close strcat
+                )                ;close setq x
+                (grtext -2 x)                                 ;display status
+             )                   ;close progn
+         )                       ;close if
+      (setq pick (= 3 (car lt)))                              ;test for pick
+     )                                                        ;close while
+(cadr lt)                                                     ;return last
+)                                                             ;coordinate</FONT>
+&nbsp;</PRE></BLOCKQUOTE>
+
+<P>
+<HR>
+</P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.13: Sample of code using
+   comments.</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_3_Using_Captials"></A>Using Capitals and
+Lower Case Letters</I></B></P>
+
+<P><FONT SIZE="-1">In programming, case sensitivity is a term that
+means a programming language treats upper an lower case letters
+differently. Except where string variables occur, AutoLISP does not
+have any strict requirements when it comes to using upper and lower
+case letters in the code. However, you can help keep you code more
+readable by using upper case letters sparingly. For example, you may
+want to use all uppercase letters for defuned function names only.
+That way you can easily identify user created functions within the
+code. You can also mix upper and lower case letters for variable
+names to help convey their meaning. This can help give the variable
+name more significance while still keeping the name short to conserve
+space. For example, You might give the name NewWrd for a variable
+that represents a new string value. NewWrd is more readable than say
+newwrd.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;The only time AutoLISP is case sensitive is
+where strings variables are concerned. The string "Yes" is different
+from "yes" so you must take care when using upper and lower case
+letters in string variable types. We will cover this topic in more
+detail in the next chapter.</FONT></P>
+
+<P><B><I><A NAME="Chapter_3_Dynamic"></A>Dynamic Scoping</I></B></P>
+
+<P><FONT SIZE="-1">You may have noticed that in the functions
+getinfo, procinfo, and output, the argument list is empty (see figure
+3-2). There are no variables local to those functions. The variables
+used in the programs C:BOX1, C:3DBOX, and C:3DWEDGE appear in their
+argument lists rather than in the functions being called by these
+programs. A binding is created between variables and their values
+within these programs so when the program ends, the variables loose
+the value assigned to them.</FONT></P>
+
+<P><FONT SIZE="-1">On the other hand, there are no variable bindings
+created within the individual functions called by the main programs
+so when the functions assign a value to a variables, the variables
+are free to all the functions used by the main program. This ability
+of a function to access variables freely from the calling function is
+known as Dynamic Scoping.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Whenever a function looks for a variables
+value, it will look at its own local variables first. If the
+variables value is not found, it then looks to the calling function
+or program for the value. Finally, if no value is found there, the
+function will look at the global environment for a value.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;We saw this occur in chapter 2 with the
+Adsquare function. Adsquare looked in the AutoLISP global environment
+for the value of Golden since golden was not a formal argument to
+Adsquare (see figure 2.10).</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;In the case of the C:BOX1 program, all the
+variables used by the program and the functions it calls are included
+in its argument list. For this reason, variables have a binding
+within C:BOX1 but are free tp any of the functions called by
+C:BOX1.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;An interesting affect of Dynamic Scoping is
+the ability to maintain two variables of the same name, each holding
+different values. To see how this works, do the following.</FONT>
+</P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Erase the wedge currently on the
+screen.</FONT></P>
+
+<P><FONT SIZE="-1">2. Enter the following expression:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(setq pt1 (getpoint))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">3. pick a point near the coordinate 6,1. This
+assigns the coordinate you pick to the variable pt1.</FONT></P>
+
+<P><FONT SIZE="-1">4. Start the C:BOX1 program.</FONT></P>
+
+<P><FONT SIZE="-1">5. At the Pick first corner prompt, pick a point
+near the coordinate 2,3.</FONT></P>
+
+<P><FONT SIZE="-1">6. At the Pick opposite corner prompt, pick a
+point near so the box is about 7 units wide by 5 units wide. The 2D
+box appears.</FONT></P>
+
+<P><FONT SIZE="-1">7. Issue the line command and at the first point
+prompt, enter:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">!pt1</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">9. The line will start at the point you selected
+in step 3 of this exercise.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;In the above example, you assigned a point
+location to the variable pt1. Then you ran the C:BOX1 program which
+also assigns a value to a variable called pt1. Pt1 in the C:BOX1
+program is assigned the coordinate of the first corner point you
+pick. After the box is drawn, you start the line command and enter
+the variable pt1 as the starting point. You might expect the line to
+start from the corner of the box since it is the point last assigned
+to pt1. Instead, the line begins at the location you had assigned to
+pt1 before you ran the wedge program. When you ran the C:BOX1
+program, two versions of pt1 existed, The global version of pt1 you
+created before you ran C:BOX1, and the version of pt1 created by the
+C:BOX1 program. The C:BOX1 version of pt1 lives and dies within that
+program and has no affect on the global version of pt1 (see figure
+3.13).</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><IMG SRC="F0313.GIF" WIDTH=698 HEIGHT=633 X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN=middle></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 3.13: Dynamic Scoping</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Dynamic Scoping of variables can simplify your
+program coding efforts since you don't have to create an argument
+list for every functions you write. It can also simplify your
+management of variables. Dynamic Scoping can also create some
+interesting side affects as seen in the last exercise. For this
+reason, you should try and keep track of your variables and use
+global variables sparingly.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT
+SIZE="-1">&nbsp;<A NAME="Chapter_3_Conclusion"></A></FONT><B><I><FONT
+SIZE="+2">Conclusion</FONT></I></B></P>
+
+<P><FONT SIZE="-1">In this chapter you examined methods for designing
+your programs in an organized fashion. The box example, though simple
+enough to leave as a single program, allowed you to explore the
+concept of modular programming. It also showed how a program might be
+structured to give a clear presentation to both the creator of the
+program and those who might have to modify it later.</FONT></P>
+</BODY>
+</HTML>

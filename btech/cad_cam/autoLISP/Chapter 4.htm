@@ -1,0 +1,1519 @@
+<!--This file created 8:28 AM  6/18/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 4: Interacting with the Drawing
+   Editor - Copyright &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=25 BOTTOM=570 LEFT=4 RIGHT=672>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252"><META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#008000" VLINK="#800080">
+
+<P><B><I><FONT SIZE="+3"><A NAME="Chapter_4"></A>Chapter 4:
+Interacting with the Drawing Editor</FONT></I></B></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD>
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_Introduction">Introduction</A></FONT><FONT
+         SIZE="-1"> </FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_Prompting">Prompting
+         the User for Distances</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_How_to">How to Use
+         Getdist</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_A_Sample">A Sample
+         Program Using Getdist</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_How_to_Get">How to
+         Get Angle Values</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_Using_Getangle">Using
+         Getangle and Getorient</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_How_to_Get_Text">How
+         to Get Text Input</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_Using_Getstring">Using
+         Getstring</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_Using_Getkword">Using
+         Getkword</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_How_to_get_Numeric">How to Get
+         Numeric Values</A></FONT></BLOCKQUOTE>
+      </TD><TD>
+         <P><FONT SIZE="-1">&nbsp;</FONT></P>
+         
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_Using_Getreal">Using Getreal
+         and Getint</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_How_to_Control_User">How to
+         Control User Input</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_Using_Initget">Using
+         Initget</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_Prompting_for">Prompting for
+         Dissimilar Variable Types</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_Using_Multiple">Using
+         Multiple Keywords</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_How_to_Select_Groups">How to
+         Select Groups of Object</A></FONT></P>
+         
+         <P><FONT SIZE="-1"><A HREF="#Chapter_4_Using_SSGET">Using
+         Ssget</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_A_Sample_Program_Using_SSGET">A
+         Sample Program Using Ssget</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_4_Conclusion">Conclusion</A></FONT>
+         </P></BLOCKQUOTE>
+         
+         <P>&nbsp;
+      </TD></TR>
+</TABLE></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_4_Introduction"></A>Introduction</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">In the first three chapters of the book, you
+learned the basics of AutoLISP. You now have a framework within which
+you can begin to build your programs. We can now discuss each
+built-in AutoLISP functions without loosing you in AutoLISP
+nomenclature. In this and subsequent chapters, You will be shown how
+each of the built-in functions work. Since the AutoLISP interpreter
+can be used interactively, you can enter the sample expressions shown
+in this chapter at the AutoCAD command prompt to see first hand how
+they work.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;A key element in a user defined function is
+how it obtains information from the user. In this chapter, you will
+look at some built in functions that expedite your programs
+information gathering. You have already seen the use of two of these
+functions, Getpoint and Getcorner, in chapter 2 and 3.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT
+SIZE="-1">&nbsp;<A NAME="Chapter_4_Prompting"></A></FONT><B><I><FONT
+SIZE="+2">Prompting the user for Distances</FONT></I></B></P>
+
+<P><FONT SIZE="-1">You will often find the need to prompt the user to
+obtain a distance value. At times, it is easier for the user to
+select distances directly from the graphic screen by using the
+cursor. AutoLISP provides the Getdist function for this
+purpose.</FONT></P>
+
+<P><FONT
+SIZE="-1">&nbsp;<A NAME="Chapter_4_How_to"></A></FONT><B><I>How to
+use Getdist</I></B></P>
+
+<P><FONT SIZE="-1">The syntax for Getdist is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(getdist
+   [</FONT><U><FONT SIZE="-1">optional point value</FONT></U><FONT
+   SIZE="-1">] [</FONT><U><FONT SIZE="-1">optional prompt
+   string</FONT></U><FONT SIZE="-1">])</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;You can optionally supply one or two
+arguments to Getdist. These arguments can be either string values
+which will be used as prompts to user when the program runs, or point
+values indicating a position from which to measure the distance.
+Getdist will accept both keyboard input as well as cursor input and
+it always returns values in real numbers regardless of what unit
+style is current. This means that if you have your drawing set up
+using an architectural unit style, Getdist will return a value in
+decimal units. The following exercises will demonstrate these
+uses.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">There are three ways to use Getdist. First, you
+can use it to input a distance by picking two points using the
+cursor. For example:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Open a file called Chapt4=. Set the
+snap mode and dynamic coordinate readout on.</FONT></P>
+
+<P><FONT SIZE="-1">2. Enter the following:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(setq dist1 (getdist "Pick point or enter
+   distance: "))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">The prompt line will display:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Pick first point or enter distance:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">This prompt is the same as the string value used
+as the argument to Getdist. At this prompt, you can enter a numeric
+value in the current unit style or in decimal units or you can pick a
+beginning point using the cursor.</FONT></P>
+
+<P><FONT SIZE="-1">3. Pick a point at coordinate 3,3 with your
+cursor. You will get the prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">&nbsp;Second point:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;and a rubber banding line will appear from
+the first point selected.</FONT></P>
+
+<P><FONT SIZE="-1">4. Pick a second point at coordinate 8,3 with you
+cursor, the distance between the two points selected is assigned to
+the variable dist1.</FONT></P>
+
+<P><FONT SIZE="-1">5. Enter the following:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!dist1</FONT></B>
+   
+   <P><FONT SIZE="-1">&nbsp;The distance value stored by dist1 is
+   displayed.</FONT></P>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">5.0</FONT></B>
+   </P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Using the same expression as above, you can also
+enter a distance value at the keyboard.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter the following:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq dist1
+   (getdist "Pick point or enter distance: "))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;The prompt line will display:</FONT>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Pick first
+      point or enter distance:</FONT></B><FONT
+      SIZE="-1">&nbsp;</FONT>
+   </DIR>
+   
+   <P><FONT SIZE="-1">2. In the previous exercise, you picked a point
+   at this prompt and Getdist responded by asking for a second point.
+   Instead of picking a point, enter the value of 6.5. Once you have
+   done this, 6.5 is assigned to the variable dist1.</FONT></P>
+   
+   <P><FONT SIZE="-1">3. Enter the following:</FONT></P>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT><B><FONT
+      SIZE="-1">!dist1</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">&nbsp;The distance value stored by dist1 is
+   displayed.</FONT></P>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">6.5</FONT></B>
+   </DIR>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;A third way to use Getpoint is to supply a
+point variable as an argument.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter the following at the command
+prompt:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq pt1
+   (getpoint "Enter a point: "))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;When the Enter a point prompt appears, pick
+a point at the coordinate 3,3. The coordinate 3,3 is assigned to the
+variable pt1.</FONT></P>
+
+<P><FONT SIZE="-1">2. Enter the following expression:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1"> (setq dist1
+   (getdist pt1 "Enter a second point: "))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;Notice that the variable pt1 is used as an
+argument to getdist. A rubber-banding line appears from pt1 and the
+prompt displays the string prompt argument you entered with the
+expression.</FONT></P>
+
+<P><FONT SIZE="-1">3. Pick a point at the coordinate 9,6. The
+distance from pt1 to the point 9,6 is assigned to the variable
+dist1.</FONT></P>
+
+<P><FONT SIZE="-1">4. Enter the following to get the distance stored
+by dist1:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!dist1</FONT></B>
+   
+   <P><B><FONT SIZE="-1">6.7082</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;As you can see, getdist is quite flexible in
+the way it will accept input. This flexibility makes it ideal when
+you need to get sizes of objects from the user. The user has the
+flexibility to either enter a size value at the keyboard or visually
+enter a size by picking points from the drawing area. The
+rubber-banding line provided by getdist allows the user to visually
+select a size. Several AutoCAD commands act in a similar manner. For
+example, the Text command allows you to select a text size either by
+entering a height or by visually selecting a height using your
+cursor. Figure 4.1 summarizes the three ways you can use
+Getdist.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><IMG SRC="F0401.GIF" WIDTH=698 HEIGHT=643 X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN=middle></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 4.1: Three methods that Getdist accepts
+   for input</FONT></I>
+</DIR>
+
+<P><B><I><A NAME="Chapter_4_A_Sample"></A></I></B></P>
+
+<P><B><I>A Sample Program Using Getdist</I></B></P>
+
+<P><FONT SIZE="-1">At times, you may need to find the distance
+between two points in a format other than the current unit style.
+Figure 4.2 lists a function that displays distances in decimal feet,
+a common engineering system of measure that AutoCAD does not directly
+support in release 10.</FONT></P>
+
+<P><I><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></I></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">;Function to get distance in decimal feet -- Decft.lsp------------------------
+(defun decft (/ dst1 dst1s)
+(setq dst1 (getdist "Pick first point or enter distance: ")) ;get distance
+(setq dst1s (rtos (/ dst1 12.0) 2 4)) ;convert real value to string
+(terpri) ;advance prompt one line
+(strcat dst1s " ft.") ;return string plus "ft."
+)</FONT></PRE></BLOCKQUOTE>
+
+<PRE><FONT FACE="Courier New">&nbsp;<HR></FONT></PRE>
+
+<BLOCKQUOTE><DIR>
+   <I><FONT SIZE="-1">Figure 4.2: A program to display decimal
+   feet</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">1. Exit AutoCAD by using the End command and open
+an AutoLISP file called Decft.lsp</FONT></P>
+
+<P><FONT SIZE="-1">2. Copy the file listed in Figure 4.1 into the
+Decft.lsp file. When you are done, and you are certain you have
+corrected all transcription errors, close the file.</FONT></P>
+
+<P><FONT SIZE="-1">3. Open an AutoCAD file called Chapt4. Be sure add
+the = sign at the end of the file name.</FONT></P>
+
+<P><FONT SIZE="-1">4. Use the Setup option on the main menu to set up
+you drawing using the Architectural unit style at a scale of 1/8 inch
+equals 1 foot. Select a sheet size of 11 by 17.</FONT></P>
+
+<P><FONT SIZE="-1">5. Set the snap distance to 12 by 12 and turn on
+the Dynamic coordinate readout.</FONT></P>
+
+<P><FONT SIZE="-1">6. Load the Decft.lsp file.</FONT></P>
+
+<P><FONT SIZE="-1">7. Enter Decft at the Command prompt. The
+following prompt appears:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Pick first point
+   or enter distance:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;8. Pick a point at the coordinate
+17'-0",9'-0". The next prompt appears:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Second point:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">9. Pick a point at the coordinate 100'-0",70'-0".
+The prompt displays the distance </FONT><B><FONT SIZE="-1">103.0049
+ft</FONT></B><FONT SIZE="-1">. </FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first line defines the function. The second
+line obtains the distance using the Getdist function.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq dst1
+   (getdist "Pick first point: "))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The third line uses the Rtos function to
+convert the distance value from a real to a string (see Chapter
+).</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq dst1s (rtos
+   (/ dst1 12.0) 2 4))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This conversion is necessary because we want to
+append the string "ft" to the numeric distance value obtained from
+getdist. The fourth line enters a return to the prompt line. The last
+line combines the string distance value with the string "ft.".</FONT>
+</P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT
+   SIZE="-1">(terpri)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(strcat dst1s " ft")</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;AutoLISP will return the value of the last
+expression evaluated so the result of combining the distance with
+"ft" is displayed on the command prompt. The result value could be
+assigned to a variable for further processing as in the following
+line:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq dist2s
+   (decft))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;In this simple expression, the final value
+returned by Decft is assigned to the variable Dist2s.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT SIZE="+2"><A NAME="Chapter_4_How_to_Get"></A>How to
+Get Angle Values</FONT></I></B></P>
+
+<P><FONT SIZE="-1">When you are manipulating drawings with AutoLISP,
+you will eventually need to obtain angular information. AutoLISP
+provides the Getangle and Getorient functions for this purpose. These
+functions determine angles based on point input. This means that two
+point values are required before these functions will complete their
+execution. Getangle and Getorient will accept keyboard input of
+relative or absolute coordinates or cursor input to allow angle
+selection from the graphic screen. Getangle and Getorient always
+return angles in radians, regardless of the current AutoCAD Units
+settings. So even if you are using Architectural units, Getangle and
+Getorient will return a distance in radians (see chapter___ for a
+discussion of radian to degree conversion).</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_4_Using_Getangle"></A>Using Getangle and
+Getorient</I></B></P>
+
+<P><FONT SIZE="-1">The difference between Getangle and Getorient is
+that Getangle will return an angle value relative to the current Unit
+setting for the 0 angle while Getorient will return an angle based on
+the "standard" 0 angle setting. For example, the default or
+"standard" orientation for 0 degrees is a direction from left to
+right but you can use the Units command or the Angbase or Angdir
+system variables to make 0 degrees a vertical direction. If a drawing
+is set up with 0 degrees being a direction from bottom to top,
+Getangle will return a value relative to this orientation while
+Getorient will return a value based on the "standard" orientation
+regardless of the Units, Angbase, or Angdir settings. Figure 4.3
+illustrates these differences.</FONT></P>
+
+<DIR>
+   <IMG SRC="F0403.GIF" WIDTH=698 HEIGHT=643 X-SAS-UseImageWidth
+   X-SAS-UseImageHeight ALIGN=middle>
+   
+   <P><I><FONT SIZE="-1">Figure 4.3: Comparing Getorient and
+   Getangle</FONT></I></P>
+</DIR>
+
+<P><U><FONT SIZE="-1">&nbsp;</FONT></U></P>
+
+<P><U><FONT SIZE="-1">NOTE THAT </FONT></U><FONT SIZE="-1">Getorient
+ignores the angle direction setting. Even though the hypothetical
+setting uses a clockwise direction for the positive angle direction,
+getorient still returns angles using the counter-clockwise direction
+for positive angle.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;The syntax for Getangle and Getorient
+are:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(getangle
+   [</FONT><U><FONT SIZE="-1">optional point value</FONT></U><FONT
+   SIZE="-1">] [</FONT><U><FONT SIZE="-1">optional prompt
+   string</FONT></U><FONT SIZE="-1">])</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(getorient [</FONT><U><FONT
+   SIZE="-1">optional point value</FONT></U><FONT SIZE="-1">]
+   [</FONT><U><FONT SIZE="-1">optional prompt string</FONT></U><FONT
+   SIZE="-1">])</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;You can optionally supply one or two
+arguments to these functions. These arguments can be either string
+values which will be used as prompts to user when the program is run,
+or point values indicating a position from which to measure the
+angle.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Getangle and getorient accept three methods
+of input. These methods are similar to those offered by getdist. In
+the first method, you can enter two points.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter the following:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq ang1
+   (getangle "Pick a point or enter angle: "))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;2. Pick a point at coordinate 3,3. A
+rubberbanding line appears from the picked point and you get the
+prompt:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Second
+   point:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;3. Pick another point at coordinate 6,6. The
+angle obtained from getangle is then assigned to the variable
+ang1.</FONT></P>
+
+<P><FONT SIZE="-1">4. Find the value of ang1 by entering the
+following:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!ang1</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;If the value returned by ang1 looks
+unfamiliar, it is because it is in radians. Radians are a way of
+describing an angle based on a circle whose radius is one unit. Such
+a circle will have a circumference of 2 pi. An angle of 90 degrees
+would describe a distance along the circle equivalent to 1/4 of the
+circles circumference or pi/2 or 1.5708 (see figure 4.4). This
+distance is the radian equivalent of the angle 90 degrees. We will
+discuss radians and their conversion to degrees in more detail in the
+next chapter.</FONT></P>
+
+<DIR>
+   <CENTER><IMG SRC="F0404.GIF" WIDTH=698 HEIGHT=357
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></CENTER>
+   
+   <P><I><FONT SIZE="-1">Figure 4.4: 90 degrees described in
+   radians</FONT></I></P>
+   
+   <BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE>
+</DIR>
+
+<P><FONT SIZE="-1">Just as with getdist, if a point is selected using
+a cursor, you are prompted for a second point and a rubberbanding
+line appears. The rubberbanding line allows you to visually see the
+angle you are displaying in the drawing area. The second method is to
+enter an angle from the keyboard.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter the same expression you did
+previously:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq ang1
+   (getangle "Pick a point or enter angle: "))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;2. Enter the following:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">&lt;45</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;The angle of 45 degrees is applied to the
+variable ang1 in radians.</FONT></P>
+
+<P><FONT SIZE="-1">3. Enter the following to find the value of
+Ang1:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!ang1</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The value </FONT><B><FONT
+SIZE="-1">0.785398</FONT></B><FONT SIZE="-1"> is returned. This is
+the radian equivalent of 45 degrees.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Just as with getdist, you can supply a point
+variable as an argument to getangle.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;1. Enter the following
+expression:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq pt1 '(3
+   3))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;This assigns the coordinate 3,3 to the
+variable pt1.</FONT></P>
+
+<P><FONT SIZE="-1">2. Enter the expression:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(setq ang1 (getangle pt1 "Indicate angle:
+   "))</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">A rubber-banding line appears from the coordinate
+3,3.</FONT></P>
+
+<P><FONT SIZE="-1">3. Pick a point at coordinate 7,6. The angle from
+pt1 to 7,6 is assigned to ang1.</FONT></P>
+
+<P><FONT SIZE="-1">4. To display the value of ang1, enter:</FONT>
+</P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!ang1</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;The value </FONT><B><FONT
+SIZE="-1">0.6463501</FONT></B><FONT SIZE="-1"> is returned. This is
+the radian equivalent to 37 degrees.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">By accepting both keyboard and cursor input, these
+two functions offer flexibility to the user. Angles can be specified
+as exact numeric values or visually using the cursor. The Rotate
+command works in a similar way by accepting angular input as well as
+allowing the user to visually select an angle of rotation. Figure 4.5
+summarizes the three ways you can use Getanglel</FONT></P>
+
+<P><IMG SRC="F0405.GIF" WIDTH=698 HEIGHT=642 X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN=middle></P>
+
+<BLOCKQUOTE><P><I>Figure 4.5: Three methods Getangle accepts for
+input</I></P>
+
+<P><B><I><FONT SIZE="+2">&nbsp;</FONT></I></B></P></BLOCKQUOTE>
+
+<P><B><I><FONT SIZE="+2"><A NAME="Chapter_4_How_to_Get_Text"></A>How
+to Get Text Input</FONT></I></B></P>
+
+<P><FONT SIZE="-1">You can prompt the user for text input using the
+Getstring and Getkword functions. These two functions always return
+String variables even if a number is entered as a response. Though
+both Getstring and Getkword are used for obtaining String values,
+They operate in slightly ways. Getstring will accept almost anything
+as input so it can be used to acquire words or sentences of up to 132
+characters long with no particular restriction to content. Getkword,
+however, is designed to work in conjunction with the Initget
+function, (described in detail later in this chapter), to accept only
+specific strings, or keywords, as input. If the user tries to enter a
+string to Getkword that is not a predetermined keyword, the user is
+asked to try again.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_4_Using_Getstring"></A>Using
+Getstring</I></B></P>
+
+<P><FONT SIZE="-1">The syntax for Getstring is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(getstring
+   [</FONT><U><FONT SIZE="-1">optional variable or
+   number</FONT></U><FONT SIZE="-1">] [</FONT><U><FONT
+   SIZE="-1">optional prompt string</FONT></U><FONT
+   SIZE="-1">])</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;You can optionally supply one or two
+arguments to Getstring. You can supply a string value for a prompt to
+the user or you can also supply a non-nil variable or number, to
+signify that Getstring is to accept spaces in the user input. For
+example, in many AutoCAD commands, pressing the space bar on your
+keyboard is the same as pressing the return key. Normally, Getstring
+will also read a space bar as a return thus disallowing more than a
+single word to be input to the Getstring function. Enter the
+following expression:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq str1
+   (getstring "Enter a word: " ))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;the following prompt appears:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Enter a
+   word:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Try entering your first and last name. As
+soon as you press the space bar, the getstring function and the
+command prompt returns read your first name. Display the value of
+str1 by entering:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!str1</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Since the space bar is read as a return,
+once it is pressed, the entered string is read and AutoLISP goes on
+to other business. If you provide non-nil variable or number
+argument, however, getstring will read a space bar input as spaces in
+a text string thereby allowing the user to enter whole sentences or
+phrases rather than just single words. Enter the following:</FONT>
+</P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq str2
+   (getstring T "Enter a sentence: "))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The following prompt appears:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Enter a
+   sentence:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Try entering your first and last name again.
+This time you are able to complete your name. Display the value of
+str2 by entering:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">!str2</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;An integer or real value or anything that
+will not evaluate to nil could replace the T argument in the above
+example.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;We would like to restate that you can enter
+numbers in response to Getstring but they will be treated as strings
+therefore, you won't be able to apply math functions to them. You
+can, however, convert a number that is a string variable type into a
+real or integer type using the Atof, Atoi and Ascii functions (see
+Chapter 7 for details).</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_4_Using_Getkword"></A>Using
+Getkword</I></B></P>
+
+<P><FONT SIZE="-1">The syntax for Getkword is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(getkword
+   [</FONT><U><FONT SIZE="-1">options prompt string</FONT></U><FONT
+   SIZE="-1">])</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Getkword offers only one argument option, the
+string prompt. Unlike most other functions, Getkword must be used in
+conjunction with the Initget function. Initget is used to restrict
+the user by allowing only certain values for input. If a disallowed
+value is entered, the user is prompted to try again. In the case of
+Getkword, Initget allows you to specify special words that you expect
+as input. The most common example of this situation would be the
+Yes/No prompt. For example, you may want to have your program perform
+one function or another based on the user entering a Yes or No to a
+prompt. Enter the following:</FONT></P>
+
+<BLOCKQUOTE><BLOCKQUOTE><P><B><FONT SIZE="-1">(initget "Yes
+No")</FONT></B></P></BLOCKQUOTE>
+
+<DIR>
+   <B><FONT SIZE="-1">(setq str1 (getkword "Are you sure?
+   &lt;Yes/No&gt;: "))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The following prompt appears:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Are you sure?
+   &lt;Yes/No&gt;:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;If the user does not enter a Yes, Y, No or
+N, Getkword will continue to prompt the user until one of the
+keywords is entered. Try entering MAYBE. You get the message:</FONT>
+</P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Invalid option
+   keyword.</FONT></B>
+   
+   <P><B><FONT SIZE="-1">Are you sure? &lt;Yes/No&gt;:</FONT></B>
+   </P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Now try entering Y. Getkword accepts the Y
+as a valid keyword and the whole keyword Yes is assigned to the
+variable str1. If you had entered n or N for No, then the entire
+keyword No would have been assigned to str1.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;The words Yes and No are first established
+as keywords using the initget function. Getkword then issues the
+prompt and waits for the proper keyword to be entered. If capital
+letters are used in the Initget function's string argument, they too
+become keywords. This is why Y is also allowed as keyword in the
+above example (see Initget for more details). It doesn't matter if
+you enter a capital or lower case Y. It only matters that you enter
+the letter that is capitalized in the Initget string argument.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_4_How_to_get_Numeric"></A>How to Get
+Numeric Values</FONT></I></B></P>
+
+<P><FONT SIZE="-1">At times, you may want to prompt the user for a
+numeric value such as a size in decimal units or the number of times
+a functions is to be performed. Getreal and Getint are the functions
+you would use to obtain numeric input.</FONT></P>
+
+<P><FONT
+SIZE="-1">&nbsp;<A NAME="Chapter_4_Using_Getreal"></A></FONT><B><I>Using
+Getreal and Getint</I></B></P>
+
+<P><FONT SIZE="-1">Getreal always returns reals and Getint always
+returns integer values. The syntax for Getint is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(getint
+   [</FONT><U><FONT SIZE="-1">optional prompt string</FONT></U><FONT
+   SIZE="-1">])</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The syntax for Getreal is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(getreal
+   [</FONT><U><FONT SIZE="-1">optional prompt string</FONT></U><FONT
+   SIZE="-1">])</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Getreal and getint can be supplied an optional
+argument in the form of a prompt string. Just as with all the
+previous get functions, this prompt string is displayed as a prompt
+when an expression using getreal or getint is evaluated.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_4_How_to_Control_User"></A>How to Control
+User Input</FONT></I></B></P>
+
+<P><FONT SIZE="-1">You can add some additional control to the Get
+functions described in this chapter by using the Initget function. In
+version 2.6 of AutoCAD, Initget was only used to provide keywords for
+the Getkword function (see Getkword earlier in this chapter). With
+Version 9, other functions are added to give more control over input
+to the other Get functions. For example, with Initget, you can force
+a Get function not to accept zero or negative values. Unlike most
+functions, Initget always returns nil.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_4_Using_Initget"></A>Using Initget</I></B>
+</P>
+
+<P><FONT SIZE="-1">The syntax for Initget is:</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(initget [</FONT><U><FONT SIZE="-1">optional
+   bit code</FONT></U><FONT SIZE="-1">] [</FONT><U><FONT
+   SIZE="-1">optional string input list</FONT></U><FONT
+   SIZE="-1">])</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You must supply at least one argument to initget.
+The bit code option controls the kinds of input that are restricted,
+or, in some cases, how rubber-banding lines or windows are displayed.
+Table 4.1 lists the bit codes and their meaning.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=7 WIDTH=445>
+   <TR>
+      <TD VALIGN=top WIDTH="19%">
+         <P><B><FONT SIZE="-1">CODE</FONT></B>
+      </TD><TD VALIGN=top WIDTH="81%">
+         <P><B><FONT SIZE="-1">MEANING</FONT></B>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="19%">
+         <P><FONT SIZE="-1">1</FONT>
+      </TD><TD VALIGN=top WIDTH="81%">
+         <P><FONT SIZE="-1">null input not allowed</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="19%">
+         <P><FONT SIZE="-1">2</FONT>
+      </TD><TD VALIGN=top WIDTH="81%">
+         <P><FONT SIZE="-1">zero values not allowed</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="19%">
+         <P><FONT SIZE="-1">4</FONT>
+      </TD><TD VALIGN=top WIDTH="81%">
+         <P><FONT SIZE="-1">negative values not allowed</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="19%">
+         <P><FONT SIZE="-1">8</FONT>
+      </TD><TD VALIGN=top WIDTH="81%">
+         <P><FONT SIZE="-1">do not check limits for point
+         values</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="19%">
+         <P><FONT SIZE="-1">16</FONT>
+      </TD><TD VALIGN=top WIDTH="81%">
+         <P><FONT SIZE="-1">return 3D point rather than 2D
+         point</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="19%">
+         <P><FONT SIZE="-1">32</FONT>
+      </TD><TD VALIGN=top WIDTH="81%">
+         <P><FONT SIZE="-1">Use dashed lines for rubber-banding lines
+         and windows</FONT>
+      </TD></TR>
+</TABLE></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT>
+   
+   <P><I><FONT SIZE="-1">Table 4.1: The Initget bit codes and what
+   they mean</FONT></I></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Bit codes can be used individually or added
+together to affect several options at once. For example, if you do
+not want a Get function to accept null, zero and negative values for
+input, you can use the following:</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(initget 7)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq int1 (getint "Enter an integer:
+   "))</FONT></B></P>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this example, though there is no formal 7 bit
+code value, for initget, 7 is 1 plus 2 plus 4 so the restrictions
+associated with bit codes 1, 2, and 4 are applied to the Getint that
+follows. You can also write the Initget expression above as:</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(initget (+ 1 2 4))</FONT></B>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Not all initget bit codes are applicable to all
+Get functions. Table 4.2 shows which code works with which Get
+function.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=7 WIDTH=391>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><B><FONT SIZE="-1">FUNCTION</FONT></B>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><B><I>can be used with initget bit code:</I></B>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getint</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1,2,4</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getreal</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1,2,4</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getdist</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1,2,4,16,32</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getangle</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1,2,32</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getorient</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1,2,32</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getpoint</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1,8,16,32</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getcorner</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1,8,16,32</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getkword</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">1</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="39%">
+         <P><FONT SIZE="-1">getstring</FONT>
+      </TD><TD VALIGN=top WIDTH="61%">
+         <P><FONT SIZE="-1">no initget codes honored</FONT>
+      </TD></TR>
+</TABLE></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1" FACE="Courier New">&nbsp;</FONT>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT><I><FONT SIZE="-1">Table 4.2: The
+   Bit codes and related Get functions</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT
+SIZE="-1">&nbsp;<A NAME="Chapter_4_Prompting_for"></A></FONT><B><I>Prompting
+for Dissimilar Variable Types</I></B></P>
+
+<P><FONT SIZE="-1">The Initget functions allows Get functions to
+accept string input even though a Get function may expect data in
+another format. For example, you may want your function to accept
+either a point or string value from a prompt. To do this you might
+have the following expressions:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(initget 1
+   "Next")</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq pt1 (getpoint "Next/&lt;pick a
+   point&gt;: "))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;In this example, the user will see:</FONT>
+</P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Next/&lt;pick a
+   point&gt;:</FONT></B>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Initget sets up the word Next as a keyword. Once
+this is done, The Getpoint function in the following expression is
+allowed to accept either a point value or the string "next" or "n".
+Note that the user need not enter his or her response specifically in
+upper or lower case letters.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_4_Using_Multiple"></A>Using Multiple
+Keywords</I></B></P>
+
+<P><FONT SIZE="-1">You can have more than one keyword for situations
+where multiple choices are offered. For example, you might have a
+situation where the user is asked to choose from several fonts as in
+the following expressions:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(initget "Roman Gothicg Scripts")</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq str1 (getkword "Font style =
+   Roman/Gothicg/Scripts: "))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The user will see the following prompt when
+the expressions are read:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Font style =
+   Roman/Gothicg/Scripts:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;In this case, the user can enter one of the
+three keywords listed in the prompt or their capital letters.</FONT>
+</P>
+
+<P><FONT SIZE="-1">Capitalization is important in specifying the
+keyword as initget will allow both the whole word and the capitalize
+letters of a word to be used as keywords.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(initget "Style
+   STeak STROKE")</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq kword (getkword "Style/Steak/STROKE:
+   "))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;In the above example, the user can either
+enter S for style, ST for string or STROKE for stroke. Initget
+expects the input keyword to be as long as the capitalized portion of
+the keyword definition. Therefor, to enter the Style option, the user
+only needs to enter s since that is capitalized portion of the
+keyword. For the Steak option, the user must enter at least the ST
+portion of the word, once again, because the ST is capitalized in the
+argument. Finally, the user must enter the entire word Stroke to
+select that keyword since it is all capitalized in the
+argument.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Another way to specify keywords is to
+capitalize all the characters of the word then follow it with a comma
+and the abbreviation as in the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(initget "STYLE,S
+   STEAK,ST STROKE")</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;This sample has the same affect as the
+previous example.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_4_How_to_Select_Groups"></A>How to Select
+Groups of Objects</FONT></I></B></P>
+
+<P><FONT SIZE="-1">AutoCAD provides the Select command to allow you
+to pre-select a group of objects to be edited in some way. Select
+acts the same way as other commands when the Select object prompt is
+presented. For example, when you issue the Move command, you are
+prompted to Select objects. You can then use any number of options to
+select groups of objects to move. These options range from windows to
+single object selection or de-selection. The group of objects you
+select is called a </FONT><U><FONT SIZE="-1">selection
+set</FONT></U><FONT SIZE="-1">.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;AutoLISP offers a similar facility in the
+Ssget function. You can think of ssget as an abbreviation for
+selection set get. When this function is used as part of an
+expression, the Select objects prompt appears and you can go about
+selecting a single object or groups of objects to be processed by
+your program in much the same way as the standard select objects
+prompt.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_4_Using_SSGET"></A>Using Ssget</I></B></P>
+
+<P><FONT SIZE="-1">The syntax for Ssget is:</FONT></P>
+
+<BLOCKQUOTE><BLOCKQUOTE><P><FONT
+SIZE="-1">&nbsp;&nbsp;</FONT><B><FONT SIZE="-1">(ssget
+[</FONT><U><FONT SIZE="-1">optional selection mode</FONT></U><FONT
+SIZE="-1">][</FONT><U><FONT SIZE="-1">optional point</FONT></U><FONT
+SIZE="-1">][</FONT><U><FONT SIZE="-1">optional point</FONT></U><FONT
+SIZE="-1">])</FONT></B></P></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Three optional arguments affect the way
+ssget selects objects. the first option, selection mode, allows you
+to predetermine the method ssget uses for selection. For example, if
+you want the user to use a window to select objects, you would
+include the string "W" as the first argument to ssget as in the
+following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq obj1 (ssget
+   "W"))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Other options are:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">"P" select a
+   previous selection set</FONT></B>
+   
+   <P><B><FONT SIZE="-1">"L" select the last object added to
+   database</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">"C" select objects using a crossing
+   window</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">"X" select objects using a filter
+   list.</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Most of these options should be familiar to
+you as standard selection options. The "X" mode however is probably
+new to you. This mode allows you to select objects based on their
+properties such as layer, linetype color and so on. We won't discuss
+this option until later in this book as it is rather involved.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;You can also specify points either to select
+objects at a known location or as input to the window or crossing
+mode options. For example, if you want to select an object you know
+is at point 1,1, you can place the following in your program:</FONT>
+</P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq obj1 (ssget
+   '(1 1)))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You can also indicate a window by indicating two
+point as in the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(setq obj1 (ssget "W" '(1 1) '(9
+   12)))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Point specification need not be in the form
+of a quoted list. You can supply a variable as well. Suppose two
+points have been previously defined in your program:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq pt1
+   (getpoint "Pick a point: "))</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq Pt2 (getcorner pt1 "Pick another
+   point: "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The periods in the sample above indicate other
+expressions in your program Later in your program, You can then use
+those two point to select objects with a window:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">.</FONT></B>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(setq obj1 (ssget "W" pt1 pt2))</FONT></B>
+   </P>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">If you provide points as arguments, however, ssget
+does not pause for user input. It assumes that the points provided as
+arguments indicate the location of the objects to be included in the
+selection set.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;Finally, if you do not provide any
+arguments, ssget will allow the user to select the mode of selection.
+If the following appears in your program:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq obj1
+   (ssget))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Ssget displays the prompt:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">Select objects:</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The user can either pick objects with a
+single pick, or enter W or C to select a standard or crossing window.
+The use can also use the Remove mode to de-select objects during the
+selection process. In fact, all the standard object selection options
+are available. When the user is done, he or she can press return to
+confirm the selection.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;We must caution you that AutoLISP only
+allows you to have six selection set variables at any given time.
+This shouldn't be a problem so long as you do not make your selection
+set variables global. Remember that a variable is made global by not
+including its symbol in the functions argument list.</FONT></P>
+
+<P><B><I><A NAME="Chapter_4_A_Sample_Program_Using_SSGET"></A>A
+Sample Program Using Ssget</I></B></P>
+
+<P><FONT SIZE="-1">Figure 4.8 shows two AutoLISP programs. The first
+one called Group uses the ssget function to store a set of objects as
+a group. This program is similar to the Select AutoCAD command only
+Group allows the user to give that grouping a name so that it can be
+recalled any time during the current editing session. Also, with the
+Group program in earlier versions of AutoCAD, you can only store up
+to 6 sets of groups. After 6, any group you try to store will return
+nil. The groups saved by the Group program are not saved when you
+exit the file however.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><BLOCKQUOTE><PRE>(defun collct ()
+(if (not gp1)(setq gp1 (getstring "enter name of group: ")))
+(if (&lt;= *gpcnt 4)(setq *gplst (cons gp1 *gplst)))
+(set (read gp1) (ssget))
+)
+&nbsp;
+&nbsp;
+(defun C:Group (/ gp1)
+(if (not *gpcnt)(setq *gpcnt 0))
+(setq *gpcnt (1+ *gpcnt))
+(if (&lt;= *gpcnt 4)(collct)(freegp))
+(princ)
+)
+&nbsp;
+(defun FREEGP ()
+(prompt "\nYou have exceeded the number of groups allowed: ")
+(prompt "\nEnter group name to re-use ")
+(princ *gplst)
+(setq gp1 (getstring ": "))
+(set (read gp1) nil)
+(gc)
+(collct)
+)<B>
+&nbsp;</B></PRE></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><B><FONT SIZE="-2">&nbsp;
+<HR>
+</FONT></B></P>
+
+<BLOCKQUOTE><P><I>Figure 4.8: Examples of Ssget</I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The second program called Freegp will free up
+memory taken by a group so that if exceed 6 selection sets, you can
+remove one or more selection sets from memory to allow the use of the
+Group function again. It is up to you, however, to remember the names
+of your groups.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Exit the Chapt4 file and open an
+AutoLISP file called Group.lsp. Copy the program shown in figure 4.4
+into the file.</FONT></P>
+
+<P><FONT SIZE="-1">2. Go back to your Chapt4 AutoCAD drawing file and
+load Group.lsp.</FONT></P>
+
+<P><FONT SIZE="-1">3. Draw eight vertical lines in the drawing
+area.</FONT></P>
+
+<P><FONT SIZE="-1">4. Enter Group at the command prompt. The
+following prompt appears:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">Enter name of
+   group:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;5. Enter the following for a group
+name:</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">group1</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;6. The </FONT><B><FONT SIZE="-1">Select
+objects</FONT></B><FONT SIZE="-1"> prompt appears. pick the leftmost
+three lines. You can use a window or pick them individually. Once you
+are done selecting objects, press return. You will see a message
+similar to the following:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">&lt;Selection set: </FONT><U><FONT
+   SIZE="-1">n</FONT></U><FONT SIZE="-1">&gt;</FONT></B>
+   
+   <P><B><FONT SIZE="-1">Command:</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<DIR>
+   <FONT SIZE="-1">&nbsp;The value of n will depend on the number of
+   selection sets previously used in the current editing
+   session.</FONT>
+   
+   <P><FONT SIZE="-1">7. Start the move command. At the
+   </FONT><B><FONT SIZE="-1">Select objects</FONT></B><FONT
+   SIZE="-1"> prompt, enter the name of the group you selected
+   previously:</FONT></P>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT><B><FONT
+      SIZE="-1">!group1</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">&nbsp;The objects you picked using the Group
+   function are highlighted just as if you had picked them manually
+   while in the move command.</FONT></P>
+   
+   <P><FONT SIZE="-1">&nbsp;The Group program works by first
+   prompting you for a name to give your group:</FONT></P>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(setq gp1
+      (getstring "enter name of group: "))</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">&nbsp;This name is saved as a variable gp1.
+   Next, it uses ssget to assign a selection set to a variable with
+   the name you entered during the previous expression.</FONT></P>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(set (read gp1)
+      (ssget))</FONT></B>
+   </DIR>
+</DIR>
+
+<P><FONT SIZE="-1">This is accomplished using the set and read
+functions. Read is a function that reduces a string to a symbol. When
+the variable gp1 is applied to read, the string, "group1" which you
+entered in the previous expression, is returned as the variable name
+or symbol group1. The set function then applies the selection set
+from the ssget function to the symbol group1. You may recall that set
+works just like setq only set will evaluate both its arguments. Since
+set evaluates its first argument, you can use an expression such as
+(read gp1) to derive a variable name .</FONT></P>
+
+<P><FONT SIZE="-1">Since the variable created using set and read is
+created while the program is executing, it cannot be included in the
+argument list of the program. For this reason it becomes global
+variable.</FONT></P>
+
+<P><FONT SIZE="-1">As mentioned earlier, AutoLISP allows up to 6
+selection sets to be available at once. If you try to create more
+than 6, ssget will return nil instead of a selection set. Any program
+that uses the ssget function will not work properly once the maximum
+number of concurrent selection sets is exceeded. To recover the use
+of ssget, you must set at least one of the selection set variables to
+nil then perform what is called a "garbage collection" using the GC
+function. This is precisely what the Freegp program does.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;1 Enter </FONT><B><FONT
+SIZE="-1">Freegp</FONT></B><FONT SIZE="-1"> at the command prompt. At
+the prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Enter name of group to delete:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;2. Enter </FONT><B><FONT
+SIZE="-1">group1</FONT></B><FONT SIZE="-1">.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Freegp will set group1 to nil and recover any node
+space group1 may have take.</FONT></P>
+
+<P><FONT SIZE="-1">Freegp uses an AutoLISP function called gc. To
+help understand what gc does, think of nodes, portions of memory used
+to store AutoLISP symbols and values, are of two types, Bound and
+Free. Bound nodes are those that are being used to store symbols and
+value. Free nodes are unassigned. When a new symbol is created, it is
+assigned a free node. That node is then bound to that symbol. Even if
+a symbol is eventually assigned a nil value, it will still be bound
+to a node. Gc, short for garbage collection, releases node space that
+is bound to a symbol with a nil value. Frequent use of Gc is not
+recommended, as it can be time consuming. In the case of the ssget
+function however, it is the only function that will allow you to
+recover memory and regain ssget's use.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_4_Conclusion"></A>Conclusion</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">In this chapter, you were introduced to the many
+ways AutoLISP allows you to interact with the user to gather
+information. In summary, the following points were discussed:</FONT>
+</P>
+
+<BLOCKQUOTE><UL>
+   <LI><FONT SIZE="-1">Several functions allow you to pause your
+   program to allow the user to input data.</FONT>
+   
+   <LI><FONT SIZE="-1">Many of these functions accept data either
+   from the keyboard or from the cursor</FONT>
+   
+   <LI><FONT SIZE="-1">You can place controls on the type of data
+   being input through the initget function.</FONT>
+</UL></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In addition, you saw how objects can be selected
+using the Ssget function. Though there are only a handful of
+functions that give AutoLISP its interactive capabilities, the
+flexibility of these functions give a complete range of possibilities
+for gathering data from the user.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;In the next chapter, you will explore how
+you can make your program do more of your work for you by making
+decisions and performing repetitive tasks.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+</BODY>
+</HTML>

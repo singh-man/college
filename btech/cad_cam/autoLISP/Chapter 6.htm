@@ -1,0 +1,1092 @@
+<!--This file created 8:23 AM  6/18/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 6: Working With Geometry -
+   Copyright &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=52 BOTTOM=627 LEFT=8 RIGHT=691>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#008000">
+
+<P><B><I><FONT SIZE="+3"><A NAME="Chapter_6"></A>Chapter 6: Working
+With Geometry</FONT></I></B></P>
+
+<BLOCKQUOTE><P><FONT
+SIZE="-1"><A HREF="#Chapter_6_Introduction">Introduction</A></FONT>
+</P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_6_How_to_find_angles">How to
+Find Angles and Distances</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_6_Understanding_the_angle">Understanding
+the Angle, Distance, and Polar Function</A></FONT></P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_6_Using_Trigonometry">Using
+Trigonometry to Solve a Problem</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_6_Gathering_Information">Gathering
+Information</A></FONT></P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_6_Finding_points">Finding Points
+Using Trigonometry</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_6_Conclusion">Conclusion</A></FONT></P>
+
+<P><B><I><FONT SIZE="+2">&nbsp;</FONT></I></B></P></BLOCKQUOTE>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_6_Introduction"></A>Introduction</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">It is inevitable that your work with AutoLISP will
+involve some geometric manipulations. With the box program in chapter
+2, you have already created a program that derives new point
+locations based on user input. There, you learned how to take
+coordinate lists apart, then re-assemble them to produce a new
+coordinate. In this chapter, you will be introduced to other AutoLISP
+functions that will help you determine locations in your drawings
+coordinate system and in the process, you will review some basic
+trigonometry.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_6_How_to_find_angles"></A>How to find
+Angles and Distances</FONT></I></B></P>
+
+<P><FONT SIZE="-1">In chapter 4, you learned how to prompt the user
+for angles and distances. At time, however, you will want to find
+angles and distances based on the location of existing point
+variables rather than relying on user input every time you need to
+find an angle.</FONT></P>
+
+<P><FONT SIZE="-1">Suppose you want to find a way to break two
+parallel lines between two points in a manner similar to the standard
+AutoCAD break command. In addition, you would like this function to
+join the ends of the two broken portions of each line to form an
+opening. Figure 6.1 shows a drawing of the process along with a
+description of what must occur. This drawing can be developed into
+pseudocode for your program. A function similar to this is commonly
+used in architectural drawings to place an opening in a wall.</FONT>
+</P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0601.gif" WIDTH=451 HEIGHT=640
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom></FONT>
+   
+   <P><FONT SIZE="-1">Figure 6.1: Sketch of the parallel line break
+   program</FONT></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">In Chapter 3, we discussed the importance of
+designing your program to be simple to use. This program is designed
+to obtain the information needed to perform its task using the
+minimum of user input. Since it is similar to the break command, it
+also tries to mimic the break program to some degree so the user
+feels comfortable with it. As you read through this section, pay
+special attention to the way information is gathered and used to
+accomplish the final result.</FONT></P>
+
+<P><FONT SIZE="-1">Open an AutoLISP file called Break2.lsp and copy
+the program in figure 6.2. Open a new AutoCAD file called Chapt6.
+Draw a line from point 2,4 to 12,4 then offset that line a distance
+of 0.25 units. Your screen should look like figure 6.3.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<PRE>;Program to break 2 parallel lines -- Break2.lsp
+(defun c:break2 (/ pt1 pt2 pt3 pt4 pt0 ang1 dst1)
+   (setvar "osmode" 512)                               ;near osnap mode
+   (setq pt1 (getpoint "\nSelect object: "))           ;get first break point
+   (setq pt2 (getpoint pt1 "\nEnter second point: "))  ;get second break point
+   (setvar "osmode" 128)                               ;perpend osnap mode
+   (Setq pt3 (getpoint pt1 "\nSelect parallel line: "));get 2nd line
+   (Setvar "osmode" 0)                                 ;no osnap mode
+   (setq ang1 (angle pt1 pt3))                         ;find angle btwn lines
+   (setq dst1 (distance pt1 pt3))                      ;find dist. btwn lines
+   (setq pt4 (polar pt2 ang1 dst1))                    ;derive pt4 on 2nd line
+      (command
+            "break" pt1 pt2                            ;break 1st line 
+            "break" pt3 pt4                            ;break 2nd line
+            "line" pt1 pt3 ""                          ;close ends of lines
+            "line" pt2 pt4 ""
+      )
+)<FONT SIZE="-1">
+&nbsp;
+&nbsp;<HR></FONT></PRE>
+
+<DIR>
+   <FONT SIZE="-1">Figure 6.2: The parallel line break program</FONT>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0603.gif" WIDTH=512 HEIGHT=392
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><FONT SIZE="-1">Figure 6.3: Two parallel lines drawn</FONT>
+   </P>
+   
+   <BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE>
+   
+   <P><FONT SIZE="-1">1. Load the Break2.lsp file and enter
+   </FONT><B><FONT SIZE="-1">break2</FONT></B><FONT SIZE="-1"> at the
+   Command prompt.</FONT></P>
+   
+   <P><FONT SIZE="-1">2. At the prompt:</FONT></P>
+   
+   <DIR>
+      <B><FONT SIZE="-1">Select object:</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">The osnap cursor appears. Pick the lowermost
+   line near coordinate 5,4.</FONT></P>
+   
+   <P><FONT SIZE="-1">3. At the next prompt:</FONT></P>
+   
+   <DIR>
+      <B><FONT SIZE="-1">Enter second point:</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">Pick the lowermost line again near coordinate
+   10,4.</FONT></P>
+   
+   <P><FONT SIZE="-1">4. Finally, at the prompt:</FONT></P>
+   
+   <DIR>
+      <B><FONT SIZE="-1">Select parallel line:</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">pick the upper line near its midpoint. The two
+   line break and are joined at their break points to form an opening
+   (see figure 6.4)</FONT></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0604.gif" WIDTH=512 HEIGHT=397
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><FONT SIZE="-1">Figure 6.4: The lines after using Break2</FONT>
+   </P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Now draw several parallel lines at different
+orientations and try the Break2 program on each pair of lines. Break2
+places an opening in a pair of parallel lines regardless of their
+orientation. Let's look at how break2 accomplishes this.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_6_Understanding_the_angle"></A>Understanding
+the Angle, Distance, and Polar Functions</I></B></P>
+
+<P><FONT SIZE="-1">The first line after defun function uses the
+setvar function to set the osnap system variable to the nearest
+mode.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun C:BREAK2 (/ pt1 pt2 pt3 pt4
+pt0 ang1 dst1)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setvar "osmode" 512)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This ensures that the point the user picks at the
+next prompt is exactly on the line. It also give the user a visual
+cue to pick something since the osnap cursor appears.</FONT></P>
+
+<P><FONT SIZE="-1">When setvar is used with the osmode system
+variable, a numeric code must also be supplied. This code determines
+the osnap mode to be used. Table 6.1 shows a list of the codes and
+their meaning.</FONT></P>
+
+<BLOCKQUOTE><BLOCKQUOTE><P><TABLE BORDER=1>
+   <TR>
+      <TD WIDTH=119>
+         <P><B><FONT SIZE="-1">Code</FONT></B>
+      </TD><TD WIDTH=198>
+         <P><B><FONT SIZE="-1">Equivalent Osnap mode</FONT></B>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>1
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Endpoint</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>2
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Midpoint</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>4
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Center</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>8
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Node</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>16
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Quadrant</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>32
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Intersection</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>64
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Insertion</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>128
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Perpendicular</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>256
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Tangent</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>512
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Nearest</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=119>
+         <P>1024
+      </TD><TD WIDTH=198>
+         <P><FONT SIZE="-1">Quick</FONT>
+      </TD></TR>
+</TABLE><I><FONT SIZE="-1">Table 6.1: Osmode codes and their
+meaning</FONT></I></P></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The next line prompts the user to select an object
+using the getpoint function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq pt1 (getpoint "\nSelect
+object: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, the variable pt1 is used to store the first
+point location for the break. Since the nearest osnap mode is used,
+the osnap cursor appears and the point picked falls exactly on the
+line (see Figure 6.5).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0605.gif" WIDTH=492 HEIGHT=640
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 6.5: Getting a point using the
+   "nearest" osnap mode.</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1"></DIR></FONT></P>
+
+<P><FONT SIZE="-1">Next, another prompt asks the user to pick another
+point:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq pt2 (getpoint pt1 "\nEnter
+second point: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The variable pt2 is assigned a point location for
+the other end of the break. The next line:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setvar "osmode" 128)</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">sets the osnap mode to perpendicular in
+preparation for the next prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(Setq pt3 (getpoint pt1 "\nSelect
+parallel line: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, the user is asked to select the line
+parallel to the first line. The user can pick any point along the
+parallel line and the perpendicular osnap mode ensures that the point
+picked on the parallel line is "perpendicular" to the first point
+stored by the variable pt1. The perpendicular osnap mode will only
+work, however, if a point argument is supplied to the Getpoint
+function. In this case, the point pt1 is supplied as a reference from
+which the perpendicular location is to be found (see figure 6.6).
+This new point variable pt3 will be important in calculating the
+location of the two break points on the parallel line.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0606.gif" WIDTH=463 HEIGHT=640
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 6.6: Picking the point perpendicular
+   to the first point.</FONT></I></P>
+   
+   <BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE>
+</DIR>
+
+<P><FONT SIZE="-1">The next line sets the osnap mode back to
+"none":</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(Setvar "osmode" 0)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The next two lines find the angle and distance
+described by the two point variables pt1 and pt3.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq ang1 (angle pt1
+pt3))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq dst1 (distance pt1 pt3))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You can obtain the angle described by two points
+using the Angle function. Angles syntax is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">( angle [</FONT><U><FONT
+SIZE="-1">coordinate list</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">coordinate list</FONT></U><FONT SIZE="-1">] )</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The arguments to angle are always coordinate
+lists. The lists can either be variables or quoted lists.</FONT></P>
+
+<P><FONT SIZE="-1">Angle returns a value in radians. You looked at
+radians briefly in chapter 4. A radian is system to measure angles
+based on a circle of 1 unit radius. In such a circle, an angle can be
+described as a distance along the circle's circumference. You may
+recall from high school geometry that a circle's circumference is
+equal to 2 times pi times its radius. since the hypothetical circle
+has a radius of 1, we drop the one from the equation.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">circumference = 2pi</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">90 degrees is equal to one quarter the
+circumference of the circle or pi/2 radians or 1.5708 (see figure
+6.7). 180 degrees is equal to half the circumference of a circle or 1
+pi radians or 3.14159. 360 degrees is equal the full circumference of
+the circle or to 2 pi radians or 6.28319.</FONT></P>
+
+<P><FONT SIZE="-1">A simple formula to convert degrees to radians
+is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">radians * 57.2958</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">To convert degrees to radians the formula
+is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">degrees * 0.0174533</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Angle uses the current UCS orientation as its
+basis for determining angles. Though you can supply 3 dimensional
+point values to angle, the angle returned is based on a 2 dimensional
+projection of those points on the current UCS (see figure 6.7).
+Finally, radians are always measured with a counterclockwise
+directions being positive.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0607.gif" WIDTH=512 HEIGHT=339
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 6.7: Degrees and radians</FONT></I>
+   </P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The distance function is similar to angle in that
+it requires two point lists for arguments:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(distance [</FONT><U><FONT
+SIZE="-1">coordinate list</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">coordinate list</FONT></U><FONT SIZE="-1">])</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The value returned by distance is in drawing units
+regardless of the current unit style setting. This means that if you
+have the units set to Architectural, distance will return distances
+in one inch units.</FONT></P>
+
+<P><FONT SIZE="-1">By storing the angle and distance values between
+pt1 and pt3, the program can now determine the location of the second
+break point on the parallel line. This is done by applying this angle
+and distance information to the second break point of the first line
+using the following expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq pt4 (polar pt2 ang1
+dst1))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here the angle variable ang1 and the distance
+variable dst1 are used as arguments to the polar function to find a
+point pt4. Polar returns a point value (see figure 6.8).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0608.gif" WIDTH=482 HEIGHT=640
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 6.8: Using the polar function to find
+   a new point.</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The syntax for polar is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(polar [</FONT><U><FONT
+SIZE="-1">point value</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">angle in radians</FONT></U><FONT
+SIZE="-1">][</FONT><U><FONT SIZE="-1">distance</FONT></U><FONT
+SIZE="-1">])</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Polar is used to find relative point locations. It
+requires a point value as its first argument followed by an angle and
+distance value. The new point value is calculated by applying the
+angle and distance to the point value supplied. This is similar to
+describing a relative location in AutoCAD using the at sign. For
+example, to describe a relative location of .25 units at 90 degrees
+from the last point entered you would enter the following in
+AutoCAD:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">@.25&lt;90</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The same relative location would look like the
+following using the polar function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq pt1 (getvar
+"lastpoint"))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(polar pt1 1.5708 .25)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first expression in this example uses the
+getvar function to obtain the last point selected. Setq then assigns
+that point to the variable pt1. Polar is used in the next line to
+find a point that is 1.5708 radians (45 degrees) and 2 units away
+from the lastpoint.</FONT></P>
+
+<P><FONT SIZE="-1">The last several lines of the Break2 program use
+all the point variables to first break the two lines then draw the
+joining lines between them.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(command</FONT></B></P>
+
+<P><B><FONT SIZE="-1">"break" pt1 pt2</FONT></B></P>
+
+<P><B><FONT SIZE="-1">"break" pt3 pt4</FONT></B></P>
+
+<P><B><FONT SIZE="-1">"line" pt1 pt3 ""</FONT></B></P>
+
+<P><B><FONT SIZE="-1">"line" pt2 pt4 ""</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In the Break2 program, you could have used the
+getdist and getangle functions but to do so would mean including an
+additional prompt. By using the combination of the perpend osnap mode
+along with the getpoint function, you establishes a point value from
+which both the angle and distance value is derived. In general, if
+you know that you will need to gather both distance and angle
+information, it is better to establish coordinate variables first
+then derive angles and distances from those coordinates using the
+distance and angle functions.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_6_Using_Trigonometry"></A>Using
+Trigonometry to Solve a Problem</FONT></I></B></P>
+
+<P><FONT SIZE="-1">The Break2 function is relatively simple as far as
+its manipulation of data is concerned. But at times, you will need to
+enlist the aid of some basic trigonometric functions to solve
+problems. Suppose you want a function that will cut a circle along an
+axis defined by the user. Figure 6.9 shows a sketch along with a
+written description of a program that does this.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="f0609.gif" WIDTH=663 HEIGHT=387
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 6.9: Sketch of circle cutting
+   program.</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">This program makes use of the Pythagorean Theorem
+as well as the Sine trigonometric function as you will see in the
+next section.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_6_Gathering_Information"></A>Gathering
+Information</I></B></P>
+
+<P><FONT SIZE="-1">Before a problem can be solved, you must first
+gather all the known factors affecting the problem. The program you
+will explore next will give an example of how you might go about your
+information gathering.</FONT></P>
+
+<P><FONT SIZE="-1">Exit AutoCAD and open an AutoLISP file called
+Cutcr.lsp. Carefully copy the program in figure 6.10 into this file.
+Save and exit the Cutcr.lsp file then start AutoCAD and open the
+Chapt6 file again. Load the Ctcr.lsp fine then do the
+following:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Erase everything on the screen then
+draw a circle with its center at point 8,6 and a with a radius of 3
+units (see figure 6.11).</FONT></P>
+
+<P><FONT SIZE="-1">2. Enter </FONT><B><FONT
+SIZE="-1">cutcr</FONT></B><FONT SIZE="-1"> at the command prompt to
+start the C:CUTCR program.</FONT></P>
+
+<P><FONT SIZE="-1">3 At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Pick circle to cut:</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">pick the circle you just drew.</FONT></P>
+
+<P><FONT SIZE="-1">4. At the next prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Pick first point of cut
+line:</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">pick a point at coordinate 5,9.</FONT></P>
+
+<P><FONT SIZE="-1">5. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Pick second point:</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">pick a point at coordinate 8,2.</FONT></P>
+
+<P><FONT SIZE="-1">The circle is cut into two arcs along the axis
+represented by the two points you picked (see figure6.12).</FONT>
+</P>
+
+<P><FONT SIZE="-1">6. Use the erase command to erase the left half of
+the circle. You can now see that the circle has been cut (see figure
+6.13).</FONT></P></BLOCKQUOTE>
+
+<PRE><FONT SIZE="-1">&nbsp;<HR></FONT>
+;Program to cut a circle into two arcs -- Cutcr.lsp
+(defun C:CUTCR (/ cpt1 lpt1 lpt2 cent rad1 ang1
+                  dst1 dst2 cord ang2 wkpt cpt2 cpt3)
+  (setvar "osmode" 512)                              ;osnap to nearest
+  (setq cpt1 (getpoint "\nPick circle to cut: "))    ;find point on circle
+  (setvar "osmode" 0)                                ;osnap to none
+  (setq lpt1 (getpoint "\nPick first point of cut line: ")) ;1st point of cut
+  (setq lpt2 (getpoint lpt1 "\nPick second point: "))       ;2nd point of cut
+  (setq cent (osnap cpt1 "center"))                  ;find center pt
+  (setq rad1 (distance cpt1 cent))                   ;find radius of circle
+  (setq ang1 (- (angle lpt1 cent)(angle lpt1 lpt2))) ;find difference of angles
+  (setq dst1 (distance lpt1 cent))                   ;find dist.lpt1 to cent
+  (setq dst2 (* dst1 (sin ang1)))                    ;find side of triangle
+  (setq cord (sqrt(-(* rad1 rad1)(* dst2 dst2))))    ;find half cord
+  (setq ang2 (- (angle lpt1 lpt2) 1.57))             ;find perpend angle
+  (setq wkpt (polar cent ang2 dst2))                 ;find workpoint
+  (setq cpt2 (polar wkpt (angle lpt1 lpt2) cord))    ;find first intersect
+  (setq cpt3 (polar wkpt (angle lpt2 lpt1) cord))    ;find second intersect
+  (command "erase" cpt1 ""                           ;erase circle
+           "arc" "c" cent cpt2 cpt3                  ;draw first circle seg.
+           "arc" "c" cent cpt3 cpt2                  ;draw second circle seg.
+  )                                                  ;close command funct.
+) <FONT
+SIZE="+1">                                                   ;close defun</FONT><FONT
+SIZE="-1">
+&nbsp;
+<HR></FONT></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 6.10: The circle cut program</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0611.gif" WIDTH=512 HEIGHT=395
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 6.11: The circle drawn in
+   AutoCAD</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1"><IMG SRC="f0612.gif" WIDTH=512 HEIGHT=392
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<P><FONT SIZE="-1">Figure 6.12: Drawing the cut axis.</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0613.gif" WIDTH=512 HEIGHT=396
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.13: Erasing one part of
+the circle after it has been cut.</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The first three expressions in the program after
+the defun functions and its arguments obtain a point on the
+circle:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setvar "osmode" 512)</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(setq cpt1 (getpoint "\nPick circle to cut:
+"))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setvar "osmode" 0)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The setvar function sets osnap to the nearest mode
+then the user is prompted to pick the circle to cut. This point is
+stored as cpt1. The osnap mode ensures that the point picked is
+exactly on the circle. Later, this point will be used to both erase
+the circle and to find the circles center. The next function sets
+osnap back to none.</FONT></P>
+
+<P><FONT SIZE="-1">The next two lines prompt the user to select the
+points that define the axis along which the circle is to be
+cut:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq lpt1 (getpoint "\npick first
+point of cut line: "))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq lpt2 (getpoint lpt1 "\nPick second point:
+"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The getpoint function is used in both these
+expressions to obtain the endpoints of the cut axis. These endpoints
+are stored as lpt1 and lpt2.</FONT></P>
+
+<P><FONT SIZE="-1">The next expression uses a new function called
+osnap:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq cent (osnap cpt1
+"center"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here the point picked previously as the point on
+the circle cpt1 is used in conjunction with the osnap function to
+obtain the center point of the circle. The syntax for osnap
+is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(osnap [</FONT><U><FONT
+SIZE="-1">point value</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">osnap mode</FONT></U><FONT SIZE="-1">])</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The osnap function acts in the same way as the
+osnap overrides. If you use the center osnap override and pick a
+point on the circle, you get the center of the circle. Likewise, the
+osnap function takes a point value and applies an osnap mode to it to
+obtain a point. In this case, osnap applies the center override to
+the point cpt1 which is located on the circle. This gives us the
+center of the circle which is assigned to the symbol cent.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;The next expression obtains the circle's
+radius</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq rad1 (distance cpt1
+cent))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The distance function is used to get the distance
+from cpt1, the point located on the circle, to cent, the center of
+the circle. This value is assigned to the symbol rad1.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_6_Finding_points"></A><FONT
+SIZE="+1">Finding Points Using Trigonometry</FONT></I></B></P>
+
+<P><FONT SIZE="-1">At this point, we have all the known points we can
+obtain without utilizing some math. ultimately, we want to find the
+intersection point between the circle and the cut axis. By using the
+basic trigonometric functions, we can derive the relationship between
+the sides of triangle. In particular, we want to look for triangles
+that contain right angles. If we analyze the known elements to our
+problem, we can see that two triangles can be used to find one
+intersection on the circle (See figure 6.14)</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0614.gif" WIDTH=348 HEIGHT=356
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.14: Triangles used to find
+the intersection</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">In our analysis, we see that we can find a point
+along the cut axis that describes the corner of a right triangle. To
+find this point, we only need an angle and the length of the
+hypotenuse of the triangle. We can then apply one of the basic
+trigonometric functions shown in figure 6.15 to our problem.</FONT>
+</P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0615.GIF" WIDTH=706 HEIGHT=171
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<P><FONT SIZE="-1">Figure 6.15: Basic trigonometric functions</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The sine function is the best match to information
+we have.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">sine(angle) = opposite side /
+hypotenuse</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This formula has to be modified using some basic
+algebra to suite our needs:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">opposite side = hypotenuse * sine
+(angle)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Before we can use the sine function, we need to
+find the angle formed by points lpt1, lpt2 and cent (see figure
+6.16).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0616.gif" WIDTH=244 HEIGHT=275
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">Figure 6.16: Angle needed to before
+the sine function can be used.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The following function does this for us:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq ang1 (- (angle lpt1 cent)
+(angle lpt1 lpt2)))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first of these three functions finds the angle
+described by points lpt1 and lpt1. The second expression finds the
+angle from lpt1 to the center of the circle. The third line finds the
+difference between these two angles to give us the angle of the
+triangle we need (see figure 6.17).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0617.gif" WIDTH=480 HEIGHT=271
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">Figure 6.17: The sine expression
+written to accommodate the known elements.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">We also need the length of the hypotenuse of the
+triangle. this can be gotten by finding the distance between lpt1 and
+the center of the triangle:</FONT></P>
+
+<P><B><FONT SIZE="-1">(setq dst1 (distance lpt1 cent))</FONT></B>
+</P>
+
+<P><FONT SIZE="-1">The length of the hypotenuse is saved as the
+variable dst1. We can now apply our angle and hypotenuse to the
+formula:</FONT></P>
+
+<P><B><FONT SIZE="-1">opposite side = hypotenuse * sine (angle)
+becomes</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq dst2 (* dst1 (sin ang1)))</FONT></B></P>
+
+<P><FONT SIZE="-1">Now we have the length of the side of the triangle
+but we need to know the direction of that side in order to find the
+corner point of the triangle. We already know that the direction is
+at a right angle to the cut axis. therefore, we can determine the
+right angle to the cut axis by adding the cut axis angle to 1.57
+radians (90 degrees)(see figure 6.18). The following expression does
+this for us:</FONT></P>
+
+<P><B><FONT SIZE="-1">(setq ang2 (- (angle lpt1 lpt2)
+1.57))</FONT></B></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0618.gif" WIDTH=580 HEIGHT=301
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.18: Finding the angle of
+the opposite side of the triangle.</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">We are now able to place the missing corner of the
+triangle using the polar function (see figure 6.19).</FONT></P>
+
+<P><B><FONT SIZE="-1">(setq wkpt (polar cent ang2 dst2))</FONT></B>
+</P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0619.gif" WIDTH=453 HEIGHT=235
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.19: Finding the workpoint
+wkpt.</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">We assign the corner point location to the
+variable wkpt. We're still not finished with our little math
+exercise, however. We still need to find the intersection of the cut
+axis to the circle. Looking at our problem solving sketch, we can see
+that yet another triangle can be used to solve our problem. We know
+that the intersection lies along the cut axis. We can describe a
+triangle whose corner is defined by the intersection of the circle
+and the cut axis (see figure 6.20).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0620.gif" WIDTH=441 HEIGHT=254
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.20: The triangle
+describing one intersection point.</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">We also already know two of the sides of this new
+triangle. One is the radius of the circle stored as the variable
+rad1. The other is the side of the triangle we used earlier stored as
+the variable dst2. The most direct way to find the intersection is to
+apply the Pythagorean Theorem shown in figure 6.21.</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0621.gif" WIDTH=385 HEIGHT=168
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.21: The Pythagorean
+Theorem</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Again we must apply algebra to derive a formula to
+suite our needs. The formula:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">c</FONT><SUP><FONT
+SIZE="-1">2</FONT></SUP><FONT SIZE="-1"> = a</FONT><SUP><FONT
+SIZE="-1">2</FONT></SUP><FONT SIZE="-1"> - b</FONT><SUP><FONT
+SIZE="-1">2</FONT></SUP></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">becomes the expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq cord (sqrt(-(* rad1 rad1)(*
+dst2 dst2))))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">We assign the distance value gotten from the
+Pythagorean Theorem to the variable cord. Using the Polar function,
+we can now find one intersection point between the circle and the cut
+axis:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq cpt2 (polar wkpt (angle lpt2
+lpt1) cord))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this expression, we find one intersection by
+applying the angle described by lpt1 and lpt2 and the distance
+described by cord to the polar functions (see figure 6.22).</FONT>
+</P>
+
+<P><FONT SIZE="-1"><IMG SRC="f0622.gif" WIDTH=572 HEIGHT=558
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.22: Finding the location
+of an intersection point.</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Since the two intersection points are
+symmetric about point wkpt, the second intersection point is found by
+reversing the direction of the angle in previous expression:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq cpt3 (polar wkpt (angle lpt1
+lpt2) cord))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Finally, we can get AutoCAD to do the actual work
+of cutting the circle:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(command "erase" cpt1 ""</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">"arc" "c" cent cpt2 cpt3</FONT></B></P>
+
+<P><B><FONT SIZE="-1">"arc" "c" cent cpt3 cpt2</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Actually, we don't really cut the circle. Instead,
+the circle is erased entirely and replaced with two arcs (see figure
+6.23).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0623.GIF" WIDTH=706 HEIGHT=640
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 6.23: Drawing the new
+circle.</FONT></I></P>
+
+<P><I><FONT SIZE="-1">&nbsp;</FONT></I></P></BLOCKQUOTE>
+
+<H1><I><FONT SIZE="-1">Functions Useful in Geometric
+Transformations</FONT></I></H1>
+
+<P><FONT SIZE="-1">The majority of your graphic problems can be
+solved with the basic trigonometric functons used in the Cutcr
+program. But AutoLISP provides the tools to solve even th emost
+arcane trigonometric problems. This section shows the functions you
+are most likely to use in situations that require geometric
+manipulations.</FONT></P>
+
+<P><B><I>Trans</I></B></P>
+
+<P><FONT SIZE="-1">Trans translates a coordinate or displacement from
+one user coordinate system to another. The first argument is a point
+of reference. The second argument is a code indicating which
+coordinate system the point is expressed in. The third argument is a
+code indicating which coordinate system the point is to be translated
+to. An optional fourth True/nil argument can be included. If this
+fourth argument evaluates to True or non-nil, then the first argument
+will be treated as a displacement rather than a point value. The
+following are the codes for the second and third arguments.</FONT>
+</P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD>
+         <P><B><FONT SIZE="-1">Code</FONT></B>
+      </TD><TD>
+         <P><FONT SIZE="-1">Coordinate System</FONT>
+      </TD></TR>
+   <TR>
+      <TD>
+         <P>0
+      </TD><TD>
+         <P><FONT SIZE="-1">World Coordinate System</FONT>
+      </TD></TR>
+   <TR>
+      <TD>
+         <P>1
+      </TD><TD>
+         <P><FONT SIZE="-1">Current User Coordinate System</FONT>
+      </TD></TR>
+   <TR>
+      <TD>
+         <P>2
+      </TD><TD>
+         <P><FONT SIZE="-1">Coordinate system of the current view
+         plane</FONT>
+      </TD></TR>
+</TABLE><FONT SIZE="-1">Trans returns a coordinate or displacement
+list.</FONT></P>
+
+<P><FONT SIZE="-1">The syntax for Trans is</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(trans [coordinage_list] [UCS_code]
+[optionalT/nil] )</FONT></B></P></BLOCKQUOTE>
+
+<P><B><I>Atan</I></B></P>
+
+<P>Atan returns the arctangent in radians of its first argument. If
+the argument is negative, then the value returned will be negative.
+If two arguments are supplied, then Atan returns a the arctangent of
+the first argument divided by the second argument.</P>
+
+<P>The syntax for Atan is</P>
+
+<BLOCKQUOTE><P><B>(atan [number] [optional_2nd_number])</B></P>
+</BLOCKQUOTE>
+
+<P><B><I>Inters</I></B></P>
+
+<P>Inters returns a coordinate list of the intersection of two
+vectors. The first two arguments to inters are the endpoints of one
+vector while the third and fourth arguments define the other vector.
+If an optional fifth agrument is present and evaluates to nil, then
+Inters will attempt to locate an intersection point of the two
+vectors regardless of whether the intersection falls between the
+specified points or not.</P>
+
+<P>The syntax for Inters is</P>
+
+<BLOCKQUOTE><P><B>(inters [point point point point]
+[optional_T/nil])</B></P></BLOCKQUOTE>
+
+<P><B><I>Sin</I></B></P>
+
+<P>Sine returns the sine of an angle as a real number. The angle must
+be expressed in radians.</P>
+
+<P>The syntax for Sine is</P>
+
+<BLOCKQUOTE><P><B>(sin [angle])</B></P></BLOCKQUOTE>
+
+<P><B><I>Cos</I></B></P>
+
+<P>Cos returns the Cosine of an angle as a real number. The angle
+must be expressed in radians.</P>
+
+<P>The syntax for Cos is</P>
+
+<BLOCKQUOTE><P><B>(cos [angle])</B></P>
+
+<P>&nbsp;</P></BLOCKQUOTE>
+
+<P><B><I><FONT
+SIZE="+2">&nbsp;<A NAME="Chapter_6_Conclusion"></A>Conclusion</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">The majority of your graphic problems can be
+solved using the basic trigonometric functions shown in this sample
+program. But AutoLISP provides the tools to solve even the most
+arcane Trigonometric problems. If you find you need to use these math
+trig functions, consider making liberal use of a sketch pad or for
+that matter, AutoCAD itself to document your program. You may want to
+re-use or modify programs such as the previous example and if you
+don't have some graphic documentation recording how it works, you can
+have a difficult time understanding why you wrote your program as you
+did.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+</BODY>
+</HTML>

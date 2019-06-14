@@ -1,0 +1,1201 @@
+<!--This file created 11:49 PM  6/17/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 11: Accessing Complex Objects -
+   Copyright &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=25 BOTTOM=625 LEFT=4 RIGHT=639>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#008000">
+
+<P><B><I><FONT SIZE="+3"><A NAME="Chapter_11"></A>Chapter 11:
+Accessing Complex Objects</FONT></I></B></P>
+
+<BLOCKQUOTE><P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Introduction">Introduction</A></FONT>
+</P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Accessing_polyline_vertices">Accessing
+polyline vertices</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Defining_a_new_polyline">Defining a
+new polyline</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Drawing_the_new_polyline">Drawing the
+new polyline</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Testing_for_new_polyline">Testing for
+polyline types</A></FONT></P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_11_How_arcs_are_described">How
+arcs are described in polylines</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Accessing_entity_handles">Accessing
+object handles and block attributes</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Extracting_attribute_data">Extracting
+attribute data</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_11_Summary">Conclusion</A></FONT></P>
+</BLOCKQUOTE>
+
+<P><B><I><FONT SIZE="+2">&nbsp;</FONT></I></B></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_11_Introduction"></A>Introduction</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">In this the final chapter, you will look at
+several programs that not only introduce you to some new AutoLISP
+functions, but also review many of the functions you learned about
+from earlier chapters. In the process, you will learn how to access
+complex object types. You will also look at ways to store data as a
+permanent record within a drawing.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_11_Accessing_polyline_vertices"></A>Accessing
+Polyline Vertices</FONT></I></B></P>
+
+<P><FONT SIZE="-1">Polylines are complex objects that are a composite
+of many objects. There are a variety of polylines from straight
+lines, to three dimensional Bezier-spline polylines. But even the
+most complex polyline can be broken into three basic components,
+Vertices, lines and arcs. AutoCAD stores polylines as a kind of
+compound object made up of several layers of information. To help you
+get a grasp of this idea, you can think this storage structure as an
+onion; as you peal off one layer, another layer is revealed. The
+first layer, the one accessed by entget, gives general information
+about the polyline. In this section, you will look at ways to access
+deeper layers of information using AutoLISP.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">It will help our investigation if we first take a
+look at typical polyline property list first hand.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F1101.GIF" WIDTH=512 HEIGHT=394
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 11.1: Test drawing for
+   exercise</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">Open a drawing file called Chapt11 and draw the
+polyline rectangle shown in figure 11.1. Use the coordinates shown in
+the figure to locate the corners.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter the following expression at
+the command prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B>(entget (car (entsel)))</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">2. The selection cursor box appears and you get
+the select object prompt. Pick the polyline you just drew. The
+following listing appears.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">((-1 . &lt;Object name:
+60000120&gt;) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(0 . "POLYLINE")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(8 . "TEXT") </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(66 . 1) (10 0.0 0.0 0.0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(70 . 1) (40 . 0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(41 . 0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(210 0.0 0.0 1.0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(71 . 0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(72 . 0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(73 . 0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(74 . 0) </FONT></B></P>
+
+<P><B><FONT SIZE="-1">(75 . 0))</FONT></B></P></BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">We have list the polyline property list vertically
+for clarity though you will see the list shown as a continuous string
+on your text screen. We see the object name, object type and layer
+listed but where the point group code 10 should indicate some
+coordinate location, only zeros are shown. Also, we would expect to
+see a list of at least four coordinate values. Instead, we see some
+somewhat unfamiliar codes from the 40 and 70 group codes, all showing
+zeros.</FONT></P>
+
+<P><FONT SIZE="-1">This doesn't mean that we are unable to access
+more specific information about polylines. We just need to dig a
+little deeper. The tool we use for digging is the entnext
+function.</FONT></P>
+
+<P><FONT SIZE="-1">We mentioned that it helps to think of the
+polyline data as being stored in layers like those of a onion. The
+listing above represents the outermost layer. To get to the next
+layer, you need to use the entnext function. </FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter the next expression:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B>(entget (entnext (car (entsel))))</B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">2. You will get a listing like the
+following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">((-1 . &lt;Object name:
+60000120&gt;)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(0 . "VERTEX")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(8 . "0")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(10 1.0 1.0 0.0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(40 . 0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(41 . 0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(42 . 0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(70 . 0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(50 . 0))</FONT></B></P></BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This new property list gives us some new
+information. The object name is different from the previous list.
+Also, instead of showing "POLYLINE" as an object type, we get
+"VERTEX". The layer information is nearly the same but for the first
+point value, group code 10, we see the coordinate for the first
+corner of the box, 1.0 1.0 0.0. For purposes of our discussion, we'll
+call this vertex object a polyline sub-object or just
+sub-object.</FONT></P>
+
+<P><FONT SIZE="-1">Now, we know how to get more detailed information
+about a polyline by introducing entnext into our expression to
+extract an object's sub-object information. We have "peeled off" the
+first layer of our onion to reveal the next layer of information. But
+we only got the first vertex of the polyline. To get the others, you
+just continue adding more entnext functions. </FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter the following:</FONT></P>
+
+<OL>
+   <B><FONT SIZE="+1">(entget (entnext (entnext (car
+   (entsel)))))</FONT></B>
+</OL>
+
+<P><FONT SIZE="-1">2. When the Select object prompt appears, pick the
+polyline box. Another new property list appears.</FONT></P>
+
+<BLOCKQUOTE><P><B>((-1 . &lt;Object name: 60000120&gt;)</B></P>
+
+<P><B>(0 . "VERTEX")</B></P>
+
+<P><B>(8 . "0")</B></P>
+
+<P><B>(10 10.0 1.0 0.0)</B></P>
+
+<P><B>(40 . 0)</B></P>
+
+<P><B>(41 . 0)</B></P>
+
+<P><B>(42 . 0)</B></P>
+
+<P><B>(70 . 4)</B></P>
+
+<P><B>(50 . 0))</B></P></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Now we see a list that describes the second vertex
+of the polyline. Note the group code 10 value shows a coordinate 10.0
+1.0 0.0 which is the next vertex in the polyline.</FONT></P>
+
+<P><FONT SIZE="-1">It would be rather awkward to have to keep
+expanding our expression by adding more entnext functions to extract
+each sub-object's property lists. If we have a polyline that has 40
+vertices or more, we would end up with a enormous program in order to
+extract all the vertices. Fortunately, we can use a recursive
+function to get the property list of each vertex. By using the same
+variable name to which we assign each vertex object name, we
+eliminate the need to add continual nests of the entnext function.
+Figure 11.2 shows a diagram of how this recursive function works and
+figure 11.3: shows a function that uses this recursion to extract a
+list of polyline vectors. The Function at the top of the figure,
+Getvec, is the one we will look at first.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F1102.GIF" WIDTH=526 HEIGHT=521
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 11.2: Using recursion to extract
+   subobject information</FONT></I></P>
+</DIR>
+
+<PRE><FONT SIZE="-1">&nbsp;<HR></FONT></PRE>
+
+<BLOCKQUOTE><PRE>;Function to create list of polyline vertices----------------------------------
+&nbsp;
+(defun getver (EntNme / SubEnt VerLst vertex)
+ (setq SubEnt (entnext EntNme))                     ;get first vertex
+ (setq VerLst '())                                  ;setup vertex list
+ (while SubEnt
+   (setq vertex (cdr (assoc 10 (entget SubEnt))))   ;get first vertex point
+   (setq VerLst (append VerLst (list vertex)))      ;add vertex to verlst
+   (setq SubEnt (entnext SubEnt))                   ;go to next vertex
+ )
+ VerLst                                             ;return vertex list
+)
+&nbsp;
+;Function to check if point lies between endpoints of line---------------------
+&nbsp;
+(defun btwn (a b c)
+(setq ang1 (angle a b))                             ;find vertex to point ang.
+(setq ang2 (angle a c))                             ;find vertex to vertex ang.
+(if (EQUAL (RTOS ang1 2 2) (RTOS ang2 2 2)) b)      ;if equal return point.
+)
+&nbsp;
+;Program to insert Vertex in simple polyline
+;------------------------------------------------------------------------------
+(defun C:ADDVERT (/ pEnt VerLst Newpt int NewVer ptyp)
+  (setq pEnt (entsel "Pick vertex location: "))     ;Get new vertex and pline
+  (setq VerLst (getver (car pEnt)))                 ;extract vertices
+  (setq ptyp (assoc 70 (entget (car pEnt))))
+  (setq Newpt  (osnap (cadr pEnt) "nearest"))       ;Get new vertex location
+      (while (cadr VerLst)
+          (setq NewVer                              ;add vertex to new NewVer
+            (append NewVer (list (car VerLst)))
+          )
+          (setq int                                 ;Check for between-ness
+            (btwn (car VerLst) newpt (Cadr VerLst))
+          )
+          (if int                                   ;if between, add to NewVer
+            (setq NewVer (append NewVer (list int)))
+          )
+          (setq VerLst (cdr VerLst))                ;Remove vertx. from list
+      );end while
+  (setq NewVer (append NewVer (list (car VerLst)))) ;add last vertx. to NewVer
+  (command "erase" (car pEnt) "")                   ;erase old pline
+  (command "pline")                                 ;start pline command
+  (foreach n NewVer (command n))                    ;insert points from NewVer
+  (if (= (cdr ptyp) 1)
+       (command "close")
+       (command "")
+  )                                                 ;end pline command
+)</PRE></BLOCKQUOTE>
+
+<P>
+<HR>
+</P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 11.3: Function that implements diagram
+   in figure 11.2</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Lets examine this function in detail.</FONT></P>
+
+<P><FONT SIZE="-1">The function takes an object name as an argument.
+Presumably the object in question is a polyline. It proceeds to
+obtain the first vertex object name from that object.</FONT></P>
+
+<BLOCKQUOTE><P><B>(defun getvec (EntNme / SubEnt VecLst vector)</B>
+</P>
+
+<P><B>(setq SubEnt (entnext EntNme))</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This vertex object name is assigned to the symbol
+subEnt. Next, a list is created to hold the vector
+coordinates:</FONT></P>
+
+<BLOCKQUOTE><P><B>(setq VecLst '())</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The following while expression then goes to each
+vector property list and extracts the coordinate value. It first
+extract the coordinate from the current vertex object:</FONT></P>
+
+<BLOCKQUOTE><P><B>(while SubEnt</B></P>
+
+<P><B>(setq vector (cdr (assoc 10 (entget SubEnt))))</B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Next, it appends that coordinate value to the
+vertex list VecLst.</FONT></P>
+
+<BLOCKQUOTE><P><B>(setq VecLst (append VecLst (list vector)))</B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">finally, the variable SubEnt is assigned the
+vertex object name of the next vertex and the process is
+repeated:</FONT></P>
+
+<BLOCKQUOTE><P><B>(setq SubEnt (entnext SubEnt))</B></P>
+
+<P><B>)</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">When all the vertices have been obtained, the list
+of vertices is returned:</FONT></P>
+
+<BLOCKQUOTE><P><B>VecLst</B></P>
+
+<P><B>)</B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Now that we know what entnext is capable of, lets
+look at a practical application. Figure 11.3 includes a program
+called Addvect that adds a vertex to a polyline. If you have ever had
+to add a vertex to a polyline using the AutoCAD pedit command, you
+know it can be a trying effort. This program simplifies the operation
+to one step. Figure 11.4 gives a graphic description of how this
+program works.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F1104.GIF" WIDTH=539 HEIGHT=512
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 11.4: How Addvect work
+   conceptually</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Lets see first hand how it works.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Save and exit the Chapt11
+file.</FONT></P>
+
+<P><FONT SIZE="-1">2. Open an AutoLISP file called Addvert.lsp then
+copy figure 11.3 into the file. Save and exit Addvert.lsp</FONT></P>
+
+<P><FONT SIZE="-1">3. Return to the Chapt11 drawing file and load
+addvert.lsp.</FONT></P>
+
+<P><FONT SIZE="-1">4. Enter Addvert at the command prompt. At the
+prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Pick vertex location:</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Pick the square polyline at the coordinate 10,6.
+The box disappears and a new box is drawn with an additional vertex
+at the point you picked.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This program reduces into one step a process than
+normally takes seven steps through the Pedit command. Lets see how it
+works in detail.</FONT></P>
+
+<P><FONT SIZE="-1">First, an object and a point are gotten using the
+entsel function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun C:ADDVECT (/ pEnt VecLst
+Newpt int NewVec type)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq pEnt (entsel "Pick vector location:
+"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">As you may recall, entsel pauses the program's
+processing and prompts the user to select an object. Once a user
+responds, a list of two elements is returned with the object name and
+the coordinate used to pick the object.</FONT></P>
+
+<P><FONT SIZE="-1">The next line uses a user defined function,
+getvec, to create a new list containing only the vertex coordinates
+from the polyline object picked. This list of vertices is assigned to
+the variable VecLst.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq VecLst (getvec (car
+pEnt)))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">We saw earlier how getvec works. It returns a list
+of polyline vertices. In the above expression, the list of vertices
+is assigned to the VecLst variable.</FONT></P>
+
+<P><FONT SIZE="-1">The next line obtains the associated value of the
+70 group code from the polyline. The 70 group code identifies the
+type of polyline it is, whether it is closed, curve-fit, spline
+curved, etc. See Appendix for a full list of the 70 group code
+options.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq ptyp (assoc 70 (entget (car
+pEnt))))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">this information will be used at the end of the
+program to determine how the polyline is redrawn.</FONT></P>
+
+<P><FONT SIZE="-1">The next line used the osnap function to establish
+a point exactly on the polyline.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq Newpt (osnap (cadr pEnt)
+"nearest"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, the coordinate from the entsel function used
+earlier is applied to the osnap "nearest" function to obtain a new
+point. This new point is exactly on the polyline.</FONT></P>
+
+<P><B><I>&nbsp;</I></B></P>
+
+<P><B><I><A NAME="Chapter_11_Defining_a_new_polyline"></A>Defining a
+New Polyline</I></B></P>
+
+<P><FONT SIZE="-1">The while expression that follows builds a new
+list of vertices from which a new polyline will be drawn. This list
+is actually a copy of the list created by our user defined function
+Getvec with the new point added in the appropriate place.</FONT></P>
+
+<P><FONT SIZE="-1">The test expression in the while expression tests
+to see if the end of the list VecLst has been reached:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(while (cadr VecLst)</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Next, the first element of Veclst is added to a
+list called NewVec:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq NewVec</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(append NewVec (list (car VecLst)))</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This expression is basically just copies the first
+element of the original vertex list to a new list NewVec.</FONT></P>
+
+<P><FONT SIZE="-1">The next set of expressions tests to see if our
+new vertex newpt lies between the first two point of the vertex
+list:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq int</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(btwn (car VecLst) newpt (Cadr
+VecLst))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Another user-defined function is used to actually
+perform the test. This function is called btwn and it tests to see if
+one coordinate lies between two others. If Btwn does find that Newpt
+lies between the first and second point of VecLst, then Btwn returns
+the value of Newpt. Otherwise Btwn returns nil.</FONT></P>
+
+<P><FONT SIZE="-1">If the btwn test function returns a coordinate,
+the next expression adds the new vertex to the NewVec list.</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(if int</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq NewVec (append NewVec (list
+int)))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Finally, the first element of the vertex list is
+removed and the whole process is repeated.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq VecLst (cdr
+VecLst))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">);end while</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Once the while loop is done, VecLst is a list of
+one element. That last element is added to the NewVec list:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq NewVec (append NewVec (list
+(car VecLst))))</FONT></B></P>
+
+<P><B><I>&nbsp;</I></B></P></BLOCKQUOTE>
+
+<P><B><I><A NAME="Chapter_11_Drawing_the_new_polyline"></A>Drawing
+the new Polyline</I></B></P>
+
+<P><FONT SIZE="-1">The last several lines erase the old polyline and
+redraw it using the new vertex list. First the old line is
+erased:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(command "erase" (car pEnt)
+"")</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Then the pline command is issued:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(command "pline")</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Next, the foreach function is used to input the
+vertices from the NewVec list to the Pline command:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(foreach n NewVec (command
+n))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You may recall that foreach is a function that
+reads each element from a list and applies that element to a
+variable. That variable is then used in an expression. The expression
+is evaluated until all the elements of the list have been evaluated
+in the expression. In this case, each vertex from the NewVec list is
+applied to a command function which supplies the vertex coordinate to
+the pline command issued in the previous expression.</FONT></P>
+
+<P><FONT SIZE="-1">Once foreach has completed evaluating every
+element of the NewVec list, the last expression ends the Pline
+command:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(if (= (cdr Ptyp) 1)</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(command "close")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(command "")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The if conditional expression tests to see if the
+polyline is closed or not. If it is, then it enter the word "close"
+to close the polyline. If not, then an enter is issued. You may
+recall that in the first part of the program, the 70 group code
+sublist was extracted from the polyline property list. This sublist
+was assigned to the variable ptyp. Here, ptyp is tested to see if its
+code value is 1. If it is 1, this means that the polyline is closed
+thereby causing the if expression to evaluate the (command "close")
+expression. If this expression is left off, the new polyline box
+would have only three sides.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_11_Testing_for_new_polyline"></A>Testing
+for Polyline Types</I></B></P>
+
+<P><FONT SIZE="-1">In the last expression above, you got a glimpse of
+a special concern when dealing with polylines. There are really
+several types of polylines which must all be handled differently. The
+Addvect program will only function properly when used on simple
+polylines made up of line segments. Polylines that are curve-fitted
+or splined will contain extra vertices that are not actually part of
+the drawn polyline. these extra vertices are used as control points
+in defining curves and splines.</FONT></P>
+
+<P><FONT SIZE="-1">Fortunately, the 70 group codes enable you to
+determine what type of vertex you are dealing with. In the program
+above, we used the 70 group code only to determine whether the
+polyline is closed or not but other conditions can be tested for. You
+could include a test for a spline vertex by comparing the 70 group
+code value of a vertex to the value 16. If it is 16, the value for a
+spline frame control point, then you know not to include the vertex
+in your vertex list. We won't try to give you examples here as we our
+space is limited. However, you may want to refer to Appendix for more
+details on the group codes.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_11_How_arcs_are_described"></A>How Arcs are
+Described in Polylines</I></B></P>
+
+<P><FONT SIZE="-1">Arcs in polylines are described using a bulge
+factor and two vertices. You can think of the bulge factor as the
+tangent of the angle described by chord of the arc and a line drawn
+from one end of the arc to the arc's midpoint (see figure
+11.5).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F1105.GIF" WIDTH=492 HEIGHT=266
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 11.5: The arc bulge factor</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">From this relationship, the following formula is
+derived:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">bulge = h / 0.5 cord =
+2h/cord</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">We can derive the geometry of the arc from these
+simple relationships. Figure 11.6 shows how we can derive the arcs
+angle from the bulge factor. We don't give an example of a program to
+edit arcs in a polyline. Such a task could take a chapter in itself
+since it can be quite involved. Also, you may not find a need for
+such a capability at this point. However, should you find a need, we
+have given you the basics to build your own program to accomplish the
+task.</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F1106.GIF" WIDTH=506 HEIGHT=248
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 11.6: Finding the angle of an
+   arc</FONT></I>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT></P>
+</DIR>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_11_Accessing_entity_handles"></A>Accessing
+Object Handles and Block Attributes</FONT></I></B></P>
+
+<P><FONT SIZE="-1">In the last section, you saw how to extract
+information from a complex object. You can use the same method to
+extract information from block attributes. The program you are about
+to examine uses block attributes as well as object handles and
+external files to help assign and store names to objects in your
+drawing. We will look at how entnext can be used to get attribute
+information from a block and how you can use attributes to
+permanently store information. You will also explore one possible way
+of using object handles which are permanent names AutoCAD can give to
+objects in a drawing.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<H4><B><I><FONT SIZE="+1">Using Object Handles</FONT></I></B></H4>
+
+<P><FONT SIZE="-1">We know that every object is given an object name.
+This name is the key to accessing the object's record in the drawing
+database. Unfortunately, this object name changes from editing
+session to editing session. This means that during one editing
+session, an object will have the object name &lt;Object name:
+600000d4&gt; while in another session the same object will have the
+name &lt;Object name: 60000012&gt;. For the most part, this may not
+be of concern to you. But if you want to have a way of permanently
+identifying objects from one editing session to another, you may find
+this fact disturbing.</FONT></P>
+
+<P><FONT SIZE="-1">Fortunately, starting with release 10, you can add
+what is called an object handle to each and every object in your
+AutoCAD drawing. Handles are added to the object's in a drawing by
+AutoCAD whenever you turn on the handles function using the handles
+command. You do not have control over the naming of Objects, AutoCAD
+automatically assigns an alpha-numeric name to every object in the
+drawing.</FONT></P>
+
+<P><TABLE BORDER=1>
+   <TR>
+      <TD>
+         <BLOCKQUOTE><P><I>Note:</I></P>
+         
+         <P><I>Handles are always on in AutoCAD Release 13 and
+         14.</I></BLOCKQUOTE>
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">The handent function in conjunction with other
+functions can be used to obtain an objects handle from the drawing
+database. The handles are added to an object's property list as a
+group code 5 property sublist. To get an object's handle, you use the
+usual assoc-entget function combination to extract the
+sublist.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Return to the Chapt11 drawing and
+enter the following at the command prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">handles</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">2. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Handles are disables.</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">ON/DESTROY:</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">enter </FONT><B><FONT SIZE="-1">ON.
+</FONT></B><FONT SIZE="-1">Next enter</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(assoc 5(entget(car
+(entsel))))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">3. At the select object prompt, pick the polyline
+box. You will get a list similar to the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(5 . "29")</FONT></B></P>
+</BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The second element of the group 5 property is the
+object handle. Note that the handle is a numeric value in quotes, so
+it is really a string data type even though it is a number.</FONT>
+</P>
+
+<P><FONT SIZE="-1">Using handles, you could write a simple routine to
+display an object's handle which you could record somewhere. Then,
+you could have another program to retrieve an object based on this
+handle. We've taken this idea a step further and have written a
+program that allows you to assign any name you like to an object and
+later select that object by entering the name you have assigned to
+it. Figure 11.7 shows this program and Figure 11.8 shows a diagram of
+how it works.</FONT></P>
+
+<PRE>&nbsp;
+&nbsp;<HR>
+;Function to turn a list into a string----------------------------------------
+&nbsp;
+(defun ltos (lst / gfile strname)
+(setq gfile (open "acad.grp" "w"))                      ;open a file on disk
+(prin1 lst gfile)                                       ;print list to file
+(close gfile)                                           ;close file
+(setq gfile (open "acad.grp" "r"))                      ;open file
+(setq strname (read-line gfile))                        ;read list from file
+(close gfile)                                           ;close file
+strname                                                 ;return converted list
+)
+&nbsp;
+;Function to obtain name list stored in attribute-----------------------------
+&nbsp;
+(defun getatt (/ nament)
+(setq nament (ssname(ssget "X" '((2 . "NAMESTOR")))0))  ;get attribute block
+(read (cdr (assoc 1(entget (entnext nament)))))         ;get attribute value
+)
+&nbsp;
+;Function to clear stored names-----------------------------------------------
+(defun attclr ()
+(setq nament (ssname (ssget "X" '((2 . "NAMESTOR")))0)) ;get attrib. block
+(setq namevl (entget (entnext nament)))                 ;get attrib. ent. list
+(setq namelt (assoc 1 namevl))                          ;get attrib. value
+(entmod (subst (cons 1 "()") namelt namevl))            ;add list to attrib
+)
+&nbsp;
+;Program to assign a name to an entity
+;-----------------------------------------------------------------------------
+(defun C:NAMER (/ group gname ename sname namevl namelt)
+(setq ename  (cdr (assoc 5 (entget (car (entsel "\nPick object: "))))))
+(setq gname  (list (strcase (getstring "\nEnter name of object: "))))
+(setq group  (getatt))                                  ;get names from attrib.
+(setq gname  (append gname (list ename)))               ;new name + ent. name
+(setq group  (append group (list gname)))               ;add names to list
+(setq sname  (ltos group))                              ;convert list to strng
+(setq namevl (entget (entnext (ssname (ssget "X" '((2 . "NAMESTOR")))0))))
+(setq namelt (assoc 1 namevl))                          ;get attrib. value
+(entmod (subst (cons 1 sname) namelt namevl))           ;add list to attrib
+(entupd (cdr (assoc -1 namevl)))
+(princ)
+)
+&nbsp;
+;Function to select an entity by its name-------------------------------------
+&nbsp;
+(defun GETNAME (/ group gname )
+(setq gname  (strcase (getstring "\nEnter name of entity: ")))
+(setq group  (getatt))                                  ;get names from attrib.
+(handent (cadr (assoc gname group)))
+)
+<HR></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 11.7: Program to give names to
+   objects</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F1108.GIF" WIDTH=572 HEIGHT=514
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 11.8: Diagram of a program to name
+   objects</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">This program makes use of a block attribute as a
+storage medium for the names you assign to objects. Lets take a
+closer look.</FONT></P>
+
+<P><FONT SIZE="-1">First, you need to define the attribute used for
+storage.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Exit the Chapt11 file and open an
+AutoLISP file called Namer.lsp. Copy the program shown in figure 11.7
+into your file then save and exit the file.</FONT></P>
+
+<P><FONT SIZE="-1">2. Return to the Chapt11 file then load
+Namer.lsp.</FONT></P>
+
+<P><FONT SIZE="-1">3. Enter </FONT><B><FONT
+SIZE="-1">attdef</FONT></B><FONT SIZE="-1"> to start the attribute
+definition command.</FONT></P>
+
+<P><FONT SIZE="-1">4. Enter the following responses to the attdef
+prompts:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Attribute modes -- Invisible:N
+Constant:N Verify:N Preset:N</FONT></B></P>
+
+<P><FONT SIZE="-1">Enter (ICVP) to change, RETURN when
+done:</FONT><B><FONT SIZE="-1">~CR</FONT></B></P>
+
+<P><FONT SIZE="-1">Attribute tag: </FONT><B><FONT
+SIZE="-1">name</FONT></B></P>
+
+<P><FONT SIZE="-1">Attribute name: </FONT><B><FONT
+SIZE="-1">name</FONT></B></P>
+
+<P><FONT SIZE="-1">Default attribute value: </FONT><B><FONT
+SIZE="-1">()</FONT></B></P>
+
+<P><FONT SIZE="-1">Start point or
+Align/Center/Fit/Middle/Right/Style: </FONT><B><FONT
+SIZE="-1">2,9</FONT></B></P>
+
+<P><FONT SIZE="-1">Height (2.0): </FONT><B><FONT
+SIZE="-1">~CR</FONT></B></P>
+
+<P><FONT SIZE="-1">Rotation angle &lt;0&gt;: </FONT><B><FONT
+SIZE="-1">~CR</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">5. The word </FONT><B><FONT
+SIZE="-1">name</FONT></B><FONT SIZE="-1"> will appear in at
+coordinate 2,9. Now issue the block command and enter the following
+responses to the block prompts:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">Block name (or ?): </FONT><B><FONT
+SIZE="-1">namestor</FONT></B></P>
+
+<P><FONT SIZE="-1">Insert base point: </FONT><B><FONT
+SIZE="-1">2,9</FONT></B></P>
+
+<P><FONT SIZE="-1">select objects: [</FONT><B><FONT SIZE="-1">pick
+attribute defined in previous step.</FONT></B><FONT
+SIZE="-1">]</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">6. Issue the insert command and enter the
+following responses to the insert prompts:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">Block name (or ?): </FONT><B><FONT
+SIZE="-1">namestor</FONT></B></P>
+
+<P><FONT SIZE="-1">Insertion point: </FONT><B><FONT
+SIZE="-1">2,9</FONT></B></P>
+
+<P><FONT SIZE="-1">X scale factor &lt;1&gt; / Corner / XYZ:
+</FONT><B><FONT SIZE="-1">~CR</FONT></B></P>
+
+<P><FONT SIZE="-1">Y scale factor (default=X): </FONT><B><FONT
+SIZE="-1">~CR</FONT></B></P>
+
+<P><FONT SIZE="-1">Rotation angle &lt;0&gt;: </FONT><B><FONT
+SIZE="-1">~CR</FONT></B></P>
+
+<P><FONT SIZE="-1">Enter attribute values</FONT></P>
+
+<P><FONT SIZE="-1">name &lt;()&gt;: </FONT><B><FONT
+SIZE="-1">~CR</FONT></B></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You have just defined the attribute within which
+the program </FONT><B><FONT SIZE="-1">namer</FONT></B><FONT
+SIZE="-1"> will store your object names. Now you are ready to use the
+program.</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter </FONT><B><FONT
+SIZE="-1">namer</FONT></B><FONT SIZE="-1"> at the command prompt. At
+the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Pick object:</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">pick the polyline box.</FONT></P>
+
+<P><FONT SIZE="-1">2. At the next prompt</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Enter name of object:</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Enter</FONT><B><FONT SIZE="-1">
+square</FONT></B><FONT SIZE="-1">. The computer will pause for a
+moment then the command prompt will return. Also, the value of the
+attribute you inserted earlier will change to a list containing the
+name SQUARE and the object handle associated with the name. The Namer
+program uses the attribute as a storage device to store the name you
+give the object with its handle.</FONT></P>
+
+<P><FONT SIZE="-1">3. To see that the name square remain associated
+with the box, exit the chapt11 file using the end command then open
+the file again.</FONT></P>
+
+<P><FONT SIZE="-1">4. Load the Namer.lsp file again.</FONT></P>
+
+<P><FONT SIZE="-1">5. Now issue the copy command. At the Select
+object prompt, enter</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(getname)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">You will get the prompt</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Enter name of object:</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Enter </FONT><B><FONT
+SIZE="-1">square</FONT></B><FONT SIZE="-1">. The box will highlight
+indicating that it has been selected.</FONT></P>
+
+<P><FONT SIZE="-1">6. At the Base point prompt, pick a point at
+coordinate 2,2.</FONT></P>
+
+<P><FONT SIZE="-1">7. At the Second point prompt, pick a point at
+coordinate 3,3.</FONT></P>
+
+<P><FONT SIZE="-1">The box is copied at the displacement 1,1.</FONT>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The attribute used to store the name could have
+been made invisible so it doesn't intrude on the drawing. We
+intentionally left it visible so you could actively see what is going
+on.</FONT></P>
+
+<P><FONT SIZE="-1">Namer works by first extracting the object handle
+of the object selected then creating an association list of the
+handle and the name entered by the user. This association list is
+permanently stored as the value of an attribute. The attribute value
+is altered using the entmod function you saw used in the last
+chapter. Let's take a detailed look at how namer and getname
+work.</FONT></P>
+
+<H2><I><FONT SIZE="-1">Using Object Handles</FONT></I></H2>
+
+<P><FONT SIZE="-1">Namer starts by obtaining the object handle of the
+object the user picks:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun C:NAMER (/ group gname
+ename</FONT></B></P>
+
+<P><B><FONT SIZE="-1">sname nament namevl namelt)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq ename</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(cdr (assoc 5 (entget (car (entsel "\nPick
+object: ")))))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, entsel is used to get the object name of a
+single object. The car function extracts the name from the value
+returned from entsel then entget get the actual object name. At the
+next level, the assoc function is used to extract the 5 group code
+sublist from the object. The actual object handle is extracted from
+the group code using the cdr function. This value is assigned to the
+variable ename.</FONT></P>
+
+<P><FONT SIZE="-1">In the next expression, a list is created
+containing the name given to the object by the user:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq gname</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(list (strcase (getstring "\nEnter name of
+object: ")))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The user is prompted to enter a name. this name is
+converted to all upper case letters using the strcase function. Then
+it is converted into a list using the list function. finally, the
+list is assigned to the variable gname.</FONT></P>
+
+<P><FONT SIZE="-1">The next expression calls a user defined function
+called getatt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq group (getatt))</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This function extracts the attribute value from a
+the block named namestor. You may recall that the default attribute
+value of namestor was "()". Getatt extracts this value and the above
+expression assigns the value to the variable group. We'll look at how
+getatt works a little later.</FONT></P>
+
+<P><FONT SIZE="-1">Next, the object handle is appended to the list
+containing the name the user entered as the name for the object. This
+appended list is then appended to the list named </FONT><B><FONT
+SIZE="-1">group</FONT></B><FONT SIZE="-1"> which was obtained from
+the attribute.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq gname (append gname (list
+ename)))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq group (append group (list
+gname)))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The variable </FONT><B><FONT
+SIZE="-1">group</FONT></B><FONT SIZE="-1"> is the association list to
+which user defined object name are stored. It is the same list you
+see in the block attribute you inserted earlier.</FONT></P>
+
+<P><FONT SIZE="-1">The next line converts the list group into a
+string data type using a user defined function called ltos:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq sname (ltos
+group))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Ltos simply write the list represented by the
+symbol group to an external file then reads it back. The net affect
+is the conversion of a list into a string. This is done so the value
+of </FONT><B><FONT SIZE="-1">group</FONT></B><FONT SIZE="-1"> can be
+used to replace the current value of the attribute in the namestor
+block. This is a situation where data type consideration is
+important. Attribute values cannot be anything other than strings so
+if our program were to try to substitute a list in place of a string,
+an error would occur.</FONT></P>
+
+<P><B><I><A NAME="Chapter_11_Extracting_attribute_data"></A>Extracting
+Attribute Data</I></B></P>
+
+<P><FONT SIZE="-1">The next several lines obtain the property list of
+the </FONT><B><FONT SIZE="-1">namestor</FONT></B><FONT SIZE="-1">
+block attribute and its attribute value in preparation for
+entmod:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq namevl (entget</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(entnext (ssname (ssget "X" '((2 .
+"NAMESTOR")))0)))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here, the ssget "X" filter is used to select a
+specific object, namely the block named "NAMESTOR". In this
+situation, since the name of the block is a fixed value, we include
+the name as a permanent of the expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(ssget "X" '((2 .
+"NAMESTORE")))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This helps us keep track of what block we are
+using and also reduces the number of variables we need to use.</FONT>
+</P>
+
+<P><FONT SIZE="-1">Once the block is found by ssget, ssname gets the
+blocks' object name and entnext extracts the attributes' object name.
+Entget extracts the attributes property list which is assigned to the
+namevl variable. The line that follows uses the assoc function to
+extract the actual attribute value.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq namelt (assoc 1
+namevl))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Figure 11.9 shows how this works.</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F1109.GIF" WIDTH=626 HEIGHT=455
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 11.9: Extracting an attribute
+   value</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Just as we used entnext to extract the vertices of
+a polyline, you can use entnext to obtain the attribute information
+from a block. If there is more than one attribute in a block, you
+step through the attributes the same way you step through the
+vertices of a polyline. The Getatt function works in a similar way to
+these expressions you have just examined.</FONT></P>
+
+<P><FONT SIZE="-1">Finally, entmod is used to update the attribute to
+store the association list of the object name and object
+handle:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(entmod (subst (cons 1 sname)
+namelt namevl))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(entupd (cdr (assoc -1 namevl)))</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(princ)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The subst function is used to substitute the newly
+appended name with the old attribute value in the attributes property
+list. Then entmod updates the drawing database with the updated
+property list. The entupd function is used to update the display of
+the attribute in the block. Entupd is only needed where attributes
+and curve-fitted polylines are being edited and you don't want to
+regenerate the entire drawing to update the display. You could think
+of it as a regen for specific objects.</FONT></P>
+
+<P><FONT SIZE="-1">The getname function is actually quite simple
+compared with namer.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun GETNAME (/ group gname
+getname handl nament newent)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq gname (strcase (getstring "\nEnter name
+of object: ")))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq group (getatt))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(handent (cadr (assoc gname group)))</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Getname prompts the user for the name of the
+object to be selected. It then obtains the association list of name
+from the storing attribute using the user defined Getatt function.
+Finally, getname extracts the object handle from the association list
+using the name entered by the use as the key-value. The handent
+function returns the object name of the object whose handle it
+receives as an argument.</FONT></P>
+
+<P><FONT SIZE="-1">Namer and getname are fairly crude program as they
+have very little in the way of error checking. For example, if while
+using the getname function, you enter a name that does not exit, you
+get an AutoLISP error message. Also, if you attempt to save more than
+dozen names, you will get the out of string space error message. This
+is due to the 100 character limit AutoLISP places on string data
+types. There is also no facility to check for duplicate user supplied
+names. We wanted to keep the program simple so you won't get too
+confused by extra code. You may want to try adding some error
+checking features yourself, or if you feel confident, you can try to
+find a way to overcome the 100 character limit.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_11_Summary"></A>Conclusion</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">Programming can be the most frustration experience
+you have ever encountered as well as an enormous time waster. But it
+is also one of the most rewarding experiences using a computer can
+offer. And once you master AutoLISP, you will actually begin to save
+time in your daily use of AutoCAD. But to get to that point, you must
+practice and become as familiar as possible with AutoLISP. The more
+familiar you are with it, the easier it will be to use and the
+quicker you will be able to write programs.</FONT></P>
+
+<P><FONT SIZE="-1">We hope this tutorial has been of value to your
+programming efforts and it will continue to be helpful to you as a
+reference when you are stuck with a problem. Though we didn't cover
+every AutoLISP function in detail, In particular, we did not cover
+binary operations and a few other math functions. We did cover the
+major functions and you were able to see how those functions are used
+within programs solving real world problems. You were introduced to
+the program in a natural progression from entering your first
+expression through the keyboard to designing and debugging programs
+and finally to accessing the AutoCAD drawing database.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+</BODY>
+</HTML>

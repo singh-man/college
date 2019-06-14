@@ -1,0 +1,1412 @@
+<!--This file created 11:38 PM  6/17/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 5: Making Decisions with AutoLISP
+   - Copyright &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=52 BOTTOM=627 LEFT=8 RIGHT=751>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252"><META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF" LINK="#008000" VLINK="#800080">
+
+<P><B><I><FONT SIZE="+3"><A NAME="Chapter_5"></A>Chapter 5: Making
+Decisions with AutoLISP</FONT></I></B></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD>
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Introduction">Introduction</A></FONT>
+         </P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Making_Decisions">Making
+         decisions</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_How_to_test_for_Conditions">How
+         to test for conditions</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Using_the_If_function">Using
+         the If function</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_How_to_make_Several">How to
+         make several expressions act like one</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_How_to_make_Several">How to
+         test Multiple Conditions</A></FONT></P></BLOCKQUOTE>
+         
+         <P>&nbsp;
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Using_the_Cond_function">Using
+         the Cond Function</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_How_to_repeat_parts">How to
+         repeat parts of a program</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Using_the_while_function">Using
+         the While Function</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Using_the_Repeat_function">Using
+         the Repeat Function</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Using_Test_expressions">Using
+         Test expressions</A></FONT></P>
+         
+         <P><FONT
+         SIZE="-1"><A HREF="#Chapter_5_Conclusion">Conclusion</A></FONT>
+         </BLOCKQUOTE>
+      </TD></TR>
+</TABLE></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_5_Introduction"></A>Introduction</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">As we mentioned in chapter 3, AutoLISP is designed
+to help us solve problems. One of the key elements to problem solving
+is the ability to perform one task or another based on some existing
+condition. We might think of this ability as a way for a program to
+make decisions. Another element of problem solving is repetitive
+computation. Something that might be repetitive, tedious, and time
+consuming for the user to do may be done quickly using AutoLISP. In
+this chapter, we will look at these two facilities in
+AutoLISP.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_5_Making_Decisions"></A>Making
+Decisions</FONT></I></B></P>
+
+<P><FONT SIZE="-1">You can use AutoLISP to create macros which are
+like a predetermined sequence of commands and responses. A macro
+building facility alone would be quite useful but still limited.
+Unlike macros, AutoLISP offers the ability to perform optional
+activities depending on some condition. AutoLISP offers two
+</FONT><U><FONT SIZE="-1">conditional</FONT></U><FONT SIZE="-1">
+functions that allow you to build-in some decision making
+capabilities into your programs. These are the </FONT><U><FONT
+SIZE="-1">if</FONT></U><FONT SIZE="-1"> and </FONT><U><FONT
+SIZE="-1">cond</FONT></U><FONT SIZE="-1"> functions. If and cond work
+in very similar ways with some important differences.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_5_How_to_test_for_Conditions"></A>How to
+Test for Conditions</I></B></P>
+
+<P><FONT SIZE="-1">The if functions works by first testing to see if
+a condition is met then it performs one option or another depending
+on the outcome of the test. This sequence of operations is often
+referred to as an </FONT><B><FONT
+SIZE="-1">if-then-else</FONT></B><FONT SIZE="-1"> conditional
+statement. </FONT><B><FONT SIZE="-1">if</FONT></B><FONT SIZE="-1"> a
+condition is met, </FONT><B><FONT SIZE="-1">then</FONT></B><FONT
+SIZE="-1"> perform computation A, </FONT><B><FONT
+SIZE="-1">else</FONT></B><FONT SIZE="-1"> perform computation B. As
+with all else in AutoLISP, the if function is used as the first
+element of an expression. It is followed by an expression that
+provides the test. A second and optional third argument follows the
+test expression. The second argument is an expressions that is to be
+evaluated if the test condition is true. If the test returns false or
+nil, then </FONT><B><FONT SIZE="-1">if</FONT></B><FONT SIZE="-1">
+evaluates the third argument if it exists, otherwise if returns nil.
+The following shows the general syntax of the if function.</FONT>
+</P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(if (</FONT><U><FONT SIZE="-1">test
+   expression</FONT></U><FONT SIZE="-1">)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(</FONT><U><FONT
+   SIZE="-1">expression</FONT></U><FONT SIZE="-1">) (</FONT><U><FONT
+   SIZE="-1">optional expression</FONT></U><FONT
+   SIZE="-1">)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The test expression can be use any function
+but often you will use two classes of functions called predicates and
+logical operators. Predicates and logical operators are functions
+that return either true or false. Since these functions don't return
+a value the way most functions do, the atom T is used by predicates
+and logical operators to represents a non-nil or true value. There
+are several functions that return either a T or nil when
+evaluated.</FONT></P>
+
+<P><TABLE BORDER=0 CELLSPACING=0 CELLPADDING=7 WIDTH=564>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><B><FONT SIZE="-1">FUNCTION </FONT><I><FONT SIZE="-1">
+         </FONT></I></B>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><B><FONT SIZE="-1">RETURNS T (TRUE) IF...</FONT></B>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><B><I><FONT SIZE="-1">Predicates</FONT></I></B>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P>&nbsp;
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">&lt; </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a numeric value is less than
+         another</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">&gt; </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a numeric value is greater than
+         another</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">&lt;= </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a numeric value is less than or equal to
+         another</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">&gt;= </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a numeric value is greater than or equal
+         to another</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">= </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">two numeric or string values are
+         equal</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">/= </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">two numeric or string values are not
+         equal</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">eq </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">two values are one in the same</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">equal </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">two expressions evaluate to the same
+         value</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">atom </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">an object is an atom (as opposed to a
+         list)</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">boundp </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a symbol has a value bound to it</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">listp </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">an object is a list</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">minusp </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a numeric value is negative</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">numberp </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">an object is a number, real or
+         integer</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">zerop </FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">an object evaluates to zero</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P>&nbsp;
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P>&nbsp;
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><B><I><FONT SIZE="-1">Logical Operators</FONT></I></B>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P>&nbsp;
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">and</FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">all of several expressions or atoms
+         return non-nil</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">not</FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a symbol is nil</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">null</FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">a list is nil</FONT>
+      </TD></TR>
+   <TR>
+      <TD VALIGN=top WIDTH="34%">
+         <P><FONT SIZE="-1">or</FONT>
+      </TD><TD VALIGN=top WIDTH="66%">
+         <P><FONT SIZE="-1">one of several expressions or atoms
+         return non-nil</FONT>
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Table 5.1 A list of AutoLISP predicates and
+   logical operators.</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">You may notice that several of the predicates end
+with a p. The p denotes the term predicate. Also note that we use the
+term object in the table. When we say object, we mean any lists or
+atoms which include symbols and numbers. Numeric values can be
+numbers or symbols that are bound to numbers.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">All predicates and logical operators follow the
+standard format for AutoLISP expressions. They are the first element
+in an expression followed by the arguments as in the following
+example:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">( &gt; 2 4 )</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The greater than predicate compares two numbers to
+see if the one on the left is greater than the one on the right. The
+value of this expression is nil since two is not greater than
+four.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The predicates &gt;,&lt;,&gt;=, &lt;= all allows
+more than two arguments as in the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">( &gt; 2 1 5 8 )</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">When more than two arguments are used, &gt; will
+return T only if each value is greater than the one to is right. The
+above expression returns nil since 1 is not greater than 5.</FONT>
+</P>
+
+<P><FONT SIZE="-1">The functions </FONT><U><FONT
+SIZE="-1">and</FONT></U><FONT SIZE="-1">, </FONT><U><FONT
+SIZE="-1">not</FONT></U><FONT SIZE="-1">, </FONT><U><FONT
+SIZE="-1">null</FONT></U><FONT SIZE="-1"> and </FONT><U><FONT
+SIZE="-1">or</FONT></U><FONT SIZE="-1"> are similar to predicates in
+that they too return T or nil. But these functions, called
+</FONT><U><FONT SIZE="-1">logical operators</FONT></U><FONT
+SIZE="-1">, are most often used to test predicates (see table 5.1).
+For example, you could test to see if a value is greater than
+another:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(setq val1 1)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(zerop val1)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">nil</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">We set the variable val1 to 1 then test to see if
+val1 is equal to zero. The zerop predicate returns nil. But suppose
+you want to get a true response whenever val1 does not equal zero.
+You could use the not logical operator to "reverse" the result of
+zerop:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(setq val1 1)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(not (zerop val1))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">T</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Since not returns true when its argument returns
+nil, the end result of the test is T. Not and null can also be used
+as predicates to test atoms and lists.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_5_Using_the_If_function"></A>Using the If
+function</I></B></P>
+
+<P><FONT SIZE="-1">In chapter 2, you saw briefly how the if function
+worked with the not logical operator to determine whether to load a
+program or not. Looking at that expression again (see Figure 5.1),
+you see a typical use of the if function.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0501.GIF" WIDTH=698 HEIGHT=262
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 5.1: An expression showing the syntax
+   for the If function</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">This function tests to see if the function C:BOX
+exists. If C:BOX doesn't exist, it is loaded. This simple program
+decides to load a program based on whether the program has already
+been loaded. The test function in this case is </FONT><B><FONT
+SIZE="-1">not</FONT></B><FONT SIZE="-1">. Lets look at how you might
+apply </FONT><B><FONT SIZE="-1">if</FONT></B><FONT SIZE="-1"> to
+another situation. In the following exercise, you will add an
+expression to decide between drawing a 2 dimensional or 3 dimensional
+box.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Open the Box1.lsp file.</FONT></P>
+
+<P><FONT SIZE="-1">2. Change the first line of the Box program so it
+reads as follows:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">(defun BOX1 (/ pt1 pt2 pt3 pt4)</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<DIR>
+   <FONT SIZE="-1">By removing the C: from the function name, Box1
+   now becomes a function that can be called from another
+   function.</FONT>
+   
+   <P><FONT SIZE="-1">3. Change the first line of the 3dbox program
+   so it reads as follows:</FONT></P>
+   
+   <DIR>
+      <B><FONT SIZE="-1">(defun 3DBOX (/ pt1 pt2 pt3 pt4)</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">4. Add the program listed in boldface print in
+   figure 5.2 to the end of the Box1.lsp file. Your Box1.lsp file
+   should look like figure 5.2. You may want to print out Box1.lsp
+   and check it against the figure.</FONT></P>
+   
+   <P><FONT SIZE="-1">5. Save and Exit Box1.lsp.</FONT></P>
+   
+   <P><FONT SIZE="-1">6. Open an AutoCAD file called chapt5. Be sure
+   to use the = suffix with the file name.</FONT></P>
+   
+   <P><FONT SIZE="-1">7. Load the box1.lsp file.</FONT></P>
+   
+   <P><FONT SIZE="-1">8. Run the Mainbox program by entering
+   </FONT><B><FONT SIZE="-1">mainbox</FONT></B><FONT SIZE="-1"> at
+   the command prompt. You will see the following prompt:</FONT></P>
+   
+   <DIR>
+      <B><FONT SIZE="-1">Do you want a 3D box
+      &lt;Y=yes/Return=no&gt;?</FONT></B>
+   </DIR>
+   
+   <P><FONT SIZE="-1">9. Enter y. The 3dbox function executes.</FONT>
+   </P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT FACE="Courier New">(defun getinfo ()
+(setq pt1 (getpoint "Pick first corner: "))
+(princ "Pick opposite corner: ")
+(setq pt3 (rxy))
+)
+&nbsp;
+(defun procinfo ()
+(setq pt2 (list (car pt3) (cadr pt1)))
+(setq pt4 (list (car pt1) (cadr pt3)))
+)
+&nbsp;
+(defun output ()
+(command "line" pt1 pt2 pt3 pt4 "c" )
+)
+&nbsp;
+(defun BOX1 (/ pt1 pt2 pt3 pt4)
+(getinfo)
+(procinfo)
+(output)
+)
+&nbsp;
+(defun 3DBOX (/ pt1 pt2 pt3 pt4 h)
+(getinfo)
+(setq h (getreal "Enter height of box: "))
+(procinfo)
+(output)
+(command "change" "L" "" "P" "th" h ""
+         "3dface" pt1 pt2 pt3 pt4 ""
+         "3dface" ".xy" pt1 h ".xy" pt2 h
+         ".xy" pt3 h ".xy" pt4 h ""
+)
+)
+&nbsp;
+(defun C:3DWEDGE (/ pt1 pt2 pt3 pt4 h)
+(getinfo)
+(setq h (getreal "Enter height of wedge: "))
+(procinfo)
+(output)
+(command "3dface" pt1 pt4 ".xy" pt4 h ".xy" pt1 h pt2 pt3 ""
+         "3dface" pt1 pt2 ".xy" pt1 h pt1 ""
+         "copy" "L" "" pt1 pt4
+)
+)</FONT><B><FONT FACE="Courier New">
+&nbsp;
+&nbsp;
+(defun C:MAINBOX ()
+(setq choose (getstring "\nDo you want a 3D box &lt;Y=yes/Return=no&gt;? "))
+    (if (or (equal choose "y")(equal choose "Y"))(3dbox)(box1))
+)</FONT></B></PRE></BLOCKQUOTE>
+
+<P><B><FONT FACE="Courier New">
+<HR>
+&nbsp;</FONT></B></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.2: The BOX1.LSP file with C:MAINBOX
+   added.</FONT></I>
+   
+   <DIR>
+      <I><FONT SIZE="-1">&nbsp;</FONT></I>
+   </DIR>
+</DIR>
+
+<P><FONT SIZE="-1">In this example, you first turned the programs
+C:BOX1 and C:3DBOX into functions by removing the C: from their
+names. Next, you created a control program called C:MAINBOX that
+prompts the user to choose between a 2 dimensional or 3 dimensional
+box. The first line in the C:MAINBOX program, as usual, gives the
+program its name and determines the local variables. The next line
+uses the Getstring function to obtain a string value in response to a
+prompt:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(setq choose (getstring "\nDo you want a 3D box
+   &lt;Y=yes/Return=no&gt;? "))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The prompt asks the user if he or she wants a 3
+dimensional box and offers the user two options, Y for yes or Return
+for no. The third line uses the if function to determine whether to
+run the BOX1 or 3DBOX function. Notice that the or and the equal
+predicates are used together.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(if (or (equal choose "y")(equal choose
+   "Y"))(3dbox)(box1))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The </FONT><B><FONT SIZE="-1">or</FONT></B><FONT
+SIZE="-1"> function returns T if any of its arguments returns
+anything other than nil. Two arguments are provided to
+</FONT><B><FONT SIZE="-1">or</FONT></B><FONT SIZE="-1">. One test to
+see of the variable </FONT><B><FONT SIZE="-1">choose</FONT></B><FONT
+SIZE="-1"> is equal to the lower case y while the other checks to see
+if </FONT><B><FONT SIZE="-1">choose</FONT></B><FONT SIZE="-1"> is
+equal to an upper case y. If the value of either expression is T,
+then or returns T. So, if the user responds by entering either an
+upper or lower case y to the prompt in the second line, then the or
+predicate returns T. Any other value for choose will result in a nil
+value from </FONT><B><FONT SIZE="-1">or</FONT></B><FONT SIZE="-1">
+(see figure 5.3).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0503.GIF" WIDTH=704 HEIGHT=620
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 5.3: Using the logical operator
+   Or</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Once the or function returns a T, the second
+argument is evaluated which means that a 3dbox is drawn. If or
+returns nil, then the third argument is evaluated drawing a 2
+dimensional box. The </FONT><B><FONT SIZE="-1">and</FONT></B><FONT
+SIZE="-1"> function works in a similar way to </FONT><B><FONT
+SIZE="-1">or</FONT></B><FONT SIZE="-1"> but and requires that all its
+arguments return non-nil before it returns T. Both </FONT><B><FONT
+SIZE="-1">or</FONT></B><FONT SIZE="-1"> and</FONT><B><FONT SIZE="-1">
+</FONT></B><FONT SIZE="-1">will accept more that two
+arguments.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_5_How_to_make_Several"></A>How to Make
+Several Expressions Act like One</I></B></P>
+
+<P><FONT SIZE="-1">There will be times when you will want several
+expressions to be evaluated depending on the results of a predicate.
+As an example, lets assume that you have decided to make the 2
+dimensional and 3 dimensional box programs part of the C:MAINBOX
+program to save memory. You could place the code for these functions
+directly in the C:MAINBOX program and have a file that looks like
+figure 5.5. When this program is run, it acts exactly the same way as
+in the previous exercise. But in figure 5.4, the functions BOX1 and
+3DBOX are incorporated into the </FONT><B><FONT
+SIZE="-1">if</FONT></B><FONT SIZE="-1"> expression as
+arguments.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">(defun C:MAINBOX (/ pt1 pt2 pt3 pt4 h choose)
+(setq choose (getstring "\nDo you want a 3D box &lt;Y=yes/Return=no&gt;? "))
+   (if (or (equal choose "y")(equal choose "Y"))
+    (progn                                ;if choose = Y or y then draw a 3D box
+     (getinfo)
+     (setq h (getreal "Enter height of box: "))
+     (procinfo)
+     (output)
+       (command "change" "Last" "" "Properties" "thickness" h ""
+                "3dface" pt1 pt2 pt3 pt4 ""
+                "3dface" ".xy" pt1 h ".xy" pt2 h
+                ".xy" pt3 h ".xy" pt4 h ""
+        );end command
+     );end progn
+   (progn ;if choose /= Y or y then draw a 2D box
+     (getinfo)
+     (procinfo)
+     (output)
+    );end progn
+   );end if
+);end MAINBOX</FONT></PRE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.4: The C;Mainbox program incorporating
+   the code from Box1 and 3dbox</FONT></I>
+   
+   <DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR>
+   
+   <P><FONT SIZE="-1"><IMG SRC="F0505.GIF" WIDTH=704 HEIGHT=638
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+   
+   <P><I><FONT SIZE="-1">Figure 5.5: Using the progn
+   function</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">We are able to do this using the </FONT><U><FONT
+SIZE="-1">progn</FONT></U><FONT SIZE="-1"> function. Progn allows you
+to have several expression where only one is expected. Its syntax is
+as follows:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(progn</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(</FONT><U><FONT
+   SIZE="-1">expression1</FONT></U><FONT SIZE="-1">) (</FONT><U><FONT
+   SIZE="-1">expression2</FONT></U><FONT SIZE="-1">) (</FONT><U><FONT
+   SIZE="-1">expression3</FONT></U><FONT SIZE="-1">) . . .</FONT></B>
+   </P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Figure 5.5 shows how we arrived at the program in
+figure 5.4. The calls to functions BOX1 and 3DBOX were replaced by
+the actual expressions used in those functions.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_5_How_to_test_Multiple_condition"></A>How
+to Test Multiple Conditions</FONT></I></B></P>
+
+<P><FONT SIZE="-1">There is also another function that acts very much
+like the if function called </FONT><U><FONT
+SIZE="-1">Cond</FONT></U><FONT SIZE="-1">. Arguments to cond consists
+of one or more expressions that have as their first element a test
+expression followed by an object that is to be evaluated if the test
+returns T. Cond evaluates each test until it comes to one that
+returns T. It then evaluates the expression or atom associated with
+that test. If other test expressions follow, they are ignored.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_5_Using_the_Cond_function"></A>Using the
+Cond function</I></B></P>
+
+<P><FONT SIZE="-1">The syntax for cond is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(cond</FONT></B>
+   
+   <P><B><FONT SIZE="-1">((</FONT><U><FONT SIZE="-1">test
+   expression</FONT></U><FONT SIZE="-1">)[</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">][</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">]...)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">((</FONT><U><FONT SIZE="-1">test
+   expression</FONT></U><FONT SIZE="-1">)[</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">][</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">]...)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">((</FONT><U><FONT SIZE="-1">test
+   expression</FONT></U><FONT SIZE="-1">)[</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">][</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">]...)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">((</FONT><U><FONT SIZE="-1">test
+   expression</FONT></U><FONT SIZE="-1">)[</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">][</FONT><U><FONT
+   SIZE="-1">expression/atom</FONT></U><FONT
+   SIZE="-1">]...)</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Figure 5.6 shows the cond function used in
+place of the if function. Cond's syntax also allows for more than one
+expression for each test expression. This means that you don't have
+to use the Progn function with cond if you want several expressions
+evaluated as a result of a test.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT FACE="Courier New">(defun C:MAINBOX (/ choose)
+(setq choose (getstring "\nDo you want a 3D box &lt;Y=yes/Return=no&gt;? "))
+   (cond
+      ( (or (equal choose "y") (equal choose "Y")) (3dbox))
+      ( (or (/= choose "y") (/= choose "Y")) (box1))
+   )
+)</FONT></PRE></BLOCKQUOTE>
+
+<PRE><FONT FACE="Courier New"><HR></FONT></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.6: Using cond in place of
+   if</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><FONT SIZE="-1">Figure 5.7 shows another program called Chaos that
+uses the Cond function. Chaos is an AutoLISP version of a
+mathematical game used to demonstrate the creation of fractals
+through an iterated function. The game works by following the steps
+shown in Figure 5.8.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">;function to find the midpoint between two points
+(defun mid (a b)
+(list (/ (+ (car a)(car b)) 2)
+(/ (+ (cadr a)(cadr b)) 2)
+)
+)
+&nbsp;
+;function to generate random number
+(defun rand (pt / rns rleng lastrn)
+(setq rns (rtos (* (car pt)(cadr pt)(getvar "tdusrtimer"))))
+(setq rnleng (strlen rns))
+(setq lastrn (substr rns rnleng 1))
+(setq rn (* 0.6 (atof lastrn)))
+(fix rn)
+)
+&nbsp;
+;The Chaos game
+(defun C:CHAOS (/ pta ptb ptc rn count lastpt randn key)
+(setq pta '( 2.0000 1 )) ;define point a
+(setq ptb '( 7.1962 10)) ;define point b
+(setq ptc '(12.3923 1 )) ;define point c
+(setq lastpt (getpoint "Pick a start point:")) ;pick a point to start
+    (while (/= key 3) ;while pick button not pushed
+        (setq randn (rand lastpt)) ;get random number
+            (cond ;find midpoint to a b or c
+               ( (= randn 0)(setq lastpt (mid lastpt pta)) ) ;use corner a if 0
+               ( (= randn 1)(setq lastpt (mid lastpt pta)) ) ;use corner a if 1
+               ( (= randn 2)(setq lastpt (mid lastpt ptb)) ) ;use corner b if 2
+               ( (= randn 3)(setq lastpt (mid lastpt ptb)) ) ;use corner b if 3
+               ( (= randn 4)(setq lastpt (mid lastpt ptc)) ) ;use corner c if 4
+               ( (= randn 5)(setq lastpt (mid lastpt ptc)) ) ;use corner c if 5
+            );end cond
+        (grdraw lastpt lastpt 5) ;draw midpoint
+        (setq key (car (grread T))) ;test for pick
+     );end while
+);end Chaos</FONT></PRE></BLOCKQUOTE>
+
+<P><I><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></I></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.7: The Chaos game program</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Cond can be used anywhere you would use if. For
+example:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <FONT SIZE="-1">&nbsp;</FONT><B><FONT SIZE="-1">(if (not C:BOX)
+   (load "box") (princ "Box is already loaded. "))</FONT></B>
+   
+   <P><FONT SIZE="-1">can be written:</FONT></P>
+   
+   <P><B><FONT SIZE="-1">(cond</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">((not C:BOX) (load "box"))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">((not (not C:BOX)) (princ "Box is already
+   loaded. "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;<IMG SRC="F0508.GIF" WIDTH=704 HEIGHT=638
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.8: How to play the Chaos
+   game</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">Cond is actually the primary conditional function
+of AutoLISP. The if function is offered as an alternative to cond
+since it is similar to conditional functions used in other
+programming languages. Since the If function syntax is simpler and
+often more readable, you may want to use if where the special
+features of cond are not required.</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_5_How_to_repeat_parts"></A>How to Repeat
+parts of a Program</FONT></I></B></P>
+
+<P><FONT SIZE="-1">Another useful aspect to programs such as AutoLISP
+is their ability to perform repetitive tasks. For example, suppose
+you want to be able to record a series of keyboard entries as a
+macro. One way to do this would be to use a series of Getstring
+functions as in the following:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(Setq str1 (getstring "\nEnter macro:
+   "))</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(Setq str2 (getstring "\nEnter macro:
+   "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(Setq str3 (getstring "\nEnter macro:
+   "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(Setq str4 (getstring "\nEnter macro:
+   "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">.</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Each of the str variables would then be combined
+to form a variable storing the keystrokes. Unfortunately, this method
+is inflexible. It requires that the user input a fixed number of
+entries, no more and no less. Also, this method would use memory
+storing each keyboard entry as a single variable.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;It would be better if you had some facility
+to continually read keyboard input regardless of how few or how many
+different keyboard entries are supplied. The While function can be
+used to repeat a prompt and obtain data from the user until some test
+condition is met. The program in figure 5.9 is a keyboard macro
+program that uses the while function.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">;Program to create keyboard macros -- Macro.lsp
+&nbsp;
+(defun C:MACRO (/ str1 macro macname)
+(setq macro '(command))                                          ;start list with command
+(setq macname (getstring "\nEnter name of macro: "))             ;get name of macro
+    (while (/= str1 "/")                                         ;do while str1 not eq. /
+         (setq str1 (getstring "\nEnter macro or / to exit: " )) ;get keystrokes
+            (if (= str1 "/")
+                (princ "\nEnd of macro ")                        ;if / then print message
+                (Setq macro (append macro (list str1)))          ;else append keystrokes to
+             )                                                   ;end if macro list
+     );end while
+(eval (list 'defun (read macname) '() macro)) ;create function
+)                                                                ;end macro</FONT></PRE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">
+<HR>
+&nbsp;</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.9: A program to create keyboard
+   macros</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><B><I><A NAME="Chapter_5_Using_the_while_function"></A>Using the
+While Function</I></B></P>
+
+<P><FONT SIZE="-1">The syntax for while is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(while (</FONT><U><FONT SIZE="-1">test
+   expression</FONT></U><FONT SIZE="-1">)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(</FONT><U><FONT SIZE="-1">expression
+   1</FONT></U><FONT SIZE="-1">)(</FONT><U><FONT SIZE="-1">expression
+   2</FONT></U><FONT SIZE="-1">)(</FONT><U><FONT SIZE="-1">expression
+   3</FONT></U><FONT SIZE="-1">) ....</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first argument to while is a test expression.
+Any number of expressions can follow. These following expressions are
+evaluated if the test returns a non-nil value.</FONT></P>
+
+<P><FONT SIZE="-1">Open an AutoLISP file called Macro.lsp and copy
+the contents of figure 5.8 into this file. Since this is a larger
+program file than you worked with previously, you may want to make a
+print out of it and check your print out against figure 5.8 to make
+sure you haven't made any transcription errors. Go back to your
+AutoCAD Chapt5 file. Now you will use the macro program to create a
+keyboard macro that changes the last object drawn to a layer called
+hidden. Do the following:</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Draw a diagonal line from the lower
+left corner of the drawing area to the upper right corner.</FONT>
+</P>
+
+<P><FONT SIZE="-1">2. Load the Macro.lsp file</FONT></P>
+
+<P><FONT SIZE="-1">3. Enter Macro at the command prompt.</FONT></P>
+
+<P><FONT SIZE="-1">4. At the following prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Enter name of macro:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">5. Enter the word </FONT><B><FONT
+SIZE="-1">chlt</FONT></B><FONT SIZE="-1">. At the prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Enter macro or / to exit:</FONT></B>
+   
+   <P><FONT SIZE="-1">&nbsp;</FONT></P>
+</DIR>
+
+<P><FONT SIZE="-1">6. Enter the word </FONT><B><FONT
+SIZE="-1">CHANGE</FONT></B><FONT SIZE="-1">.<BR>
+
+The Enter macro prompt appears again. Enter the following series of
+words at each Enter macro prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Enter macro or / to exit: </FONT>L</B>
+   
+   <P><B><FONT SIZE="-1">Enter macro or / to exit: [</FONT><U><FONT
+   SIZE="-1">press return</FONT></U><FONT SIZE="-1">]</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">Enter macro or / to exit: </FONT>P</B></P>
+   
+   <P><B><FONT SIZE="-1">Enter macro or / to exit: </FONT>LT</B></P>
+   
+   <P><B><FONT SIZE="-1">Enter macro or / to exit: </FONT>HIDDEN</B>
+   </P>
+   
+   <P><B><FONT SIZE="-1">Enter macro or / to exit: [</FONT><U><FONT
+   SIZE="-1">press return</FONT></U><FONT SIZE="-1">]</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">Enter macro or / to exit: </FONT>/</B></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This is where the </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> function takes action. As
+you enter each response to the Enter macro prompt, </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> test to see if you entered
+a forward slash. If not, it evaluates the expressions included as its
+arguments. Once you enter the backslash, </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> stops its repetition. You
+get the prompt:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">End of macro CLAYER</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The input you gave to the Enter macro prompt is
+exactly what you would enter if you had used the change command
+normally. Now run your macro by entering:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">chlt</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The line you drew changes to the hidden line
+type.</FONT></P>
+
+<P><FONT SIZE="-1">When Macro starts, it first defines two variables
+def and macro.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(setq def "defun ")</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq macro '(command))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Def is a string variable that is used later to
+define the macro. Macro is the beginning of a list variable which is
+used to store the keystrokes of the macro. The next line prompts the
+user to enter a name for the macro.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(setq macname (getstring "\nEnter name of
+   macro: "))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The entered name is then stored with the variable
+macname. Finally, we come to the while function.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(while (/= str1 "/")</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> expression is broken into
+several lines. The first line contains the actual while function
+along with the test expression. In this case, the test compares the
+variable str1 with the string "/" to see if they are not equal. So
+long as str1 is not equal to "/", while will execute the arguments
+that follow the test. The next four lines are the expressions to be
+evaluated. The first of these lines prompts the user to enter the
+text that compose the macro.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(setq str1 (getstring "\nEnter macro or / to
+   exit: " ))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">When the user enters a value at this prompt, it is
+assigned to the variable str1. The next line uses an if function to
+test if str1 is equal to "/".</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(if (= str1 "/")</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">If the test results in T, the next line prints the
+string </FONT><U><FONT SIZE="-1">End of macro</FONT></U><FONT
+SIZE="-1">.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(princ "\nEnd of macro ")</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This expression prints the prompt </FONT><B><FONT
+SIZE="-1">End of macro</FONT></B><FONT SIZE="-1"> to the prompt line.
+If the test results in nil, the following line appends the value of
+str1 to the existing list macro.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(Setq macro (append macro (list
+   str1)))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The </FONT><U><FONT
+SIZE="-1">append</FONT></U><FONT SIZE="-1"> function takes one list
+and appends its contents to the end of another list. In this case,
+whatever is entered at the Enter macro prompt is appended to the
+variable macro. Each time a new value is entered at the Enter macro
+prompt, it is appended to the variable macro creating a list of
+keyboard entries to be saved (see figure 5.10).</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0510.GIF" WIDTH=874 HEIGHT=638
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 5.10: Appending lists to other
+   lists</FONT></I></P>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><FONT SIZE="-1">The next two lines close the if and while
+expressions. Note that comments are used to help make the program
+easier to understand.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">);end if</FONT></B>
+   
+   <P><B><FONT SIZE="-1">);end while</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The last line combines all the elements of the
+program into an expression that, when evaluated, creates a new macro
+program.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(eval (list (read def) (read macname) '()
+   macro))</FONT></B>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Figure 5.11 shows gives breakdown of how this last
+line works.</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0511.GIF" WIDTH=706 HEIGHT=500
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><I><FONT SIZE="-1">Figure 5.11: How the macro is
+   defined</FONT></I></P>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The read function used in this expression is a
+special function that converts a string value into a symbol. If a
+string argument to read contains spaces, read will convert the first
+part of the string and ignore everything after the space.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The while expression does not always include
+prompts for user input. Figure 5.12 shows a simple program that
+inserts a sequence of numbers in increasing value. Each number is
+increased by one and they are spaces 0.5 units apart. The user is
+prompted for a starting point and a first and last number. Once the
+user inputs this information, the program calculates the number to be
+inserted, inserts the number using the text command, calculates the
+next number and so on until the last number is reached.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">;Program to draw sequential numbers -- Seq.lsp
+(defun C:SEQ (/ pt1 currnt last)
+(setq pt1 (getpoint "\nPick start point: "))
+(setq currnt (getint "\nEnter first number: "))
+(setq last (getint "\nEnter last number: "))
+(command "text" pt1 "" "" currnt)                     ;write first number
+     (while (&lt; currnt last)                           ;while not last number
+        (setq currnt (1+ currnt))                     ;get next number
+          (command "text" "@.5&lt;0" "" "" currnt)       ;write value of currnt
+      );end while
+);end seq</FONT></PRE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">
+<HR>
+&nbsp;</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.12: Sequential number
+   program</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">This program expects the current text style to
+have a height of 0.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_5_Using_the_Repeat_function"></A>Using the
+Repeat Function</I></B></P>
+
+<P><FONT SIZE="-1">Another function that performs recursions is the
+</FONT><U><FONT SIZE="-1">repeat</FONT></U><FONT SIZE="-1"> function.
+Repeat works in a similar way to While but instead of using a
+predicate to determine whether to evaluate its arguments, repeat uses
+an integer value to determine the number of times to perform an
+evaluation. The syntax for repeat is:</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(repeat [</FONT><U><FONT
+   SIZE="-1">n</FONT></U><FONT SIZE="-1">]</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(</FONT><U><FONT SIZE="-1">expression
+   1</FONT></U><FONT SIZE="-1">)(</FONT><U><FONT SIZE="-1">expression
+   2</FONT></U><FONT SIZE="-1">) (</FONT><U><FONT
+   SIZE="-1">expression 3</FONT></U><FONT SIZE="-1">) ...</FONT></B>
+   </P>
+   
+   <P><B><FONT SIZE="-1">)</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The </FONT><U><FONT SIZE="-1">n</FONT></U><FONT
+SIZE="-1"> above is an integer or a symbols representing an
+integer.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">The program in Figure 5.13 shows the sequential
+number program using repeat instead of while. When run, this program
+appears to the user to act in the same way as the program that uses
+while.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">;Program to write sequential numbers using Repeat
+(defun C:SEQ (/ pt1 currnt last)
+(setq pt1 (getpoint "\nPick start point: "))
+(setq currnt (getint "\nEnter first number: "))
+(setq last (getint "\nEnter last number: "))
+(command "text" pt1 "" "" currnt)                ;write first number
+   (repeat (- last currnt)                       ;repeat last - currnt times
+      (setq currnt (1+ currnt))                  ;add 1 to currnt
+      (command "text" "@.5&lt;0" "" "" currnt)      ;write value of currnt
+   );end repeat
+);end seq</FONT></PRE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">
+<HR>
+&nbsp;</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.13: Sequential number program using
+   repeat</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><B><I><A NAME="Chapter_5_Using_Test_expressions"></A>Using Test
+Expressions</I></B></P>
+
+<P><FONT SIZE="-1">So far, we have shown you functions that perform
+evaluations based on the result of some test. In all the examples, we
+use predicates and logical operators for testing values. While
+predicates and logical operators are most commonly used for tests,
+you are not strictly limited to these functions. Any expression that
+can evaluate to nil can also be used as a test expression. Since
+virtually all expressions are capable of returning nil, you can use
+almost any expression as a test expression. The following function
+demonstrates this point:</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(defun MDIST (/ dstlst dst)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq dstlst '(+ 0))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(while (setq dst (getdist "\nPick distance
+   or Return to exit: "))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(Setq dstlst (append dstlst (list
+   dst)))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">(princ (Eval dstlst))</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">);end while</FONT></B></P>
+   
+   <P><B><FONT SIZE="-1">);end MDIST</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">This function gives the user a running tally of
+distances. The user is prompted to pick a distance or press Return to
+exit. if a point is picked, the user is prompted for a second point.
+The distance between these two points is displayed on the prompt. The
+Pick distance prompt appears again and if the user picks another pair
+of points, the second distance is added to the first and the total
+distance is displayed. This continues until the user presses return.
+The following discussion examines how this function works.</FONT>
+</P>
+
+<P><FONT SIZE="-1">&nbsp;As usual, the first line defines the
+function. The second line creates a variable called dstlst and gives
+it the list value (+ 0).</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(defun MDIST (/ dstlst dst)</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(setq dstlst '(+ 0))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The next line begins the </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> portion of the program.
+Instead of a predicate test, however, this expression uses a setq
+function.</FONT></P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(while (setq dst (getdist "\nPick point or
+   Return to exit: "))</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">As long as points are being picked, getdist
+returns a non-nil value to setq and </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> repeats the evaluation of
+its arguments. When the user presses return, getdist returns nil and
+</FONT><B><FONT SIZE="-1">while</FONT></B><FONT SIZE="-1"> quits
+evaluating its arguments. We see that </FONT><B><FONT
+SIZE="-1">while</FONT></B><FONT SIZE="-1"> is really only concerned
+with nil and non-nil since the test expression in this example
+returns a value other than T.</FONT></P>
+
+<P><FONT SIZE="-1">The next few lines append the current distance to
+the list dstlst then evaluates the list to obtain a total:</FONT>
+</P>
+
+<BLOCKQUOTE><DIR>
+   <B><FONT SIZE="-1">(Setq dstlst (append dstlst (list
+   dst)))</FONT></B>
+   
+   <P><B><FONT SIZE="-1">(princ (eval dstlst))</FONT></B></P>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The function princ prints the value obtained from
+(eval dstlst) to the prompt (see Figure 5.14).</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE><FONT
+FACE="Courier New">;Program to measure non-sequential distances -- Mdist.lsp
+(Defun C:MDIST (/ dstlst dst)
+(setq dstlst '(+ ))                                 ;create list with plus
+;while a return is not entered ...
+    (while (setq dst (getdist "\nPick point or Return to exit: "))
+       (Setq dstlst (append dstlst (list dst)))     ;append distance value
+       (princ (Eval dstlst))                        ;print value of list
+    );end while
+);end mdist
+&nbsp;</FONT></PRE></BLOCKQUOTE>
+
+<P><FONT FACE="Courier New">
+<HR>
+</FONT></P>
+
+<BLOCKQUOTE><PRE>&nbsp;</PRE></BLOCKQUOTE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 5.14: The Mdist function</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_5_Conclusion"></A>Conclusion</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">You have been introduced to several of the most
+useful functions available in AutoLISP. You can now begin to create
+functions and programs that will perform time consuming, repetitive
+tasks quickly and easily. You can also build-in some intelligence to
+your programs by using decision making functions. You may want to try
+your hand at modifying the programs in this chapter. For example, you
+could try to modify the Mdist function to save the total distance as
+a global variable you can later recall.</FONT></P>
+
+<P><FONT SIZE="-1">In the next chapter, you will get a brief
+refresher course in geometry.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+</BODY>
+</HTML>

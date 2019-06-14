@@ -1,0 +1,2039 @@
+<!--This file created 8:21 AM  6/18/97 by Claris Home Page version 2.0-->
+<HTML>
+<HEAD>
+   <TITLE>ABC's of AutoLISP Chapter 7: Working with Text - Copyright
+   &copy; 1997 George
+   Omura</TITLE>
+   <META NAME=GENERATOR CONTENT="Claris Home Page 2.0">
+   <X-SAS-WINDOW TOP=27 BOTTOM=623 LEFT=4 RIGHT=672>
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+</HEAD>
+<BODY BGCOLOR="#FFFFFF">
+
+<P><B><I><FONT SIZE="+3"><A NAME="Chapter_7"></A>Chapter 7: Working
+with Text</FONT></I></B></P>
+
+<BLOCKQUOTE><P><FONT
+SIZE="-1"><A HREF="#Chapter_7_Introduction">Introduction</A></FONT>
+</P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_7_Working_with_String">Working
+With String Data Types</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_7_Searching_for_Strings">Searching for
+strings</A></FONT></P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_7_How_to_convert_numbers">How to
+Convert Numbers to Strings and Back</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_7_Converting_a_number">Converting a
+Number to a String</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_7_Converting_Other_Data">Converting Other
+Data Types</A></FONT></P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_7_How_to_read_ASCII">How to Read
+ASCII Text Files</A></FONT></P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_7_Using_a_file_import">Using a
+File Import Program</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_7_Writing_ASCII_files_to_disk">Writing
+ASCII Files to Disk</A></FONT></P>
+
+<P><FONT SIZE="-1"><A HREF="#Chapter_7_Using_a_text_export">Using a
+Text Export Program</A></FONT></P>
+
+<P><FONT
+SIZE="-1"><A HREF="#Chapter_7_Conclusion">Conclusion</A></FONT></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_7_Introduction"></A>Introduction</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">If you have ever had to edit large amounts of text
+in a drawing, you have encountered one of AutoCAD's most frustrating
+limitations. While AutoCAD's text handling capabilities is one of
+it's strong points, it still leaves much to be desired where editing
+text is concerned. Fortunately AutoLISP can be of great help where
+text is concerned. In this chapter, you will look at the many
+functions that AutoLISP offers in the way of text or string
+manipulation. You will also look at how textural information can be
+store and retrieved from a file on disk and how data can be converted
+to and from string data types.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_7_Working_with_String"></A>Working With
+String Data Types</FONT></I></B></P>
+
+<P><FONT SIZE="-1">In earlier versions of AutoCAD, editing text was a
+tedious task. You have to use the Change command to select a text
+line, then press return several times before you can actually make
+changes to the text. Even then, you would have to re-enter the entire
+line of text just to change one word. The text editing features of
+AutoCAD have come a long way and it doesn't take the same painful
+effort it once did. The following program is a simple line editor
+which simplifies the task of editing a single line of text. It was
+designed for the older versions of AutoCAD before the Ddmodify and
+Ddedit commands were available. While its function may be a bit
+outdated, it will serve to demonstrate how to handle text in
+AutoLISP.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_7_Searching_for_Strings"></A>Searching for
+Strings</I></B></P>
+
+<P><FONT SIZE="-1">The program Chtxt shown in figure 7.1 is a simple
+line editor. It uses AutoLISPs string handling functions to locate a
+specific string, then it replaces that string with another one
+specified by the user.</FONT></P>
+
+<P><FONT SIZE="-1">Open a file called chtxt.lsp and copy the program
+shown in figure 7.1 into the file. Save and close this file and open
+a new AutoCAD file called Chapt7.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<PRE>;function to find text string from text entity-------------------------------
+(defun gettxt ()
+(setvar "osmode" 64)                                ;set osnap to insert
+(setq pt1 (getpoint "\nPick text to edit: "))       ;get point on text
+(Setvar "osmode" 0)                                 ;set osnap back to zero
+(setq oldobj (entget (ssname (ssget pt1) 0) ))      ;get entity zero from prop.
+(setq txtstr (assoc 1 oldobj))                      ;get list containing string
+(cdr txtstr)                                        ;extract string from prop.
+)
+&nbsp;
+;function to update text string of text entity-------------------------------
+(defun revtxt ()
+(setq newtxt (cons 1 newtxt))                       ;create replacement propty.
+(entmod (subst newtxt txtstr oldobj))               ;update database
+)
+&nbsp;
+;program to edit single line of text-----------------------------------------
+(defun C:CHTXT (/ count oldstr newstr osleng otleng oldt old1
+                  old2 newtxt pt1 oldobj txtstr oldtxt)
+(setq count 0)                                      ;setup counter to zero
+(setq oldtxt (gettxt))                              ;get old string from text
+(setq otleng (strlen oldtxt))                       ;find length of old string
+(setq oldstr (getstring T "\nEnter old string "))   ;get string to change
+(Setq newstr (getstring T "\nEnter new string "))   ;get replacement string
+(setq osleng (strlen oldstr))                       ;find length of substring-
+  ;while string to replace is not found, do...       to be replaced
+  (while (and (/= oldstr oldt)(&lt;= count otleng))
+    (setq count (1+ count))                         ;add 1 to counter
+    (setq oldt (substr oldtxt count osleng))        ;get substring to compare
+  );end WHILE
+  ;if counting stops before end of old string is reached...
+  (if (&lt;= count otleng)
+        (progn
+           (setq old1 (substr oldtxt 1 (1- count))) ;get 1st half of old string
+           (setq old2 (substr oldtxt (+ count osleng) otleng));get 2nd half
+           (setq newtxt (strcat old1 newstr old2))  ;combine to make new string
+           (revtxt)                                 ;update drawing
+        )
+        (princ "\nNo matching string found.")       ;else print message
+  );end IF
+(PRINC)
+);END C:EDTXT<FONT SIZE="-1">
+&nbsp;
+<HR></FONT></PRE>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 7.1: The Chtxt.lsp
+file</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Load the Chtxt.lsp file and do the following
+steps:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">&nbsp;1. Use the Dtext command and
+write the following line of text:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">For want of a battle, the kingdom
+was lost.</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">2. Enter Chtxt</FONT></P>
+
+<P><FONT SIZE="-1">3. At the prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Pick text to edit:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">pick the text you just entered. Note that the
+osnap cursor appears.</FONT></P>
+
+<P><FONT SIZE="-1">4. At the next prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Enter old string:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">enter the word </FONT><U><FONT
+SIZE="-1">battle</FONT></U><FONT SIZE="-1"> in lower case
+letters.</FONT></P>
+
+<P><FONT SIZE="-1">5. At the next prompt:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">Enter new string:</FONT></B>
+</DIR>
+
+<P><FONT SIZE="-1">enter the word </FONT><U><FONT
+SIZE="-1">nail</FONT></U><FONT SIZE="-1">.</FONT></P>
+
+<P><FONT SIZE="-1">The text changes to read:</FONT></P>
+
+<DIR>
+   <B><FONT SIZE="-1">For want of a nail, the kingdom was
+   lost.</FONT></B>
+</DIR></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In the C:CHTXT program, you are able to change a
+group of letters in a line of text without having to enter entire
+line over again. Also, you don't have to go through a series of
+unneeded prompts as you do with the change command. The following
+describes what C:CHTXT goes through to accomplish this.</FONT></P>
+
+<P><FONT SIZE="-1">The C:CHTXT program starts out with a user defined
+function called gettxt.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun C:EDTXT (/ count oldstr
+newstr osleng otleng oldt old1</FONT></B></P>
+
+<P><B><FONT SIZE="-1">old2 newtxt pt1 oldobj txtstr
+oldtxt)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq count 0)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq oldtxt (gettxt))</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Gettxt prompts you to select the text to be
+edited. It then extracts from the drawing database the text string
+associated with that text. The extracted text is assigned to the
+symbol oldtxt. We will look at this extraction process in Chapter---
+but for now, think of the gettxt function as a function for getting
+text</FONT><I><FONT SIZE="-1">.</FONT></I></P>
+
+<P><FONT SIZE="-1">In the next line of the Chtxt program, we see a
+new function strlen:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq otleng (strlen
+oldtxt))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Strlen finds the number of characters in a
+string.</FONT></P>
+
+<P><FONT SIZE="-1">The syntax for strlen is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(strlen [</FONT><U><FONT
+SIZE="-1">string or string variable</FONT></U><FONT
+SIZE="-1">])</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Strlen returns an integer value representing the
+number of characters found in its arguments. Blank spaces are counted
+as characters. In the above expression, the value found by strlen is
+assigned to the variable otleng.</FONT></P>
+
+<P><FONT SIZE="-1">The next two expressions obtain from the user the
+old portion of the text to be replace and the replacement
+text.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq oldstr (getstring T "\nEnter
+old string "))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(Setq newstr (getstring T "\nEnter new string
+"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">These two strings are saved as oldstr and newstr.
+Note that the T argument is used with getstring to allow the user to
+use spaces in the string.</FONT></P>
+
+<P><FONT SIZE="-1">The next set of expressions do the work of the
+program. First, The number of characters of the string to be
+replaced, oldstr, is found by using the strlen function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq osleng (strlen
+oldstr))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This value is stored with a variable called
+osleng. Osleng will be used to find exactly where in the line of text
+the old string occurs in the line of text being edited (see figure
+7.2).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0702.GIF" WIDTH=706 HEIGHT=165
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><FONT SIZE="-1">Figure 7.2: Using the strlen function</FONT>
+   </P>
+</DIR>
+
+<P><FONT SIZE="-1">The following while function uses osleng\ to find
+the exact location of oldstr within oldtxt.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(while (and (/= oldstr oldt)(&lt;=
+count otleng))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq count (1+ count))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq oldt (substr oldtxt count
+osleng))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">);end WHILE</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The while expression tests for two conditions. The
+first test is to see of the current string being read matches the
+string entered at the "String to be changed" prompt. The second test
+checks to see if the end of the text line has been reached. The
+</FONT><B><FONT SIZE="-1">and</FONT></B><FONT SIZE="-1"> logical
+operator is used to make sure that both test conditions are met
+before it continues evaluating its other expressions.</FONT></P>
+
+<P><FONT SIZE="-1">We see a new function substr in this group of
+expressions:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(Setq oldt (substr oldtxt count
+osleng))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Substr extracts a sequence of characters from a
+string. Its syntax is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(substr</FONT></B></P>
+
+<P><B><FONT SIZE="-1">[</FONT><U><FONT SIZE="-1">string or string
+variable</FONT></U><FONT SIZE="-1">]</FONT></B></P>
+
+<P><B><FONT SIZE="-1">[</FONT><U><FONT SIZE="-1">beginning of
+substring</FONT></U><FONT SIZE="-1">][</FONT><U><FONT SIZE="-1">end
+of substring</FONT></U><FONT SIZE="-1">]</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first argument to substr is the string within
+which a substring is to be extracted. By substring, we mean a group
+of characters that are contained within the main string. The
+substring can be any contiguous sequence of characters within the
+main string including the entire string itself. The second argument
+is the beginning location for the substring. This can be an integer
+from 1 to the total number of characters in the main string. The
+third argument is the ending location of the substring. This value is
+an integer greater than or equal to the value for the beginning of
+the substring and it determines the ending location of the substring
+(see figure 7.3).</FONT></P>
+
+<DIR>
+   <FONT SIZE="-1"><IMG SRC="F0703.GIF" WIDTH=705 HEIGHT=409
+   X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=middle></FONT>
+   
+   <P><FONT SIZE="-1">Figure 7.3: Using the substr function</FONT>
+   </P>
+</DIR>
+
+<P><FONT SIZE="-1">The while expression extracts a group of
+characters from oldtxt starting at the beginning. It stores this
+substring in the variable oldt. Oldt is then compared with oldstr to
+see if they match. If the don't match, then while advances to the
+next group of characters in oldtxt and compares this new group to
+oldstr. This goes on until a match is found or the end of oldtxt is
+reached (See figure 7.4).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0704A.GIF" WIDTH=706 HEIGHT=640
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom><IMG
+SRC="F0704B.GIF" WIDTH=706 HEIGHT=252 X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN=bottom></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 7.4: Using the while
+expression to find a matching string.</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">String data types are case sensitive, This means
+that if you had entered "BATTLE" instead of "battle" at the string to
+change prompt, you would have gotten the message:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">No matching string
+found.</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The string "BATTLE" is not equal to "battle" so as
+edtxt tries to find a string that matches "BATTLE", it never finds
+it.</FONT></P>
+
+<P><FONT SIZE="-1">When the while expression is done, the next group
+of expressions takes the old text line apart and replaces the old
+string with the new. First the if function is used to test whether
+the oldstring was indeed found.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(if (&lt;= count otleng)</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The if expression checks to see if the variable
+count is equal to or less than the length of the old text line. If
+count is less than otleng, then the following set of expressions are
+evaluated:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(progn</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq old1 (substr oldtxt 1 (1-
+count)))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq old2 (substr oldtxt (+ count osleng)
+otleng))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq newtxt (strcat old1 newstr
+old2))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(revtxt)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The progn function allows the group of expressions
+that follow to appear as one expression to the </FONT><B><FONT
+SIZE="-1">if</FONT></B><FONT SIZE="-1"> function. The first
+expression of this group:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq old1 (substr oldtxt 1 (1-
+count)))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">separates out the first part of the old text line
+just before the old string. This is done using the substr function
+and the count variable to find the beginning of the old string (see
+figure 7.5).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0705.GIF" WIDTH=706 HEIGHT=208
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 7.5: Finding the string
+before oldstr</FONT></I></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The next expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq old2 (substr oldtxt (+ count
+osleng) otleng))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">separates out the last part of the old text line
+starting just after the old string. Again this is done using the
+substr function and the count variable. This time, count is added to
+osleng to find the location of the end of the old string. Otleng is
+used for the substring length. Even though its value is greater than
+the length of the substring w wan, AutoLISP will read the substring
+to the end of Oldtxt (see figure 7.6).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0706.GIF" WIDTH=706 HEIGHT=208
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 7.6: Finding the string
+after oldstr</FONT></I></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Finally, the expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq newtxt (strcat old1 newstr
+old2))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">combines the first and last part of the old text
+line with the new string to form the replacement text line (see
+figure 7.7).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0707.GIF" WIDTH=706 HEIGHT=198
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom></FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">Figure 7.7: Combining the old string
+with the new</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The last expression in this group:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(revtxt)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">is a user defined function that does the work of
+replacing the old text with the new.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun revtxt ()</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq newtxt (cons 1 newtxt))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(entmod (subst newtxt txtstr
+oldobj))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)&nbsp;</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In the event that count is greater than otleng,
+the following expression is evaluated:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(princ "\nNo matching string
+found.")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">);end IF</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This expression prints the message:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">No matching string
+found.</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">to the prompt line.</FONT></P>
+
+<P><FONT SIZE="-1">The very last expression of the program:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(PRINC)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">);END C:EDTXT</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">seems pretty useless at first glance. Princ
+without any arguments prints a blank to the prompt line. If this
+expression were not here, however, AutoLISP would display the value
+of the last expression evaluated. Remember that AutoLISP constantly
+cycles through the read-evaluate-print loop. The generally, the value
+of the last expression evaluated is printed to the prompt line. While
+this doesn't affect the workings of the program, it may prove to be
+an annoyance to the user or it may confuse someone not familiar with
+the program. Since princ will print a blank at the prompt line when
+no arguments are supplied, it is often used without arguments at the
+end of a program simply to keep the appearance of the program clean.
+If you like, try deleting the Princ expression from the program and
+reload and run the program again. You will a value will appear in the
+prompt line when C:EDTXT finishes running.</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_7_How_to_convert_numbers"></A>How to
+Convert Numbers to String and Back</FONT></I></B></P>
+
+<P><FONT SIZE="-1">There are times when it is necessary to convert a
+string value to a number or vice versa. Suppose, for example, that
+you want to be able to control the spacing of numbers generated by
+the program in chapter 5. You may recall that this program creates a
+sequence of numbers equally spaced. The user is able to determine the
+beginning and ending numbers and the location of the beginning number
+but cannot determine the distance between numbers. You can use the
+rtos function to help obtain a distance value and include it with the
+program. Figure 7.8 shows the C:SEQ program from chapter 5 modified
+to accept distance input.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<PRE>(defun C:SEQ (/ pt1 currnt last)
+(setq pt1    (getpoint "\nPick start point: "))
+(setq spc    (getdist pt1 "\nEnter number spacing: "))
+(setq currnt (getint "\nEnter first number: "))
+(setq last   (getint "\nEnter last number: "))<B>
+(setq stspc  (rtos spc 2 2))
+(setq stspc  (strcat "@" stspc "&lt;0" ))
+(command "text" pt1 "" "" currnt)
+  (repeat (- last currnt)
+    (setq currnt (1+ currnt))
+    (command "text" stspc "" "" currnt)
+  )
+)</B></PRE>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 7.8: The sequential number
+   program</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><B><I><A NAME="Chapter_7_Converting_a_number"></A>Converting a
+Number to a String</I></B></P>
+
+<P><FONT SIZE="-1">Exit AutoCAD and open the AutoLISP file seq.lsp.
+Make the changes shown in bold face type in figure 7.10. Save and
+exit the seq.lsp file and return to the file chapt7. Load the C:SEQ
+program and do the following:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter </FONT><B><FONT
+SIZE="-1">seq</FONT></B><FONT SIZE="-1"> at the command
+prompt.</FONT></P>
+
+<P><FONT SIZE="-1">2. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Pick start point:</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">pick a point at coordinate 1,3.</FONT></P>
+
+<P><FONT SIZE="-1">3. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Enter spacing:</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">enter .5.</FONT></P>
+
+<P><FONT SIZE="-1">4. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Enter first number:</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">enter 4.</FONT></P>
+
+<P><FONT SIZE="-1">5. At the last prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Enter last number:</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">enter</FONT><B><FONT SIZE="-1"> 12</FONT></B><FONT
+SIZE="-1">.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The numbers 4 through 12 will appear beginning at
+your selected start point and spaced at 0.5 unit intervals.</FONT>
+</P>
+
+<P><FONT SIZE="-1">The program starts by prompting the user to pick a
+starting point:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(defun C:SEQ (/ pt1 pt2 currnt
+last)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq pt1 (getpoint "\nPick start point:
+"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">A new prompt is added that obtains the spacing for
+the numbers:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq spc (getdist pt2 "\nEnter
+number spacing: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The spacing is saved as the symbol spc. The
+program continues by prompting the user to enter starting and ending
+value:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq currnt (getint "\nEnter first
+number: "))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq last (getint "\nEnter last number:
+"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Next, the function rtos is used to convert the
+value of spc to a string:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq stspc (rtos spc 2
+2))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">the syntax for rtos is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(rtos [</FONT><U><FONT
+SIZE="-1">real or integer value</FONT></U><FONT
+SIZE="-1">][</FONT><U><FONT SIZE="-1">unit style code</FONT></U><FONT
+SIZE="-1">][</FONT><U><FONT SIZE="-1">precision</FONT></U><FONT
+SIZE="-1">])</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first argument to rtos is the number being
+converted. It can be a real or integer. The next argument is the unit
+style code. Table shows a listing of these codes and their
+meaning.</FONT></P>
+
+<BLOCKQUOTE><BLOCKQUOTE><P><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=117 HEIGHT=13>
+         <P><B>Code</B>
+      </TD><TD HEIGHT=13>
+         <P><B>Format</B>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=117>
+         <P>1
+      </TD><TD>
+         <P>Scientific
+      </TD></TR>
+   <TR>
+      <TD WIDTH=117>
+         <P>2
+      </TD><TD>
+         <P>Decimal
+      </TD></TR>
+   <TR>
+      <TD WIDTH=117>
+         <P>3
+      </TD><TD>
+         <P>Feet and decimal inches
+      </TD></TR>
+   <TR>
+      <TD WIDTH=117>
+         <P>4
+      </TD><TD>
+         <P>Feet and inches
+      </TD></TR>
+   <TR>
+      <TD WIDTH=117>
+         <P>5
+      </TD><TD>
+         <P>Fractional units
+      </TD></TR>
+</TABLE></P></BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This code determines the style the number will be
+converted to. For example, if you want a number to be converted to
+feet and inches, you would use the code 4. The third argument,
+precision, determines to how many decimal places to convert. In our
+example, we use the code 2 for unit style and 2 for the number of
+decimal places to convert to a string.</FONT></P>
+
+<P><FONT SIZE="-1">The next expression combines the converted number
+with the strings "@" and "&lt;0" to form a string that can be used in
+with the command function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq stspc (strcat "@" stspc
+"&lt;0" ))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The next two expressions set up the location of
+the beginning of the text:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(command "text" pt1 "" ""
+currnt)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This is done because in the next set of
+expressions, The string that locates the text, "@</FONT><U><FONT
+SIZE="-1">distance</FONT></U><FONT SIZE="-1">&lt;0", gives a distance
+and direction rather than a point. The previous expressions locate a
+point which will cause the Text command in the next expression to
+place the text in the proper place:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(repeat (- last currnt)</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(setq currnt (1+ currnt))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(command "text" stspc "" "" currnt)</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In the last three expressions, the repeat function
+is used to issue the text command, enter the number and advance to
+the next number repeatedly until the last number is in place (see
+figure 7.9).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0709.GIF" WIDTH=706 HEIGHT=342
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 7.9: Writing the numbers
+into the AutoCAD file</FONT></I></P>
+
+<P><B><I>&nbsp;</I></B></P></BLOCKQUOTE>
+
+<P><B><I><A NAME="Chapter_7_Converting_Other_Data"></A>Converting
+Other Data Types</I></B></P>
+
+<P><FONT SIZE="-1">Before we continue, we should briefly look at
+several other functions that offer data type conversion. These
+functions are listed in table .</FONT></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=75>
+         <P><B><FONT SIZE="+1">Function</FONT></B>
+      </TD><TD>
+         <BLOCKQUOTE><P><B><FONT SIZE="+1">Uses</FONT></B>
+         </BLOCKQUOTE>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=75>
+         <P><FONT SIZE="+1">angtos</FONT>
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT SIZE="+1">Converts real numbers
+         (radians) into string values.</FONT></BLOCKQUOTE>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=75>
+         <P><FONT SIZE="+1">ascii</FONT>
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT SIZE="+1">Converts a string into its
+         ASCII character code.</FONT></BLOCKQUOTE>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=75>
+         <P><FONT SIZE="+1">atoi </FONT>
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT SIZE="+1">Converts a string a string
+         into an integer.</FONT></BLOCKQUOTE>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=75>
+         <P><FONT SIZE="+1">&nbsp;itoa</FONT>
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT SIZE="+1">Converts an integer to a
+         string.</FONT></BLOCKQUOTE>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=75>
+         <P><FONT SIZE="+1">chr</FONT>
+      </TD><TD>
+         <BLOCKQUOTE><P><FONT SIZE="+1">Converts an integer
+         representing an ASCII character code into a string.</FONT>
+         </BLOCKQUOTE>
+      </TD></TR>
+</TABLE><FONT SIZE="+1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Angtos works in a similar way to rtos. It accepts
+a unit style code and a precision value. Its syntax is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(angtos [</FONT><U><FONT
+SIZE="-1">angle value</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">unit style code</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">precision</FONT></U><FONT SIZE="-1">])</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">All of the other functions listed in table take a
+single item, the value to be converted, as their argument. For
+example, to convert an integer into a string, you could use the
+following expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(itoa 55)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The resulting value is "55".</FONT></P>
+
+<P><FONT SIZE="-1">The functions </FONT><U><FONT
+SIZE="-1">ascii</FONT></U><FONT SIZE="-1"> and </FONT><U><FONT
+SIZE="-1">chr</FONT></U><FONT SIZE="-1"> convert ASCII character
+codes. These are numeric values that represent letters, numbers and
+symbols. Figure 7.10 shows these codes and their meaning.</FONT></P>
+
+<P><TABLE BORDER=0 WIDTH="100%">
+   <TR>
+      <TD WIDTH=34>
+         <P><B>Code</B>
+      </TD><TD>
+         <P><B>Meaning</B>
+      </TD><TD WIDTH=34>
+         <P><B>Code</B>
+      </TD><TD>
+         <P><B>Meaning</B>
+      </TD><TD WIDTH=36>
+         <P><B>Code</B>
+      </TD><TD>
+         <P><B>Meaning</B>
+      </TD><TD WIDTH=34>
+         <P><B>Code</B>
+      </TD><TD WIDTH=66>
+         <P><B>Meaning</B>
+      </TD><TD WIDTH=35>
+         <P><B>Code</B>
+      </TD><TD WIDTH=58>
+         <P><B>Meaning</B>
+      </TD><TD WIDTH=35>
+         <P><B>Code</B>
+      </TD><TD>
+         <P><B>Meaning</B>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>07
+      </TD><TD>
+         <P>Beep
+      </TD><TD WIDTH=34>
+         <P>46
+      </TD><TD>
+         <P>.
+      </TD><TD WIDTH=36>
+         <P>65
+      </TD><TD>
+         <P>A
+      </TD><TD WIDTH=34>
+         <P>84
+      </TD><TD WIDTH=66>
+         <P>T
+      </TD><TD WIDTH=35>
+         <P>103
+      </TD><TD WIDTH=58>
+         <P>g
+      </TD><TD WIDTH=35>
+         <P>122
+      </TD><TD>
+         <P>z
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>09
+      </TD><TD>
+         <P>Tab
+      </TD><TD WIDTH=34>
+         <P>47
+      </TD><TD>
+         <P>/
+      </TD><TD WIDTH=36>
+         <P>66
+      </TD><TD>
+         <P>B
+      </TD><TD WIDTH=34>
+         <P>85
+      </TD><TD WIDTH=66>
+         <P>U
+      </TD><TD WIDTH=35>
+         <P>104
+      </TD><TD WIDTH=58>
+         <P>h
+      </TD><TD WIDTH=35>
+         <P>123
+      </TD><TD>
+         <P>{
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34 HEIGHT=12>
+         <P>10
+      </TD><TD HEIGHT=12>
+         <P>New line
+      </TD><TD WIDTH=34 HEIGHT=12>
+         <P>48
+      </TD><TD HEIGHT=12>
+         <P>0
+      </TD><TD WIDTH=36 HEIGHT=12>
+         <P>67
+      </TD><TD HEIGHT=12>
+         <P>C
+      </TD><TD WIDTH=34 HEIGHT=12>
+         <P>86
+      </TD><TD WIDTH=66 HEIGHT=12>
+         <P>V
+      </TD><TD WIDTH=35 HEIGHT=12>
+         <P>105
+      </TD><TD WIDTH=58 HEIGHT=12>
+         <P>i
+      </TD><TD WIDTH=35 HEIGHT=12>
+         <P>124
+      </TD><TD HEIGHT=12>
+         <P>|
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>13
+      </TD><TD>
+         <P>Return
+      </TD><TD WIDTH=34>
+         <P>49
+      </TD><TD>
+         <P>1
+      </TD><TD WIDTH=36>
+         <P>68
+      </TD><TD>
+         <P>D
+      </TD><TD WIDTH=34>
+         <P>87
+      </TD><TD WIDTH=66>
+         <P>W
+      </TD><TD WIDTH=35>
+         <P>106
+      </TD><TD WIDTH=58>
+         <P>j
+      </TD><TD WIDTH=35>
+         <P>125
+      </TD><TD>
+         <P>}
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>27
+      </TD><TD>
+         <P>Escape
+      </TD><TD WIDTH=34>
+         <P>50
+      </TD><TD>
+         <P>2
+      </TD><TD WIDTH=36>
+         <P>69
+      </TD><TD>
+         <P>E
+      </TD><TD WIDTH=34>
+         <P>88
+      </TD><TD WIDTH=66>
+         <P>X
+      </TD><TD WIDTH=35>
+         <P>107
+      </TD><TD WIDTH=58>
+         <P>k
+      </TD><TD WIDTH=35>
+         <P>126
+      </TD><TD>
+         <P>~
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>32
+      </TD><TD>
+         <P>Space
+      </TD><TD WIDTH=34>
+         <P>51
+      </TD><TD>
+         <P>3
+      </TD><TD WIDTH=36>
+         <P>70
+      </TD><TD>
+         <P>F
+      </TD><TD WIDTH=34>
+         <P>89
+      </TD><TD WIDTH=66>
+         <P>Y
+      </TD><TD WIDTH=35>
+         <P>108
+      </TD><TD WIDTH=58>
+         <P>l
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>33
+      </TD><TD>
+         <P>!
+      </TD><TD WIDTH=34>
+         <P>52
+      </TD><TD>
+         <P>4
+      </TD><TD WIDTH=36>
+         <P>71
+      </TD><TD>
+         <P>G
+      </TD><TD WIDTH=34>
+         <P>90
+      </TD><TD WIDTH=66>
+         <P>Z
+      </TD><TD WIDTH=35>
+         <P>109
+      </TD><TD WIDTH=58>
+         <P>m
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>34
+      </TD><TD>
+         <P>"
+      </TD><TD WIDTH=34>
+         <P>53
+      </TD><TD>
+         <P>5
+      </TD><TD WIDTH=36>
+         <P>72
+      </TD><TD>
+         <P>H
+      </TD><TD WIDTH=34>
+         <P>91
+      </TD><TD WIDTH=66>
+         <P>[
+      </TD><TD WIDTH=35>
+         <P>110
+      </TD><TD WIDTH=58>
+         <P>n
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>35
+      </TD><TD>
+         <P>#
+      </TD><TD WIDTH=34>
+         <P>54
+      </TD><TD>
+         <P>6
+      </TD><TD WIDTH=36>
+         <P>73
+      </TD><TD>
+         <P>I
+      </TD><TD WIDTH=34>
+         <P>92
+      </TD><TD WIDTH=66>
+         <P>\
+      </TD><TD WIDTH=35>
+         <P>111
+      </TD><TD WIDTH=58>
+         <P>o
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>36
+      </TD><TD>
+         <P>$
+      </TD><TD WIDTH=34>
+         <P>55
+      </TD><TD>
+         <P>7
+      </TD><TD WIDTH=36>
+         <P>74
+      </TD><TD>
+         <P>J
+      </TD><TD WIDTH=34>
+         <P>93
+      </TD><TD WIDTH=66>
+         <P>]
+      </TD><TD WIDTH=35>
+         <P>112
+      </TD><TD WIDTH=58>
+         <P>p
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>37
+      </TD><TD>
+         <P>%
+      </TD><TD WIDTH=34>
+         <P>56
+      </TD><TD>
+         <P>8
+      </TD><TD WIDTH=36>
+         <P>75
+      </TD><TD>
+         <P>K
+      </TD><TD WIDTH=34>
+         <P>94
+      </TD><TD WIDTH=66>
+         <P>^
+      </TD><TD WIDTH=35>
+         <P>113
+      </TD><TD WIDTH=58>
+         <P>q
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>38
+      </TD><TD>
+         <P>&amp;
+      </TD><TD WIDTH=34>
+         <P>57
+      </TD><TD>
+         <P>9
+      </TD><TD WIDTH=36>
+         <P>76
+      </TD><TD>
+         <P>L
+      </TD><TD WIDTH=34>
+         <P>95
+      </TD><TD WIDTH=66>
+         <P>_
+      </TD><TD WIDTH=35>
+         <P>114
+      </TD><TD WIDTH=58>
+         <P>r
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>39
+      </TD><TD>
+         <P>'
+      </TD><TD WIDTH=34>
+         <P>58
+      </TD><TD>
+         <P>:
+      </TD><TD WIDTH=36>
+         <P>77
+      </TD><TD>
+         <P>M
+      </TD><TD WIDTH=34>
+         <P>96
+      </TD><TD WIDTH=66>
+         <P>`
+      </TD><TD WIDTH=35>
+         <P>115
+      </TD><TD WIDTH=58>
+         <P>s
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34 HEIGHT=18>
+         <P>40
+      </TD><TD HEIGHT=18>
+         <P>(
+      </TD><TD WIDTH=34 HEIGHT=18>
+         <P>59
+      </TD><TD HEIGHT=18>
+         <P>;
+      </TD><TD WIDTH=36 HEIGHT=18>
+         <P>78
+      </TD><TD HEIGHT=18>
+         <P>N
+      </TD><TD WIDTH=34 HEIGHT=18>
+         <P>97
+      </TD><TD WIDTH=66 HEIGHT=18>
+         <P>a
+      </TD><TD WIDTH=35 HEIGHT=18>
+         <P>116
+      </TD><TD WIDTH=58 HEIGHT=18>
+         <P>t
+      </TD><TD WIDTH=35 HEIGHT=18>
+         <P>
+      </TD><TD HEIGHT=18>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>41
+      </TD><TD>
+         <P>)
+      </TD><TD WIDTH=34>
+         <P>60
+      </TD><TD>
+         <P>&lt;
+      </TD><TD WIDTH=36>
+         <P>79
+      </TD><TD>
+         <P>O
+      </TD><TD WIDTH=34>
+         <P>98
+      </TD><TD WIDTH=66>
+         <P>b
+      </TD><TD WIDTH=35>
+         <P>117
+      </TD><TD WIDTH=58>
+         <P>u
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>42
+      </TD><TD>
+         <P>*
+      </TD><TD WIDTH=34>
+         <P>61
+      </TD><TD>
+         <P>=
+      </TD><TD WIDTH=36>
+         <P>80
+      </TD><TD>
+         <P>P
+      </TD><TD WIDTH=34>
+         <P>99
+      </TD><TD WIDTH=66>
+         <P>c
+      </TD><TD WIDTH=35>
+         <P>118
+      </TD><TD WIDTH=58>
+         <P>v
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>43
+      </TD><TD>
+         <P>+
+      </TD><TD WIDTH=34>
+         <P>62
+      </TD><TD>
+         <P>&gt;
+      </TD><TD WIDTH=36>
+         <P>81
+      </TD><TD>
+         <P>Q
+      </TD><TD WIDTH=34>
+         <P>100
+      </TD><TD WIDTH=66>
+         <P>d
+      </TD><TD WIDTH=35>
+         <P>119
+      </TD><TD WIDTH=58>
+         <P>w
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>44
+      </TD><TD>
+         <P>,
+      </TD><TD WIDTH=34>
+         <P>63
+      </TD><TD>
+         <P>?
+      </TD><TD WIDTH=36>
+         <P>82
+      </TD><TD>
+         <P>R
+      </TD><TD WIDTH=34>
+         <P>101
+      </TD><TD WIDTH=66>
+         <P>e
+      </TD><TD WIDTH=35>
+         <P>120
+      </TD><TD WIDTH=58>
+         <P>x
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=34>
+         <P>45
+      </TD><TD>
+         <P>-
+      </TD><TD WIDTH=34>
+         <P>64
+      </TD><TD>
+         <P>@
+      </TD><TD WIDTH=36>
+         <P>83
+      </TD><TD>
+         <P>S
+      </TD><TD WIDTH=34>
+         <P>102
+      </TD><TD WIDTH=66>
+         <P>f
+      </TD><TD WIDTH=35>
+         <P>121
+      </TD><TD WIDTH=58>
+         <P>y
+      </TD><TD WIDTH=35>
+         <P>
+      </TD><TD>
+         <P>
+      </TD></TR>
+</TABLE><I><FONT SIZE="-1">Figure 7.10: The ASCII character
+codes&nbsp;</FONT></I></P>
+
+<P><B><I><FONT SIZE="+2">&nbsp;</FONT></I></B></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_7_How_to_read_ASCII"></A>How to read ASCII
+text files</FONT></I></B></P>
+
+<P><FONT SIZE="-1">There are many reasons why you may want to have a
+program read from and write to an ASCII file. You may store commonly
+used general notes in ASCII files on your hard disk which you would
+import into your drawing. Or you may want to store drawing
+information on disk for later retrieval such as layering setup or
+block lists.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><B><I><A NAME="Chapter_7_Using_a_file_import"></A>Using a File
+Import Program</I></B></P>
+
+<P><FONT SIZE="-1">The program shown in figure 7.11 is a rudimentary
+text import program. In this section, you will use it to examine the
+way AutoLISP reads external ASCII files.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<PRE>(Defun C:IMPRT (/ sp dt stl qst)
+(setq nme (getstring "\nName of text file to import: "))
+(setq sp  (getpoint "\nText starting point: "))
+(setq txt (open nme "r"))
+(setq dt  (read-line txt))
+(setq lns (getdist "\nEnter line spacing in drawing units: "))
+(setq ls  (rtos lns 2 2))
+(setq ls  (strcat "@" ls "&lt;-90"))
+(command "text" sp "" "" dt)
+   (while (/= dt nil)
+      (setq dt (read-line txt))
+      (command "text" ls "" "" dt)
+   )
+(close txt)
+(command "redraw")
+)
+<HR></PRE>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 7.11: A text import program</FONT></I>
+</DIR>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">Create an ASCII file containing the program in
+figure 7.13. Give it the name Imprt.lsp. Go back to the Chapt7
+AutoCAD file and load the Imprt.lsp file. Now run the program:</FONT>
+</P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Enter </FONT><B><FONT
+SIZE="-1">imprt</FONT></B><FONT SIZE="-1"> at the Command
+prompt.</FONT></P>
+
+<P><FONT SIZE="-1">2. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Name of text file to
+import:</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Enter </FONT><B><FONT
+SIZE="-1">imprt.lsp</FONT></B><FONT SIZE="-1">.</FONT></P>
+
+<P><FONT SIZE="-1">3. At the next prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Text starting point:</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">pick a point at coordinate 2,8.</FONT></P>
+
+<P><FONT SIZE="-1">4. At the next prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Enter line spacing in drawing
+units:</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">enter </FONT><B><FONT SIZE="-1">.4</FONT></B><FONT
+SIZE="-1">.</FONT></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The contents of the file Imprt.lsp will be written
+into the drawing area using AutoCAD text.</FONT></P>
+
+<P><FONT SIZE="-1">The C:IMPRT program starts out by prompting the
+user to identify the file to be imported. The user is prompted to
+enter the name of the file to be imported:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(Defun C:IMPRT (/ sp dt stl
+qst)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq nme (getstring "\nName of text file to
+import: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The entered name is saved as the variable nme.
+Next, the starting point is gotten:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq sp (getpoint "\nText starting
+point: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This point is saved as sp. The last prompt sets up
+the line spacing:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq lns (getdist sp "\nEnter line
+spacing in drawing units: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The spacing distance is assigned to the variable
+lns. Note that getdist is used so the user can input a distance
+either through the keyboard or cursor.</FONT></P>
+
+<P><FONT SIZE="-1">In the next line, the AutoLISP function open is
+used to open the file to be imported:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq txt (open nme
+"r"))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this expression, you are telling AutoLISP to
+open a file to be read, then assign that file to the variable txt.
+From this point on, you can treat the variable txt as if it were a
+read only version of the file itself. This variable that assumes the
+idobject of the file is called the file </FONT><U><FONT
+SIZE="-1">descriptor</FONT></U><FONT SIZE="-1">. At first, it may
+seem confusing that you assign the file name to a variable that is
+used to locate and open the file then assign the open file to a
+variable of a different name. But you cannot perform file reads and
+writes directly through a variable of the same name as the file. You
+can, however, assign an open file to a symbol then treat that symbol
+as if it were the file itself.</FONT></P>
+
+<P><FONT SIZE="-1">The syntax for open is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(open [</FONT><U><FONT
+SIZE="-1">name of file</FONT></U><FONT SIZE="-1">] [</FONT><U><FONT
+SIZE="-1">read or write code</FONT></U><FONT SIZE="-1">])</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first argument is the name of the file to be
+opened. The second argument is a code that tells AutoLISP whether to
+allow read only, write only or appending operations on the file. The
+following table shows the codes and their meaning.</FONT></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=49>
+         <P><B>Code</B>
+      </TD><TD>
+         <P><B>Uses</B>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=49 HEIGHT=19>
+         <P><FONT SIZE="-1">"r" </FONT>
+      </TD><TD HEIGHT=19>
+         <P><FONT SIZE="-1">Open a file for reading only. If the file
+         does not exist, any attempts to read from it will result in
+         an error message.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=49>
+         <P><FONT SIZE="-1">"w"</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Open a file to write to. If the file
+         already exists, its contents will be written over. If the
+         file does not exist, it will be created</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=49>
+         <P><FONT SIZE="-1">"a" </FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Open a file and append to the end if it.
+         If the file does not exist, it will be created.</FONT>
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">The next line uses the AutoLISP function read-line
+to read the first line of text from the open file:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq dt (read-line
+txt))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">A line of text is read from the file represented
+by the symbol txt and is assigned to the variable dt. Read-line has
+only one argument, the file descriptor. When the file is first
+opened, AutoLISP goes to the beginning of the file in preparation to
+read it. Read-line reads the first line then AutoLISP moves to the
+second line waiting for further instructions to read the file. The
+next time the expression:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(read-line txt)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">is evaluated, AutoLISP will read the next line
+after the previously red line then move to the following line and
+wait for another read-line function call.</FONT></P>
+
+<P><FONT SIZE="-1">The next two lines set up the location of the
+beginning of the text in the drawing editor:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq ls (rtos lns 2 2))</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(setq ls (strcat "@" ls "&lt;-90"))</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The numeric value entered at the line spacing
+prompt is converted to a string then appended to the "@" and
+"&lt;-90" strings to create a string that can be used in the text
+command that follows. The next line writes the text from the first
+line of the file into the AutoCAD drawing:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(command "text" sp "" ""
+dt)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The following while expression continually reads
+lines from the open file and writes them to the AutoCAD drawing
+editor:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(while (/= dt nil)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq dt (read-line txt))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(command "text" ls "" "" dt)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The read-line function will return nil when it
+reaches the end of the file. At that point, the while expression
+stops its recursion).</FONT></P>
+
+<P><FONT SIZE="-1">Finally, to take care of housekeeping, the open
+file is closed.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(close txt)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This is a very important step in the file reading
+process. If a file is not closed, the contents of that file can be
+lost.</FONT></P>
+
+<P><FONT SIZE="-1">We should mention that C:IMPRT requires the
+current text style to have a height value of 0. If this is not the
+case, then the program will not work properly. This is because in the
+line that actually writes the text into the drawing editor:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(command "text" ls "" ""
+dt)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">assumes that AutoCAD will prompt for a height
+value for the text. The height prompt occurs only when the current
+text style has a height value of 0. If the current text style has a
+height value other than 0, the height prompt is skipped. This would
+cause the above expression to add one too many returns in the text
+command sequence (see figure 7.12).</FONT></P>
+
+<P><FONT SIZE="-1"><IMG SRC="F0712.GIF" WIDTH=706 HEIGHT=532
+X-SAS-UseImageWidth X-SAS-UseImageHeight ALIGN=bottom></FONT></P>
+
+<BLOCKQUOTE><P><I><FONT SIZE="-1">Figure 7.12: The text command
+expects specific input</FONT></I></P></BLOCKQUOTE>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_7_Writing_ASCII_files_to_disk"></A>Writing
+ASCII Files to Disk</FONT></I></B></P>
+
+<P><FONT SIZE="-1">AutoLISP lets you create ASCII files. You can use
+this capability to store different types of information ranging from
+the current drawing status to general notes that appear in a drawing.
+The program in figure 7.13 demonstrates this capability.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<PRE>;Program to export text from AutoCAD -- Exprt.lsp
+(Defun C:EXPRT (/ fname txt selset count nme oldtx)
+  (setq fname (getstring "\nEnter name of file to be saved: "))
+     (setq txt (open fname "w"))                     ;open file, assign symbol
+     (setq selset (ssget))                           ;get selection set
+     (setq count 0)                                  ;set count to zero
+     (if (/= selset nil)
+         (while (&lt; count (sslength selset))          ;while count &lt; # of lines
+                (setq nme (ssname selset count))     ;extract text string
+                (setq oldtx (cdr (assoc 1 (entget nme))))
+                (write-line oldtx txt)               ;write string to file
+                (setq count (1+ count))              ;go to next line
+         );end while
+     );end if
+(close txt)                                          ;close file
+);end C:EXPRT</PRE>
+
+<P><FONT SIZE="-1">&nbsp;
+<HR>
+</FONT></P>
+
+<DIR>
+   <I><FONT SIZE="-1">Figure 7.13: A text export program</FONT></I>
+   
+   <BLOCKQUOTE><BLOCKQUOTE><DIR>
+      <FONT SIZE="-1">&nbsp;</FONT>
+   </DIR></BLOCKQUOTE></BLOCKQUOTE>
+</DIR>
+
+<P><B><I><A NAME="Chapter_7_Using_a_text_export"></A>Using a Text
+Export Program</I></B></P>
+
+<P><FONT SIZE="-1">Exit AutoCAD then create a file called Exprt.lsp
+containing the program shown in figure 7.16. Return to AutoCAD, load
+the file and proceed with the following:</FONT></P>
+
+<BLOCKQUOTE><P><FONT SIZE="-1">1. Erase the text you imported
+previously.</FONT></P>
+
+<P><FONT SIZE="-1">2. Use the dtext command and starting the text at
+the coordinate 2,8, write the following lines:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">For want of a nail, the shoe was
+lost;</FONT></B></P>
+
+<P><B><FONT SIZE="-1">For want of a shoe, the horse was
+lost;</FONT></B></P>
+
+<P><B><FONT SIZE="-1">For want of a horse, the rider was
+lost;</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">3. Enter </FONT><B><FONT
+SIZE="-1">exprt</FONT></B><FONT SIZE="-1"> to start the text export
+program.</FONT></P>
+
+<P><FONT SIZE="-1">4. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Enter name of file to
+save:</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Enter </FONT><B><FONT
+SIZE="-1">test.txt</FONT></B><FONT SIZE="-1">.</FONT></P>
+
+<P><FONT SIZE="-1">5. At the prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">Select objects:</FONT></B></P>
+</BLOCKQUOTE></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Pick the lines of text you just entered picking
+each one individually from top to bottom. Press return when you are
+done.</FONT></P>
+
+<P><FONT SIZE="-1">The file test.txt is created containing the text
+you had just entered using AutoCAD's Dtext command. To make sure the
+file exists, enter the following at the command prompt:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">type test.txt</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The AutoCAD type command is the same as the DOS
+type command. It displays the contents of a text file. AutoCAD will
+switch to text mode and the contents of test.txt will be displayed on
+the screen.</FONT></P>
+
+<P><FONT SIZE="-1">The Exprt program starts by prompting the user to
+enter a name for the file to be saved to:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(Defun c:exprt (/ ts n
+dir)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq fname (getstring "\nEnter name of file to
+save: "))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Then, just as with the imprt program, the open
+function opens the file:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq txt (open n "w"))</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this case, the "w" code is used with the open
+functions since this file is to be written to. The next line obtains
+a group of objects for editing using the ssget function:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq selset (ssget))</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This selection set is saved as the variable
+selset. Next, a variable count is give the value 0 in preparation for
+the while expression that follows:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq count 0)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The next if expression checks to see that the user
+has indeed picks objects for editing.</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(if (/= selset nil)</FONT></B></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">If the variable selset does not return nil, then
+the while expression is evaluated:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(while (&lt; count (sslength
+selset))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq entnme (ssname selset count))</FONT></B>
+</P>
+
+<P><B><FONT SIZE="-1">(setq oldtx (cdr (assoc 1 (entget
+entnme))))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(write-line oldtx txt)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq count (1+ count))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This while expression uses the count variable to
+determine the number of times it must evaluate its set of
+expressions:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(while (&lt; count (sslength
+selset))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The sslength function returns the number of
+objects contained in a selection set. In this case, it returns the
+number of objects recorded in the variable selset. This value is
+compared with the variable count to determine whether or not to
+evaluate the expressions found under the while expression.</FONT>
+</P>
+
+<P><FONT SIZE="-1">The next two expressions extract the text string
+value from the first of the objects selected:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq entnme (ssname selset
+count))</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(setq oldtx (cdr (assoc 1 (entget
+entnme))))</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This extraction process involves several new
+functions which are discussed in chapter . For now, just accept that
+the end result is the assignment of the text value of the selected
+object to the variable oldtx.</FONT></P>
+
+<P><FONT SIZE="-1">Now the actual writing to the file occurs:</FONT>
+</P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(write-line oldtx txt)</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Here the write-line functions reads the string
+held by oldtx and writes it to the file represented by the variable
+txt.</FONT></P>
+
+<P><FONT SIZE="-1">Write-line's syntax is:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(write-line [</FONT><U><FONT
+SIZE="-1">string</FONT></U><FONT SIZE="-1">][</FONT><U><FONT
+SIZE="-1">file descriptor</FONT></U><FONT SIZE="-1">])</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The first argument is the string to be written to
+file while the second argument is a variable assigned to the open
+file.</FONT></P>
+
+<P><FONT SIZE="-1">The next line increases the value of count by
+one:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(setq count (1+ count))</FONT></B>
+</P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This expression counts the number of times a
+string of text, and therefore an object, has been processed. Since
+the while test expression checks to see if the value of count is less
+than the number of objects selected, once count reaches a value
+equivalent to the number of objects selected and processed, the while
+expression stops processing.</FONT></P>
+
+<P><FONT SIZE="-1">Finally, the all important close expression
+appears:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">(close txt)</FONT></B></P>
+
+<P><B><FONT SIZE="-1">)</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Just as with the C:IMPRT program, close must be
+used to properly close the file under DOS, otherwise its contents may
+be in-accessible.</FONT></P>
+
+<P><FONT SIZE="-1">Read-line and write-line are two of several file
+read and write functions available in AutoLISP. Table shows several
+other functions along with a brief description.</FONT></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=173>
+         <P><B><FONT SIZE="-1">Function</FONT></B>
+      </TD><TD>
+         <P><B><FONT SIZE="-1">Description</FONT></B>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=173>
+         <P><FONT SIZE="-1">(prin1 </FONT><I><FONT
+         SIZE="-1">symbol/expression</FONT></I><FONT
+         SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Prints any expression to the screen
+         prompt. If a file descriptor is included as an argument, the
+         expression is written to the file as well.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=173>
+         <P><FONT SIZE="-1">(princ </FONT><I><FONT
+         SIZE="-1">symbol/expression</FONT></I><FONT
+         SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">The same as prin1 but execute's control
+         characters. Also, String quotation marks are dropped.</FONT>
+      
+      </TD></TR>
+   <TR>
+      <TD WIDTH=173>
+         <P><FONT SIZE="-1">print symbol/expression)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">The Same as prin1 but a new line is
+         printed before its expression and a space is printed
+         after.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=173>
+         <P><FONT SIZE="-1">(read-char </FONT><I><FONT
+         SIZE="-1">file_descriptor</FONT></I><FONT SIZE="-1">)</FONT>
+      
+      </TD><TD>
+         <P><FONT SIZE="-1">Reads a single character from the
+         keyboard. If a file descriptor is included as an argument,
+         it reads a character from the file. The value returned is in
+         the form of an ASCII character code.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=173>
+         <P><FONT SIZE="-1">read-line </FONT><I><FONT
+         SIZE="-1">file_descriptor</FONT></I><FONT SIZE="-1">)</FONT>
+      
+      </TD><TD>
+         <P><FONT SIZE="-1">Reads a string from the keyboard or a
+         line of text from an open file.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=173>
+         <P><FONT SIZE="-1">write-char </FONT><I><FONT
+         SIZE="-1">integer file_descriptor</FONT></I><FONT
+         SIZE="-1">)</FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Writes a single character to the screen
+         prompt or if a file descriptor is provided, to an open file.
+         The character argument is a number representing an ASCII
+         character code.</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=173>
+         <P><FONT SIZE="-1">write-line string </FONT><I><FONT
+         SIZE="-1">file_descriptor</FONT></I><FONT SIZE="-1">)</FONT>
+      
+      </TD><TD>
+         <P><FONT SIZE="-1">Writes a string to the screen prompt or
+         if a file descriptor is provided, to an open file.</FONT>
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">The three functions prin1, princ, and print are
+nearly identical with some slight differences. All three use the same
+syntax as shown in the following:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(princ [</FONT><U><FONT
+SIZE="-1">string or string variable</FONT></U><FONT
+SIZE="-1">][</FONT><U><FONT SIZE="-1">optional file
+descriptor</FONT></U><FONT SIZE="-1">])</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">The file descriptor is a symbol that has been
+assigned an open file.</FONT></P>
+
+<P><FONT SIZE="-1">The main difference between these three functions
+is in what they produce as values. The following shows an expression
+using prin1 followed by the resulting value:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(prin1 "\nFor want of a
+nail...")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">"For want of a nail...""\nFor want of a
+nail..."</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Notice that the string argument to prin1 is
+printed twice to the prompt line. This is because both prin1 and
+AutoLISP will print something to the prompt. Prin1 prints its a
+literal version of its string argument. AutoLISPs read-evaluate-print
+loop also prints the value of the last object evaluated. The net
+result it the appearance of the string twice on the same line.</FONT>
+</P>
+
+<P><FONT SIZE="-1">Princ differs from prin1 in that instead of
+printing a literal version of its string argument, it will act on any
+control characters included in the string:</FONT></P>
+
+<BLOCKQUOTE><P><B><FONT SIZE="-1">(princ "\nFor want of a
+nail...")</FONT></B></P>
+
+<P><B><FONT SIZE="-1">For want of a nail..."\nFor want of a
+nail..."</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In the prin1 example, the \n control character is
+printed without acting on it. In the princ example above, the \n
+character causes the AutoCAD prompt to advance one line. Also, the
+string is printed without the quotation marks. Again, the AutoLISP
+interpreter prints the value of the string directly to the prompt
+line after princ does it's work. Table Shows the other control
+characters and what they do.</FONT></P>
+
+<P><TABLE BORDER=0>
+   <TR>
+      <TD WIDTH=114>
+         <P><B><FONT SIZE="-1">Character </FONT></B>
+      </TD><TD>
+         <P><B><FONT SIZE="-1">Use</FONT></B>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=114>
+         <P><FONT SIZE="-1">\e </FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Escape</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=114>
+         <P><FONT SIZE="-1">\n </FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">New line</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=114>
+         <P><FONT SIZE="-1">\r </FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Return</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=114>
+         <P><FONT SIZE="-1">\t </FONT>
+      </TD><TD>
+         <P><FONT SIZE="-1">Tab</FONT>
+      </TD></TR>
+   <TR>
+      <TD WIDTH=114>
+         <P><FONT SIZE="-1">\</FONT><U><FONT SIZE="-1">nnn</FONT></U>
+      
+      </TD><TD>
+         <P><FONT SIZE="-1">Character whose octal code is
+         </FONT><U><FONT SIZE="-1">nnn</FONT></U>
+      </TD></TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">The print function differs from the prin1 function
+in that it advances the prompt one line before printing the string
+then it adds a space at the end of the string:</FONT></P>
+
+<BLOCKQUOTE><P><B>(print "\nFor want of a nail...")</B></P>
+
+<P><B><FONT SIZE="-1">"\nFor want of a nail..." "\nFor want of a
+nail..."</FONT></B></P></BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Just as with prin1, print prints a literal version
+of its string argument.</FONT></P>
+
+<P><B><I><FONT
+SIZE="+2"><A NAME="Chapter_7_Conclusion"></A>Conclusion</FONT></I></B>
+</P>
+
+<P><FONT SIZE="-1">While a good deal of your effort using AutoLISP
+will concentrate on graphics and numeric computation, the ability to
+manipulate string data will be an important part of your work. You
+have been introduced to those functions that enable you to work with
+strings.</FONT></P>
+
+<P><FONT SIZE="-1">You have also seen how these functions work
+together to perform some simple tasks like reading and writing text
+files. But you don't have to limit yourself to using these functions
+for text editing. Since any kind of information can be stored as a
+string, you may find ways to further enhance your use of AutoCAD
+through the manipulation of string data. One of the more obvious uses
+that comes to mind is the importation of numeric data for graphing,
+charting or other types of data analysis. As long as data is stored
+in an ASCII format, AutoLISP can read it. And with AutoLISP's data
+conversion functions, numeric data can be easily translated from
+ASCII files.</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+
+<P><FONT SIZE="-1">&nbsp;</FONT></P>
+</BODY>
+</HTML>

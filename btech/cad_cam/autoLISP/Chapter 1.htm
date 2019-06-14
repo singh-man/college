@@ -1,0 +1,1323 @@
+<HTML>
+<!--This file created 8:32 AM  6/18/97 by Claris Home Page version 2.0-->
+<HEAD>
+  <META NAME="GENERATOR" CONTENT="Adobe PageMill 3.0 Win">
+  <TITLE>ABC's of AutoLISP Chapter 1: Introducing AutoLISP - Copyright &COPY; 1997 George Omura</TITLE>
+<X-SAS-WINDOW TOP=81 BOTTOM=627 LEFT=16 RIGHT=568>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=windows-1252">
+  <META NAME="Template" CONTENT="C:\Program Files\Microsoft Office\Office\html.dot">
+</HEAD>
+<BODY BGCOLOR="#ffffff" LINK="#008000">
+
+<P><B><I><FONT SIZE="+3">Introducing AutoLISP</FONT></I></B></P>
+
+<P><B><I><FONT SIZE="+2">Featuring</FONT></I></B></P>
+
+<BLOCKQUOTE>
+  <P><A HREF="#Chapter_1_Understanding"><FONT SIZE="-1">Understanding
+  the AutoLISP Interpreter and Evaluation</FONT></A></P>
+  <P><A HREF="#Chapter_1_Using_Arguments"><FONT SIZE="-1">Expressions
+  and Arguments</FONT></A></P>
+  <P><A HREF="#Chapter_1_Using"><FONT SIZE="-1">Variables and Data
+  Types</FONT></A></P>
+  <P><A HREF="#Chapter_1_Using_Lists"><FONT SIZE="-1">Manipulating
+  Lists with Functions</FONT></A></P>
+  <P><A HREF="#Chapter_1_Functions"><FONT SIZE="-1">Get Functions</FONT></A></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1"></FONT><A NAME="Chapter_1_Checking"></A><A
+NAME="Chapter_1_Introduction"></A></P>
+
+<P><FONT SIZE="-1">If you have never programmed a computer before,
+you may think that learning AutoLISP will be difficult. Actually,
+when you use a program such as AutoCAD, you are, in a sense, programming
+your computer to create and manipulate a database. As you become
+more familiar with AutoCAD, you may begin to explore the creation
+of linetypes and hatch patterns, for example. Or you may customize
+your menu to include your own specialized functions and macros.
+(Macros are like scripts that the computer follows to perform
+a predetermined sequence of commands.) At this level, you are
+delving deeper into the workings of AutoCAD and at the same time
+programming your computer in a more traditional sense.</FONT></P>
+
+<P><FONT SIZE="-1">Using AutoLISP is really just extending your
+knowledge and use of AutoCAD. In fact, once you learn the basic
+syntax of AutoLISP, you need only to familiarize yourself with
+AutoLISP's built-in functions to start writing useful programs.
+(AutoLISP's <I>syntax</I> is the standard order of elements in
+its expressions.) You might look at AutoLISP functions as an extension
+to AutoCAD's library of commands. The more functions you are familiar
+with, the better equipped you are for using the program effectively.</FONT></P>
+
+<P><FONT SIZE="-1">AutoLISP closely resembles Common LISP, the
+most recent version of the oldest artificial intelligence programming
+language still in use today. AutoLISP is essentially a pared down
+version of Common LISP with some additional features unique to
+AutoCAD. Many consider LISP to be one of the easiest programming
+languages to learn, partly because of its simple syntax. Since
+AutoLISP is a subset of common LISP, it is that much easier to
+learn.</FONT></P>
+
+<P><FONT SIZE="-1">In this chapter, you will become familiar with
+some of the basic elements of AutoLISP by using AutoLISP directly
+from the AutoCAD command prompt to perform a few simple operations.
+While doing this, you will be introduced to some of the concepts
+you will need to know to develop your own AutoLISP applications.</FONT></P>
+
+<P><B><I><FONT SIZE="+2"></FONT></I></B><A NAME="Chapter_1_Understanding"></A><B><I>Understanding
+the Interpreter and Evaluation</I></B></P>
+
+<P><FONT SIZE="-1">AutoLISP is accessed through the AutoLISP interpreter.
+When you enter data at the AutoCAD command prompt, the interpreter
+first reads it to determine if the data is an AutoLISP formula.
+If the data turns out to be intended for AutoLISP, then AutoLISP
+evaluates it, and returns an answer to the screen. This process
+of reading the command prompt, evaluating the data, then printing
+to the screen, occurs whenever anything is entered at the command
+prompt and is an important part of how AutoLISP functions.</FONT></P>
+
+<P><FONT SIZE="-1">In some ways, the interpreter is like a hand-held
+calculator. Just as with a calculator, the information you wish
+to have AutoLISP evaluate must follow a certain order. For example,
+the formula 0.618 plus 1 must be entered as follows:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(+ 0.618 1)</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Try entering the above formula at the command
+prompt. AutoLISP evaluates the formula (+ 0.618 1) and returns
+the answer, 1.618, displaying it on the prompt line.</FONT></P>
+
+<P><FONT SIZE="-1">This structure-+ 0.618 1-enclosed by parentheses,
+is called an <I>expression</I> and it is the basic structure for
+all AutoLISP programs. Everything intended for the AutoLISP interpreter,
+from the simplest expression to the most complex program, must
+be written with this structure. The result returned from evaluating
+an expression is called the <I>value </I>of the expression.</FONT></P>
+
+<P><B><I>The Components of an Expression</I></B></P>
+
+<P><FONT SIZE="-1">An AutoLISP expression must include an operator
+of some sort followed by the items to be operated on. An <I>operator</I>
+is an instruction to take some specific action such as adding
+two numbers together or dividing one number by another. Examples
+of mathematical operators include the plus sign (+)for addition
+and forward slash (/) for division.</FONT></P>
+
+<P><FONT SIZE="-1">We will often refer to the operator as a <I>function</I>
+and the items to be operated on as the <I>arguments</I> to the
+function or simply, the arguments. So, in the expression (+ 0.618
+1), the + is the function and the 0.618 and 1 are the arguments.
+All AutoLISP expressions, no matter what size, follow this structure
+and are enclosed by parentheses.</FONT></P>
+
+<P><FONT SIZE="-1">Parentheses are important elements
+of an expression. All parentheses must also be balanced, that
+is, for each left parenthesis, there must be a right parenthesis.
+If you enter an <I>un</I>balanced expression into the AutoLISP
+interpreter, you get the following prompt:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">((_&gt;</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">where the number of parentheses to the left
+is the number of parentheses required to complete the expression.
+If you see this prompt, you must enter the number of closing parentheses
+indicated in order to return to the command prompt. In this example,
+you would need to enter two right parentheses to complete the
+expression.</FONT></P>
+
+<P><FONT SIZE="-1">Double quotation marks enclosing text must
+also be carefully balanced. If an AutoLISP expression is unbalanced,
+it can be quite difficult to complete it and exit AutoLISP. <B>Figure
+1.1</B> shows the components of the expression you just entered.</FONT></P>
+
+<P><IMG SRC="f0104.gif" WIDTH="512" HEIGHT="154" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure1.1: The parts of and AutoLISP expression</FONT></I></P>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Note that spaces are used to separate the functions
+and arguments of the expression. Spaces are not required between
+the parentheses and the elements of the expression though you
+can add spaces to help improve the readability of expressions
+when they become complex. However, it is very important to maintain
+spaces between the elements of the expression. Spaces help both
+you and AutoLISP keep track of where one element ends and another
+begins.</FONT></P>
+
+<P><B><I></I></B><A NAME="Chapter_1_Using_Arguments"></A><B><I>Using
+Arguments and Expressions</I></B></P>
+
+<P><FONT SIZE="-1">AutoLISP evaluates everything, not just expressions,
+but the arguments in expressions as well. This means that in the
+above example, AutoLISP evaluates the numbers 0.618 and 1 before
+it applies these numbers to the plus operator. In AutoLISP, numbers
+evaluate to themselves. This means that when AutoLISP evaluates
+the number 0.618, 0.618 is returned unchanged. Since AutoLISP
+evaluates all arguments, expressions can also be used as arguments
+to a function.</FONT></P>
+
+<P><FONT SIZE="-1">For example, enter the following at the command
+prompt:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(/ 1 (+ 0.618 1))</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this example, the divide function (/) is
+given two arguments-number 1 and an expression (+ 0.618 1). This
+type of expression is called a <I>complex</I> or <I>nested</I>
+expression because one expression is contained within another.
+So in our example, AutoLISP first evaluates the arguments of the
+expression, which are the expression (+ 0.618 1) and the number
+1. It then applies the resulting value of the expression and the
+number 1 to the divide function and returns the answer of 0.618047
+(see <A HREF="Fig1.2.doc">figure 1.2</A> ).</FONT></P>
+
+<IMG SRC="f0105.gif" WIDTH="459" HEIGHT="286" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0">
+
+<P>&nbsp;</P>
+
+<BLOCKQUOTE>
+  <P><B><I><FONT SIZE="-1">Figure 1.2: Evaluation of a nested expression</FONT></I></B></P>
+</BLOCKQUOTE>
+
+<P><B><I><FONT SIZE="+2"></FONT></I></B><A NAME="Chapter_1_Using"></A><B><I>Using
+Variables</I></B></P>
+
+<P><FONT SIZE="-1">Another calculator-like capability of the interpreter
+is its ability to remember values. You probably have a calculator
+that has some memory. This capability allows you to store the
+value of an equation for future use. In a similar way, you can
+store values using variables.</FONT></P>
+
+<P><FONT SIZE="-1">A variable is like a container that holds a
+value. That value can change in the course of a program's operation.
+A simple analogy to this is the title of a government position.
+The position of president could be thought of as a variable. This
+variable can be assigned a value, such as Ronald Reagan or Bill
+Clinton.</FONT></P>
+
+<P><B><I>Understanding Data Types</I></B></P>
+
+<P><FONT SIZE="-1">Variables can take on several types of values
+or data types. Here is what some of these data types look like
+in AutoLISP.</FONT></P>
+
+<P>&nbsp;</P>
+
+<P><TABLE BORDER="0" CELLSPACING="0" CELLPADDING="7" WIDTH="367">
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <B><FONT SIZE="-1">DATA TYPE</FONT></B></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <B><FONT SIZE="-1">EXAMPLE</FONT></B></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">Integer</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">24</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">Real Number</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">0.618</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">String</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">``20 Feet 6 Inches''</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">List</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">(4.5021 6.3011 0.0)</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">File Descriptor</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">&lt;File: a620&gt;</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">Object Name</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">&lt;Object name: 60000014c&gt;</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">Selection Set</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">&lt;Selection set: 1&gt;</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">Symbols</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">Point1</FONT></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="43%">
+    <FONT SIZE="-1">Subrs</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="57%">
+    <FONT SIZE="-1">Setq</FONT></TD>
+  </TR>
+</TABLE></P>
+
+<P>&nbsp;</P>
+
+<P><FONT SIZE="-1">By separating data into types, the interpreter
+is better able to determine precisely how to evaluate the data
+and keep programs running quickly. Also, a computer stores different
+types of data differently, and so data types help AutoLISP to
+manage its memory more efficiently. Finally, data types help keep
+your programming efforts clear by forcing you to think of data
+as having certain characteristics. The following descriptions
+give you an idea of what each of these data types are.</FONT></P>
+
+<P><B><I>Integers and Real Numbers</I></B></P>
+
+<P><I><FONT SIZE="-1">Integers </FONT></I><FONT SIZE="-1">are
+whole numbers from -32768 to + 32767. The value of an expression
+containing only integers is always an integer. For example, the
+value of the expression<BR>
+(/ 25 2) is 12. The decimal value is dropped from the resulting
+value.</FONT></P>
+
+<P><I><FONT SIZE="-1">Real numbers</FONT></I><FONT SIZE="-1">
+are numbers that include a decimal value. If the same expression
+above is written using real numbers, (/ 25.0 2.0), its value will
+be expressed as the real number 12.5. Integers have a black and
+white quality about them. 24 will always equal 24. Real numbers
+(sometimes referred to as <I>reals</I>), on the other hand can
+be a bit less definite. For example, two real values, 24.001245781
+and 24.001245782 are nearly identical but are not equal. If you
+were to drop the last decimal place in both these numbers, then
+they would be equal values. This definitive quality of integers
+makes them more suited to certain types of uses, like counting,
+while real numbers are better suited to situations that require
+exacting values such as coordinate values and angles. Also, computations
+performed on integers are faster than those performed on reals.</FONT></P>
+
+<P><FONT SIZE="-1">You may have noticed that in our previous examples,
+the real number 0.618 is preceded by a zero and not written as
+.618. In AutoLISP, real numbers with values between 1.0 and 0.0
+must begin with zero. If you do not follow this rule, you will
+get an error message. Enter the following at the command prompt:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><FONT SIZE="-1">&nbsp;<B>(+ .618 1)</B></FONT>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Though the above expression looks perfectly
+normal, the following error message appears:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">&nbsp;error: invalid dotted pair</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Most beginners and even some experienced AutoLISP
+users might be completely baffled by the error message. We will
+look at what dotted pairs are later in this book but for now,
+just keep in mind that real values between 1.0 and 0.0 must be
+entered with a 0 preceding the decimal point.</FONT></P>
+
+<P><B><I>Strings</I></B></P>
+
+<P><FONT SIZE="-1">The term string refers to text. Strings are
+often used as prompts in AutoLISP expressions but they can also
+be manipulated using AutoLISP. For example, using the <B>Strcat</B>
+AutoLISP function, you could combine two strings, &quot;thirty
+seven feet&quot; and &quot;six inches&quot;, into one string &quot;thirty
+seven feet six inches&quot;. Try entering this:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(strcat &quot;thirty seven feet &quot;
+    &quot;six inches&quot;)</FONT></B>
+    <P><B><FONT SIZE="-1">The following is returned:</FONT></B>
+    <P><B><FONT SIZE="-1">&quot;thirty seven feet six inches&quot;</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><B><I>Lists</I></B></P>
+
+<P><I><FONT SIZE="-1">Lists</FONT></I><FONT SIZE="-1"> are data
+elements enclosed in parentheses. They are the basic data structure
+in AutoLISP. A list can be made up of any number of integers,
+real numbers, strings, and even other lists.</FONT></P>
+
+<P><FONT SIZE="-1">There are two types of lists. Those intended
+for evaluation and those intended as repositories for data. When
+a list contains a function as its first element, we can generally
+assume that it is an expression intended for evaluation. Such
+a list is often referred to as a <I>form</I>. An example of a
+list as a repository of data is a list that represents a coordinate
+location. For example, the list</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><FONT SIZE="-1">&nbsp;<B>(1.2 2.3 4.4)</B></FONT>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><B><FONT SIZE="-1">&nbsp;</FONT></B><FONT SIZE="-1">contains
+three elements, an X, Y, and Z coordinate. The first element,
+1.2, is the x coordinate, the second element, 2.3 is the y coordinate,
+and the third element, 4.4, is the z coordinate.</FONT></P>
+
+<P><B><I>File Descriptors</I></B></P>
+
+<P><FONT SIZE="-1">AutoLISP allows you to read and write text
+files to disk. <I>File descriptors</I> are used in a program to
+access files that have been opened for processing. You might think
+of a file descriptor as a variable representing the file in question.
+We will discuss this data type in more detail in <A HREF="Chapter%207.doc">Chapter
+7</A>.</FONT></P>
+
+<P><B><I>Object Names</I></B></P>
+
+<P><FONT SIZE="-1">Every object in an AutoCAD drawing has a name.
+The name is an alphanumeric code unique to that object. This name
+can be accessed by AutoLISP and used as a means of selecting individual
+objects for processing. Object names are provided by AutoCAD and
+are not user definable. Also Object names can change from one
+drawing session to another.</FONT></P>
+
+<P><B><I>Selection Sets</I></B></P>
+
+<P><FONT SIZE="-1">Just as you can define a group of objects for
+processing using the AutoCAD Select command, you can also assign
+a group of objects, or a <I>selection set</I>, to a variable in
+AutoLISP for processing. Selection sets are given names by AutoCAD.</FONT></P>
+
+<P><B><I>Symbols</I></B></P>
+
+<P><FONT SIZE="-1">AutoLISP treats everything as data to be evaluated.
+Therefore, <I>symbols</I>, or names given to variables, are also
+data types. Symbols are usually text, but they can also contain
+numbers like Point1 or dx2. A symbol must, however, start with
+a letter.</FONT></P>
+
+<P><B><I>Subrs</I></B></P>
+
+<P><I><FONT SIZE="-1">Subrs</FONT></I><FONT SIZE="-1"> are the
+built-in functions offered by AutoLISP. These functions perform
+tasks ranging from standard math operations such as addition and
+subtraction, to other more complex operations such as obtaining
+information from the drawing database about a specific object.</FONT></P>
+
+<P><B><I></I></B><A NAME="Chapter_1_Atoms_and_Lists"></A><B><I>Atoms</I></B></P>
+
+<P><FONT SIZE="-1">There are really two classes of data, lists
+and atoms. You have already seen an example of a list. An <I>atom</I>
+is an element that cannot be taken apart into other elements.
+For example, a coordinate list can be &quot;disassembled&quot;
+into three numbers, the x value, the y value, and the z value,
+but the x, y and z values cannot be taken apart any further. In
+a coordinate list, the x, y, and z values are atoms. Symbols are
+also atoms because they are treated as single objects. So, in
+general, atoms are either numbers or symbols.</FONT></P>
+
+<P><B><I></I></B><A NAME="Chapter_1_Setq"></A><B><I>Assigning
+Values to Variables with Setq</I></B></P>
+
+<P><FONT SIZE="-1">Variables are assigned values through the use
+of the Setq function. As you have seen, a function can be a simple
+math operator such as plus or divide. A function can also consist
+of a set of complex instructions to perform more than one activity,
+like a small program.</FONT></P>
+
+<P><FONT SIZE="-1">The Setq function tells AutoLISP to assign
+a value to a variable. For example, Try the following exercise
+to assign the value 1.618 to the variable named Golden:</FONT></P>
+
+<BLOCKQUOTE>
+  <P><FONT SIZE="-1">1. Enter the following at the command prompt:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">(setq golden 1.618)</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+  <P><FONT SIZE="-1">You can now obtain the value of a variable
+  by preceding the variable name by an exclamation point. Now check
+  the value of Golden.</FONT></P>
+  <P><FONT SIZE="-1">2. Enter</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">!golden</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+  <P><FONT SIZE="-1">The value 1.618 is returned. You might think
+  of the exclamation point as another way of saying &quot;Display
+  the contents of.&quot;</FONT></P>
+  <P><FONT SIZE="-1">Setq will assign a value to a variable even
+  if the variable already has a value assigned to it. See what
+  happens when Golden is assigned a new value.</FONT></P>
+  <P><FONT SIZE="-1">3. Enter the following:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">(setq golden 0.618)</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">Golden is reassigned the value 0.618 and the
+old value, 1.618, is discarded. You can even reassign a value
+to a variable by using that variable as part of the new value
+as in the following expression</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(setq golden (+ golden 1))</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">In this example, Golden is assigned a new value
+by adding 1 to its current value.</FONT></P>
+
+<P><B><I>Preventing Evaluation of Arguments</I></B></P>
+
+<P><FONT SIZE="-1">But something doesn't seem quite right in the
+above example. Earlier, we said that AutoLISP evaluates the Arguments
+in an expression before it applies the arguments to the function.
+In the above example, we might expect AutoLISP to evaluate the
+variable Golden before it is applied to the <B>Setq</B> function.
+Since Golden is a variable whose value is 0.618, it would evaluate
+to 0.618. AutoLISP should then try to set 1.618 equal to 0.618,
+which is impossible. The value returned by the argument (+ golden
+1) cannot be assigned to another number (see <B>Figure 1.3</B>).</FONT></P>
+
+<P>&nbsp;</P>
+
+<P><CENTER><IMG SRC="F0106.GIF" WIDTH="688" HEIGHT="273" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<P>&nbsp;</P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.3: The expected outcome of setq</FONT></I></P>
+</BLOCKQUOTE>
+
+<P>&nbsp;</P>
+
+<P><FONT SIZE="-1">Here's why the above example works. Setq function
+is a special function that is a combination of two other functions,
+Set and Quote (hence the name Setq). As with Setq, the function
+Set assigns the value of the second argument to the value of the
+first argument. The Quote function provides a means of preventing
+the evaluation of an argument. So, both Setq and Set Quote prevent
+the evaluation of the first argument, which in the above example
+is the variable Golden.</FONT></P>
+
+<P><FONT SIZE="-1">You could write the above example as</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(set quote golden (+ golden 1))</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">and get the same answer. Or you could abbreviate
+the Quote function to an apostrophe, as in the following:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(set 'golden (+ golden 1))</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">and get the same answer. <B>Figure 1.4</B>
+shows what happens when you use Set Quote. Any of these three
+forms work, but since Setq is the most concise, it is the preferred
+form.</FONT></P>
+
+<P><CENTER><IMG SRC="F0107.GIF" WIDTH="688" HEIGHT="303" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.4: The Quote function prevents
+  evaluation of an argument</FONT></I></P>
+</BLOCKQUOTE>
+
+<P>&nbsp;</P>
+
+<P><FONT SIZE="-1">To further illustrate the use of Quote, look
+at the following expression:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><FONT SIZE="-1">&nbsp;<B>(setvar &quot;snapunit&quot; (12
+    12))</B></FONT>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;The function in this expression is Setvar.
+Setvar performs the same function as the AutoCAD setvar command-it
+changes the settings for system variables. Setvar accepts as its
+arguments a string value giving the name of the setting to change
+(&quot;snapunit&quot;) and a value representing the new settings
+(12 12). Here we are attempting to use Setvar to change the snap
+distance setting to 12 by 12.</FONT></P>
+
+<P><FONT SIZE="-1">Remember that AutoLISP evaluates each argument
+before it is passed to the function. As with numbers, Strings
+evaluate to themselves, so the string &quot;snapunit&quot; evaluates
+to &quot;snapunit&quot;. But AutoLISP will also try to evaluate
+the list (12 12). AutoLISP always tries to evaluate lists as if
+they are expressions. As you saw earlier, the first element in
+an expression must be a function. Since the first element of the
+list (12 12) is not a function, AutoLISP will return an error
+message (see <B>figure 1.5</B>).</FONT></P>
+
+<P><CENTER><IMG SRC="F0108.GIF" WIDTH="688" HEIGHT="233" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.5: An error using Setvar</FONT></I></P>
+</BLOCKQUOTE>
+
+<P>&nbsp;</P>
+
+<P><FONT SIZE="-1">In this situation, we do not want this list
+(12 12) to be evaluated. We want it to be read &quot;as is&quot;.
+To do this, we must add the Quote function as in the following:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><FONT SIZE="-1">&nbsp;<B>(setvar &quot;snapunit&quot; '(12
+    12))</B></FONT>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Now AutoLISP will not try to evaluate
+(12 12), and Setvar will apply the list to the snapunit system
+variable setting.</FONT></P>
+
+<P><FONT SIZE="-1">Quote provides a means to prevent evaluations
+when they are not desirable. Quote is most often used in situations
+where a list must be used as an argument to a function. Remember
+that there are two types of lists, those intended for evaluation
+and those used to store data. The list (12, 12) stores data, the
+width and height of the Snap distance. Because (12 12) does not
+have a function as its first element, it cannot be evaluated.
+Since AutoLISP blindly evaluates everything, Quote is needed to
+tell AutoLISP not to evaluate (12 12).</FONT></P>
+
+<P><B><I></I></B><A NAME="Chapter_1_Applying_Variables"></A><B><I>Applying
+Variables</I></B></P>
+
+<P><FONT SIZE="-1">The variable Golden can now be used within
+an AutoCAD command to enter a value at a prompt, or within another
+function to obtain other results. To see how this works, you'll
+assign the value 25.4 to a variable called Mill.</FONT></P>
+
+<BLOCKQUOTE>
+  <P><FONT SIZE="-1">1. Enter</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">(setq mill 25.4)</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<DIR>
+  <P><FONT SIZE="-1">at the command prompt.</FONT>
+  <P><FONT SIZE="-1">Now find the result of dividing Mill by Golden.</FONT>
+  <P><FONT SIZE="-1">2. Enter</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(/ mill golden)</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">This returns the value <B>15.698393.</B></FONT>
+  <P><FONT SIZE="-1">Now assign this value to yet another variable.</FONT>
+  <P><FONT SIZE="-1">3. Enter</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><FONT SIZE="-1">&nbsp;<B>(setq B (/ mill golden))</B></FONT>
+  </DIR>
+  <P>&nbsp;
+</DIR>
+
+<P><B><FONT SIZE="-1">&nbsp;</FONT></B><FONT SIZE="-1">Now you
+have three variables, Golden, Mill, and B, which are all assigned
+values that you can later retrieve, either within an AutoCAD command
+by entering an exclamation point followed by the variable, or
+as an argument within an expression.</FONT></P>
+
+<P><FONT SIZE="-1">Our examples so far have shown numbers being
+manipulated, but text can also be manipulated in a similar way.
+Variables can be assigned text strings that can later be used
+to enter values in commands that require text input. Strings can
+also be joined together or <I>concatenated</I> to form new strings.
+Strings and numeric values cannot be evaluated together, however.
+This may seem like a simple statement but if you do not consider
+it carefully, it can lead to confusion. For example, it is possible
+to assign the number 1 to a variable as a text string by entering</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><FONT SIZE="-1">&nbsp;<B>(setq text1 &quot;1'')</B></FONT>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">&nbsp;Later, if you try to add this string
+variable to an integer or real number, AutoCAD will return an
+error message.</FONT></P>
+
+<P><FONT SIZE="-1">The examples used Setq and the addition and
+division functions. These are three functions out of many available
+to you. All the usual math functions are available, plus many
+other functions used to test and manipulate variables. Table 1.1
+shows some of the math functions available.</FONT></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Table 1.1: A partial list of AutoLISP functions</FONT></I></P>
+</BLOCKQUOTE>
+
+<P>&nbsp;</P>
+
+<DIR>
+  <P><B><I>MATH FUNCTIONS THAT ACCEPT MULTIPLE ARGUMENTS</I></B>
+  <P><TABLE BORDER="0" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="157">
+      <FONT SIZE="-1">(+ <I>number number</I> ...)</FONT></TD>
+      <TD WIDTH="235">
+      <FONT SIZE="-1">add</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="157">
+      <FONT SIZE="-1">(- <I>number number</I> ...)</FONT></TD>
+      <TD WIDTH="235">
+      <FONT SIZE="-1">subtract</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="157">
+      <FONT SIZE="-1">(* <I>number number</I> ...)</FONT></TD>
+      <TD WIDTH="235">
+      <FONT SIZE="-1">multiply</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="157">
+      <FONT SIZE="-1">(/ <I>number number</I> ...)</FONT></TD>
+      <TD WIDTH="235">
+      <FONT SIZE="-1">divide</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="157">
+      <FONT SIZE="-1">(max <I>number number</I> ...)</FONT></TD>
+      <TD WIDTH="235">
+      <FONT SIZE="-1">find largest of numbers given</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="157">
+      <FONT SIZE="-1">(min <I>number number</I> ...)</FONT></TD>
+      <TD WIDTH="235">
+      <FONT SIZE="-1">find smallest of numbers given</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="157">
+      <FONT SIZE="-1">(rem <I>number number</I> ...)</FONT></TD>
+      <TD WIDTH="235">
+      <FONT SIZE="-1">find the remainder of numbers</FONT></TD>
+    </TR>
+  </TABLE>
+  <P><B><I>MATH FUNCTIONS THAT ACCEPT SINGLE ARGUMENTS</I></B>
+  <P><TABLE BORDER="0" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(1+ <I>number</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">add 1</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(1&COPY; <I>number</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">subtract 1</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(abs <I>number</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">find the absolute value</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(exp <I>nth</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <I><FONT SIZE="-1">e</FONT></I><FONT SIZE="-1"> raised to the
+      <I>nth</I> power</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(expt <I>number nth</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <I><FONT SIZE="-1">number</FONT></I><FONT SIZE="-1"> raised to
+      the <I>nth</I> power</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(fix <I>real</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">convert <I>real</I> to integer</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(float <I>integer</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">convert <I>integer</I> to real</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(gcd <I>integer integer</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">find greatest common denominator</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(log <I>number</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">find natural log of <I>number</I></FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="159">
+      <FONT SIZE="-1">(sqrt <I>number</I>)</FONT></TD>
+      <TD WIDTH="231">
+      <FONT SIZE="-1">find square root of <I>number</I></FONT></TD>
+    </TR>
+  </TABLE>
+  <P><B><I>FUNCTIONS FOR BINARY OPERATIONS</I></B>
+  <P><TABLE BORDER="0" CELLSPACING="2" CELLPADDING="0">
+    <TR>
+      <TD WIDTH="156">
+      <FONT SIZE="-1">(~ <I>integer</I>)</FONT></TD>
+      <TD WIDTH="234">
+      <FONT SIZE="-1">find logical bitwise </FONT>NOT<FONT SIZE="-1">
+      of integer</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="156">
+      <FONT SIZE="-1">(logand <I>int. int</I>. ...)</FONT></TD>
+      <TD WIDTH="234">
+      find logical bitwise AND of integers</TD>
+    </TR>
+    <TR>
+      <TD WIDTH="156">
+      <FONT SIZE="-1">(logior <I>int. int.</I> ...)</FONT></TD>
+      <TD WIDTH="234">
+      <FONT SIZE="-1">find logical bitwise </FONT>OR<FONT SIZE="-1">
+      of integers</FONT></TD>
+    </TR>
+    <TR>
+      <TD WIDTH="156">
+      <FONT SIZE="-1">(lsh <I>int. bits</I>)</FONT></TD>
+      <TD WIDTH="234">
+      <FONT SIZE="-1">find logical bitwise shift of int.by bits</FONT></TD>
+    </TR>
+  </TABLE>
+</DIR>
+
+<P><FONT SIZE="-1">Since AutoLISP will perform mathematical calculations,
+you can use it as a calculator while you are drawing. For example,
+if you need to convert a distance of 132 feet 6 inches to inches,
+you could enter</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><FONT SIZE="-1">&nbsp;<B>(setq inch1 (+ 6 (* 132 12)))</B></FONT>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">at the command prompt. The result of this expression
+is returned as 1590. The asterisk is the symbol for the multiplication
+function. The value 1590 is assigned to the variable Inch1, which
+can later be used as input to prompts that accept numeric values.
+This is a very simple but useful application of AutoLISP. In the
+next section, you will explore some of its more complex uses.</FONT></P>
+
+<P><B><I></I></B><A NAME="Chapter_1_Using_Lists"></A><B><I>Accessing
+Single Elements of a List</I></B></P>
+
+<P><FONT SIZE="-1">When you draw, you are actually specifying
+points on the drawing area in coordinates. Because a coordinate
+is a group of values rather than a single value, it must be handled
+as a list in AutoLISP. You must use special functions to access
+single elements of a list. Two of these functions are <B>Car</B>
+and <B>Cadr</B>. The following example illustrates their use.</FONT></P>
+
+<P><FONT SIZE="-1">Suppose you want to store two point locations
+as variables called Pt1 and Pt2.</FONT></P>
+
+<BLOCKQUOTE>
+  <P><FONT SIZE="-1">1. Enter the following two lines the command
+  Prompt:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">(setq pt1 (list 5 6))<BR>
+      (setq pt2 (list 10 12))</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+  <P><FONT SIZE="-1">The List function in these expressions combines
+  the arguments to form a list. (You can see this in <B>Figure
+  1.6</B>).</FONT></P>
+</BLOCKQUOTE>
+
+<DIR>
+  <P><CENTER><IMG SRC="F0109.GIF" WIDTH="688" HEIGHT="243" X-SAS-UseImageWidth
+  X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER>
+  <P><I><FONT SIZE="-1">Figure 1.6: The list function.</FONT></I>
+  <P><FONT SIZE="-1">These lists are assigned to the variable Pt1
+  and Pt2. As we have just seen, variables accept not only single
+  objects as their value but also lists. In fact, variables can
+  accept any data type as their value, even other symbols representing
+  other variables and expressions.</FONT>
+  <P><FONT SIZE="-1">2. To see the new value for pt1, enter the
+  following:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">!pt1</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">The list (5 6) appears.</FONT>
+  <P><FONT SIZE="-1">Now suppose you want to get only the x coordinate
+  value from this example.</FONT>
+  <P><FONT SIZE="-1">3. Enter:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(car pt1)</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">The value 5 appears.</FONT>
+  <P><FONT SIZE="-1">4. To get the y value, enter:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(cadr pt1)</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">which returns the value 6. These values can
+  in turn be assigned to variables, as in the line</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(setq x (car pt1))</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><B><FONT SIZE="-1">Figure 1.7</FONT></B><FONT SIZE="-1"> may
+  help you visualize what Car and Cadr are doing.</FONT>
+</DIR>
+
+<P><CENTER><IMG SRC="F0110.GIF" WIDTH="688" HEIGHT="386" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.7: Car and Cadr of pt1</FONT></I></P>
+</BLOCKQUOTE>
+
+<P>&nbsp;</P>
+
+<BLOCKQUOTE>
+  <P><FONT SIZE="-1">By using the List function, you can construct
+  a point variable using x and y components of other point variables.
+  For example, you may want to combine the y value of the variable
+  Pt1 with the x value of a point variable Pt2.</FONT></P>
+  <P><FONT SIZE="-1">5. Enter the following:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">(list (car pt2) (cadr pt1))</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+  <P><FONT SIZE="-1">You get the list (10 6) (see <B>figure 1.8</B>).</FONT></P>
+</BLOCKQUOTE>
+
+<DIR>
+  <P><CENTER><IMG SRC="F0111.GIF" WIDTH="688" HEIGHT="386" X-SAS-UseImageWidth
+  X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER>
+  <P><I><FONT SIZE="-1">Figure 1.8: Deriving a new list from pt1
+  and pt2</FONT></I>
+  <P><FONT SIZE="-1">These lists can be used to enter values during
+  any AutoCAD command that prompts for points.</FONT>
+  <P><FONT SIZE="-1">Actually, we have misled you slightly. The
+  two primary functions for accessing elements of a list are CAR
+  and CDR (pronounced <I>could</I>-er). You know that Car extracts
+  the first element of a list. CDR, on the other hand, returns
+  the value of a list with its first element removed.</FONT>
+  <P><FONT SIZE="-1">6. Enter the following at the command prompt:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(cdr '(A B C))</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">The list (B C) is returned (see <B>figure
+  1.9</B>).</FONT>
+  <P><CENTER><IMG SRC="F0112.GIF" WIDTH="684" HEIGHT="138" X-SAS-UseImageWidth
+  X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER>
+  <P><I><FONT SIZE="-1">Figure 1.9: Using Cdr to remove the first
+  element of a list.</FONT></I>
+  <P><FONT SIZE="-1">When CDR is applied to the list (A B C) you
+  get (B C) which is the equal to the list (A B C) with the first
+  element, A, removed. Notice that in the above example, the list
+  (A B C) was quoted. If the quote were left out, AutoLISP would
+  try to evaluate (A B C). Remember that AutoLISP expect the first
+  element of a list to be a function. Since A is variable and not
+  a function, you would get the error message:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">error: null function<BR>
+    (A B C)</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">Now try using CDR with the variable pt1.</FONT>
+  <P><FONT SIZE="-1">7. Enter</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(cdr pt1)</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">The list (6) is returned.</FONT>
+  <P><FONT SIZE="-1">Remember that anything within a pair of parentheses
+  is considered a list, even () is considered a list of zero elements.
+  Since the value returned by CDR is a list, it cannot be used
+  where a number is expected. Try replacing the CADR in the earlier
+  example with a CDR:</FONT>
+  <P><FONT SIZE="-1">8. Enter:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(list (car pt2) (cdr pt1))<BR>
+    (10 (6))</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">You get a list of 2 elements, 10 and (6) (see
+  <B>figure 1.10</B>). Though this is a perfectly legal list, it
+  cannot be used as a coordinate list.</FONT>
+</DIR>
+
+<P><CENTER><IMG SRC="F0113.GIF" WIDTH="688" HEIGHT="386" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.10: Using Car and Cdr together</FONT></I></P>
+</BLOCKQUOTE>
+
+<P>&nbsp;</P>
+
+<P><FONT SIZE="-1">So what exactly is CADR then. CADR is the contraction
+of CAR and CDR. You now know that CDR returns a list with its
+first element removed and that CAR returns the first element of
+a list. So to get 6 from the list held by the variable pt1, you
+apply CDR to pt1 to get (6) the apply car to (6) as in the following
+example:</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(car (cdr pt1))<BR>
+    6</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><FONT SIZE="-1">This CAR-CDR combination is abbreviated to
+CADR.</FONT></P>
+
+<BLOCKQUOTE>
+  <DIR>
+    <P><B><FONT SIZE="-1">(cadr (pt1))<BR>
+    6</FONT></B>
+  </DIR>
+</BLOCKQUOTE>
+
+<P><B><FONT SIZE="-1">Figure 1.11</FONT></B><FONT SIZE="-1"> shows
+graphically how this works. You can combine CAR and CDR in a variety
+of ways to break down nested lists. <B>Figure 1.12</B> shows some
+examples of other CAR and CDR contractions.</FONT></P>
+
+<P><CENTER><IMG SRC="F0114.GIF" WIDTH="688" HEIGHT="386" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.11: How CADR works</FONT></I></P>
+</BLOCKQUOTE>
+
+<P><CENTER><IMG SRC="F0115A.GIF" WIDTH="688" HEIGHT="306" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<P><CENTER><IMG SRC="F0115B.GIF" WIDTH="688" HEIGHT="386" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<P><CENTER><IMG SRC="F0115C.GIF" WIDTH="688" HEIGHT="386" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.12: The CAR and CDR functions
+  combined to extract elements of nested lists</FONT></I></P>
+</BLOCKQUOTE>
+
+<P>&nbsp;</P>
+
+<P><B><I></I></B><A NAME="Chapter_1_Functions"></A><B><I>Functions
+for Assigning Values to Variables</I></B></P>
+
+<P><FONT SIZE="-1">So far, you have been entering everything from
+the keyboard. However, you will most often want to bet information
+from the drawing area of the AutoCAD screen. AutoLISP offers a
+set of functions just for this purpose. These functions are characterized
+by their GET prefix. <B>Table 1.2</B> shows a list of these Get
+functions along with a brief description.</FONT></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Table 1.2: Functions that pause to allow
+  input</FONT></I></P>
+</BLOCKQUOTE>
+
+<P><TABLE BORDER="0" CELLPADDING="7" WIDTH="511" CELLSPACING="2">
+  <TR>
+    <TD VALIGN="TOP" WIDTH="15%">
+    <B><FONT SIZE="-1">FUNCTION</FONT></B></TD>
+    <TD VALIGN="TOP" WIDTH="70%">
+    <B><FONT SIZE="-1">DESCRIPTION</FONT></B></TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="15%">
+    <FONT SIZE="-1">Getpoint</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="70%">
+    <DIR>
+      <FONT SIZE="-1">Allows key or mouse entry of point values. This
+      always returns values as lists of coordinate values.</FONT>
+    </DIR>
+</TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="15%">
+    <FONT SIZE="-1">Getcorner</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="70%">
+    <DIR>
+      <FONT SIZE="-1">Allows selection of a point by using a window.
+      this function requires a base point value defining the first
+      corner of the window. The window appears, allowing you to select
+      the opposite corner.</FONT>
+    </DIR>
+</TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="15%">
+    <FONT SIZE="-1">Getorient</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="70%">
+    <DIR>
+      <FONT SIZE="-1">Allows key or mouse entry of angles based on
+      Units command setting for angles. Returns values in radians.</FONT>
+    </DIR>
+</TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="15%">
+    <FONT SIZE="-1">Getangle</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="70%">
+    <DIR>
+      <FONT SIZE="-1">Allows key or mouse entry of angles based on
+      the standard AutoCAD compass orientation of angles. Returns values
+      in radians.</FONT>
+    </DIR>
+</TD>
+  </TR>
+  <TR>
+    <TD VALIGN="TOP" WIDTH="15%">
+    <FONT SIZE="-1">Getdist</FONT></TD>
+    <TD VALIGN="TOP" WIDTH="70%">
+    <DIR>
+      <FONT SIZE="-1">Allows key or mouse entry of distances. This
+      always returns values as real numbers regardless of the unit
+      format in use.</FONT>
+    </DIR>
+</TD>
+  </TR>
+</TABLE></P>
+
+<P><FONT SIZE="-1">&nbsp;To see how one of these functions works,
+try the following exercise.</FONT></P>
+
+<BLOCKQUOTE>
+  <P><FONT SIZE="-1">1. Turn your snap mode on by pressing the
+  <B>F9</B> function key.</FONT></P>
+  <P><FONT SIZE="-1">2. Turn on the dynamic coordinate readout
+  by pressing the <B>F6</B> function key.</FONT></P>
+  <P><FONT SIZE="-1">3. Enter the following at the command prompt:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">(setq pt1 (getpoint))</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+  <P><FONT SIZE="-1">This expression blanks the command line and
+  waits until you enter a point. Just as with any standard AutoCAD
+  command that expects point input, you can enter a relative or
+  absolute point value through the keyboard or pick a point on
+  the drawing area using the cursor. The coordinate of the point
+  you pick will become the value assigned to the variable Pt1 in
+  the form of a list.</FONT></P>
+  <P><FONT SIZE="-1">4. Move your cursor until the coordinate readout
+  lists the coordinate 4,5 then pick that point.</FONT></P>
+  <P><FONT SIZE="-1">5. Check the value of pt1 by entering the
+  following:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">!pt1</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<DIR>
+  <P><FONT SIZE="-1">The value (4.0 5.0 0.0) is returned and the
+  command prompt appears once again</FONT>
+</DIR>
+
+<P><B><FONT SIZE="-1">Note</FONT></B><FONT SIZE="-1"> that a Z
+coordinate value of 0.0 was added and that all the elements of
+the coordinate list are reals.</FONT></P>
+
+<P><B><I></I></B><A NAME="Chapter_1_Adding_Prompts"></A><B><I>Adding
+Prompts</I></B></P>
+
+<P><FONT SIZE="-1">All these Get functions allow you to create
+a prompt by following the function with the prompt enclosed by
+quotation marks. The following demonstrates the use of prompts
+in conjunction with these functions.</FONT></P>
+
+<BLOCKQUOTE>
+  <P><FONT SIZE="-1">1. Enter the following expression:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">(setq pt1 (getpoint ``Pick the first point:''))</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+</BLOCKQUOTE>
+
+<DIR>
+  <P><FONT SIZE="-1">The following prompt appears:</FONT> 
+  <DIR>
+    <P><B><FONT SIZE="-1">Pick the first point:</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">2. Move your cursor until the coordinate readout
+  reads 3,4 then pick that point.</FONT>
+  <P><FONT SIZE="-1">The Get functions allow you to specify a point
+  from which the angle, distance, or point is to be measured.</FONT>
+  <P><FONT SIZE="-1">3. Enter the following:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">(setq pt2 (getcorner pt1 ``Pick the opposite
+    corner:''))</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">the following prompt appears:</FONT>
+  <P>&nbsp;
+  <DIR>
+    <P><B><FONT SIZE="-1">Pick the opposite corner:</FONT></B>
+  </DIR>
+  <P>&nbsp;
+  <P><FONT SIZE="-1">Pt1 is the point variable that holds the coordinate
+  for the last point you picked. A window appears from the coordinate
+  defined by Pt1.</FONT>
+  <P><FONT SIZE="-1">4. Move the cursor until the coordinate readout
+  reads 6,7 then pick that point.</FONT>
+</DIR>
+
+<P><FONT SIZE="-1">You can also enter a relative coordinate through
+the keyboard in the unit system currently used in your drawing.
+Getangle and Getdist prompt you for two points if a point variable
+is not provided. Getcorner always requires a point variable (see
+<B>Figure 1.13</B>).</FONT></P>
+
+<P><CENTER><IMG SRC="F0116.GIF" WIDTH="688" HEIGHT="386" X-SAS-UseImageWidth
+X-SAS-UseImageHeight ALIGN="MIDDLE" NATURALSIZEFLAG="0"></CENTER></P>
+
+<BLOCKQUOTE>
+  <P><I><FONT SIZE="-1">Figure 1.13: The Getcorner function as
+  it appears on the drawing area</FONT></I></P>
+  <P><FONT SIZE="-1">By using the Getpoint and getcorner functions,
+  you can easily store point and angle values as variables. You
+  can then refer to a stored point by entering its variable in
+  response to a command prompt that accepts point input.</FONT></P>
+  <P><FONT SIZE="-1">5. Issue the line command and at the From
+  point prompt, enter:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">!pt1</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+  <P><FONT SIZE="-1">A rubber-banding line appears from the point
+  previously defined as pt1 just as if you had selected that point
+  manually.</FONT></P>
+  <P><FONT SIZE="-1">6. Now enter the following:</FONT></P>
+  <BLOCKQUOTE>
+    <DIR>
+      <P><B><FONT SIZE="-1">!pt2</FONT></B>
+    </DIR>
+  </BLOCKQUOTE>
+  <P><FONT SIZE="-1">A line is drawn from the point stored by pt1
+  to the point stored by pt2.</FONT></P>
+</BLOCKQUOTE>
+
+<P><B><I><FONT SIZE="+2"></FONT></I></B><A NAME="Chapter_1_Conclusion"></A><B><I>Conclusion</I></B></P>
+
+<P><FONT SIZE="-1">So far, you have been introduced to the AutoLISP
+interpreter and to some of the terms used and a few of the function
+available in AutoLISP. You have also been introduced to six basic
+rules key to the use of AutoLISP. In summary, these rules are:</FONT></P>
+
+<UL>
+  <LI><FONT SIZE="-1">The AutoLISP Expression is the fundamental
+  structure of all AutoLISP programs.</FONT>
+  <LI><FONT SIZE="-1">All AutoLISP expressions begin and end with
+  parentheses with the first element of the expression being an
+  operator or function followed by the arguments to the operator.</FONT>
+  <LI><FONT SIZE="-1">All parentheses and double quotation marks
+  enclosing strings must be balanced within an expression.</FONT>
+  <LI><FONT SIZE="-1">AutoLISP evaluates everything. When it evaluates
+  expressions, it does so by evaluating the arguments before applying
+  the arguments to the function.</FONT>
+  <LI><FONT SIZE="-1">Numbers and strings evaluate to themselves.</FONT>
+  <LI><FONT SIZE="-1">Variables evaluate to the last value assigned
+  to them.&nbsp;</FONT>
+</UL>
+
+<P><FONT SIZE="-1">You have seen how you can store values as variables
+and how you can use AutoLISP to perform math calculations. You
+may want to apply this knowledge to your everyday use of AutoCAD.
+Doing so will help you become more comfortable with AutoLISP and
+will give you further confidence to proceed with more complex
+programs.</FONT></P>
+
+<P><FONT SIZE="-1">You have also looked at how lists can be broken
+down and put together through the CAR, CDR, Quote and List functions.
+List manipulation can be a bit harry so take some time to thoroughly
+understand these functions. You may want to practice building
+lists just to get a better feel for this unusual data type.</FONT></P>
+
+<P><FONT SIZE="-1">In <A HREF="Chapter%202.doc">Chapter 2</A></FONT><FONT
+ COLOR="#ff0000" SIZE="-1">,</FONT><FONT SIZE="-1"> you will learn
+how to create an AutoLISP program. You will also learn how to
+permanently store AutoLISP functions so that they can be later
+retrieved during subsequent editing sessions.</FONT>
+
+</BODY>
+</HTML>
